@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productos - Nuit Fantôme</title>
+
+  <!-- Aquí va tu CSS -->
+  <link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body>
+
+  <!-- Header simple con contador -->
+  <header class="header">
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="productos.html">Productos</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <a href="carrito.html">Cart (<span id="cart-count">0</span>)</a>
+  </header>
+
+  <main class="container">
+    <h2 class="center">PRODUCTOS</h2>
+    <div id="productos-grid" class="cards"></div>
+  </main>
+
+  <!-- Tu JavaScript embebido -->
+  <script>
+  // === Catálogo (puedes editar/agregar) ===
+  const productos = [
+    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio NF", precio:12990 },
+    { id:"acu01", categoria:"Acuarelas", nombre:"Set Acuarelas 24 Colores", precio:16990 },
+    { id:"pin01", categoria:"Pinturas personalizadas", nombre:"Pintura personalizada A5", precio:14990 },
+    { id:"cua01", categoria:"Cuadernos & Libretas", nombre:"Cuaderno A5 “Luna Mística”", precio:4990 },
+    { id:"pap01", categoria:"Papel Bond", nombre:"Resma Carta 500h", precio:6990 },
+    { id:"lap01", categoria:"Lapiceros", nombre:"Pluma estilográfica Nuit (F)", precio:9990 },
+    { id:"mar01", categoria:"Marcadores", nombre:"Set 6 marcadores pastel", precio:7990 },
+    { id:"car01", categoria:"Carpetas/Archivadores", nombre:"Archivador lomo ancho A4", precio:3990 },
+    { id:"not01", categoria:"Notas adhesivas", nombre:"Notas adhesivas lunares", precio:1990 },
+    { id:"tin01", categoria:"Tintas", nombre:"Tinta violeta tenue 30ml", precio:5890 }
+  ];
+
+  // === Helpers ===
+  const $ = s => document.querySelector(s);
+  const toCLP = n => n.toLocaleString('es-CL', { style:'currency', currency:'CLP' });
+
+  // === Carrito (localStorage) ===
+  const CART_KEY = 'nf_cart';
+
+  function loadCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
+  function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); }
+  function cartCount(){ return loadCart().reduce((a,b)=> a + b.qty, 0); }
+
+  function updateCartCount(){
+    const el = $('#cart-count');
+    if(el) el.textContent = cartCount();
+  }
+
+  function addToCart(id, qty=1){
+    const cart = loadCart();
+    const item = cart.find(i => i.id === id);
+    if(item) item.qty += qty; else cart.push({ id, qty });
+    saveCart(cart);
+    alert('Producto añadido al carrito');
+  }
+
+  // === Render cards ===
+ function renderCard(p){
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="ph"></div> <!-- ahora el tamaño se controla en estilos.css -->
+    <div class="title" style="margin-top:6px">${p.nombre}</div>
+    <div class="price">${toCLP(p.precio)}</div>
+    <button class="btn" onclick="addToCart('${p.id}',1)">Añadir</button>
+  `;
+  return card;
+}
+
+
+  function renderProductosGrid(){
+    const wrap = $('#productos-grid');
+    wrap.innerHTML = '';
+    productos.forEach(p => wrap.appendChild(renderCard(p)));
+  }
+
+  // === Arranque de la página ===
+  updateCartCount();
+  renderProductosGrid();
+  </script>
+</body>
+</html>

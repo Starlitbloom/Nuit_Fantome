@@ -1,0 +1,74 @@
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background: #fafafa;
+  color: #333;
+}
+
+/* Header */
+.header {
+  background: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.header a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+.header a:hover { text-decoration: underline; }
+
+/* Contenedor principal */
+.container {
+  width: min(1100px, 95%);
+  margin: 20px auto;
+}
+
+/* Títulos */
+h2.center { text-align: center; margin-bottom: 20px; }
+
+/* Grid de productos */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* Tarjeta */
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  transition: transform .2s;
+}
+.card:hover { transform: translateY(-4px); }
+
+.card .title { font-weight: bold; margin-top: 10px; }
+.card .price { color: #9c27b0; font-size: 1.1em; margin: 8px 0; }
+ /*imagen largo */
+.ph {
+  background: #2f2f2f;
+  height: 200px;   /* antes 140px */
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Botón */
+.btn {
+  background: #9c27b0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.btn:hover { background: #7b1fa2; }
