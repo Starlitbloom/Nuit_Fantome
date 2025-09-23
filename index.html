@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuit Fantome - Papelería</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+
+    <header>
+        <!-- Fila superior: logo, búsqueda, usuario/carrito -->
+        <div class="header-superior">
+            <!-- Logo a la izquierda -->
+            <div class="logo">
+                <img src="./assets/img/logo.png" alt="Logo Nuit Fantome">
+            </div>
+
+            <!-- Barra de búsqueda en el centro -->
+            <div class="busqueda">
+                <form action="productos.html" method="get"> 
+                    <input type="text" name="buscar" placeholder="Buscar productos...">
+                    <button type="submit">  
+                        <img src="img/lupa.png" alt="Buscar">
+                    </button>
+                </form>  
+            </div>
+
+            <!-- Login/Registro y carrito a la derecha -->
+            <div class="usuario-carrito">
+                <a href="login.html">Acceder</a> | 
+                <a href="#"><img src="img/carrito.png" alt="Carrito"></a>
+            </div>
+        </div>
+
+        <!-- Barra de navegación sticky -->
+        <nav class="barra-tareas">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+
+    <!-- Sección principal de la tienda -->
+    <main>
+        <section class="bienvenida">
+            <h2>Bienvenido a Nuit Fantome</h2>
+            <p>Encuentra todo lo que necesitas para tu oficina, estudio y creatividad.</p>
+            <img src="img/tienda.jpg" alt="Imagen de la tienda">
+        </section>
+
+        <!-- Productos destacados -->
+        <section class="productos-destacados">
+            <h2>Productos Destacados</h2>
+            <div class="lista-productos">
+                <article class="producto">
+                    <img src="img/productos/cuaderno.jpg" alt="Cuaderno">
+                    <h3>Cuaderno Nuit Fantome</h3>
+                    <p>$3.500</p>
+                    <a href="producto1.html">Ver Detalle</a>
+                </article>
+                <article class="producto">
+                    <img src="img/productos/lapiz.jpg" alt="Lápiz">
+                    <h3>Lápiz de Colores</h3>
+                    <p>$1.200</p>
+                    <a href="producto2.html">Ver Detalle</a>
+                </article>
+                <!-- Puedes agregar más productos destacados -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Nuit Fantome. Todos los derechos reservados.</p>
+        <p><a href="contacto.html">Contacto</a> | <a href="nosotros.html">Nosotros</a></p>
+    </footer>
+
+</body>
+</html>
