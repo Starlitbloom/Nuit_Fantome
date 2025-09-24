@@ -1,0 +1,66 @@
+.contacto {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contacto-contenido {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.contacto h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.contacto p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.form-contacto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.form-contacto input,
+.form-contacto textarea {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-contacto input:focus,
+.form-contacto textarea:focus {
+  outline: none;
+  border-color: #7b2cbf; /* morado elegante */
+}
+
+.form-contacto button {
+  background-color: #7b2cbf;
+  color: white;
+  font-size: 18px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-contacto button:hover {
+  background-color: #5a189a;
+}
+
+.contacto-mapa h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  text-align: center;
+}
