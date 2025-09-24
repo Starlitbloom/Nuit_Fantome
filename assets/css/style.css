@@ -7,7 +7,7 @@ body {
     padding: 0; /* elimina padding por defecto */
 }
 
-/* Barra superior */
+/* --- Barra superior */
 .top-bar {
     width: 100%;
     background-color: rgb(189, 139, 43); 
@@ -47,10 +47,10 @@ body {
     background-color: rgb(22, 1, 43);
 }
 
-/* Logo */
+/* --- Logo */
 .logo img {
     margin-top: 20px;
-    height: 210px;
+    height: 190px;
     width: auto; /* mantiene proporción original, asi no se deforma */
 }
 
@@ -156,7 +156,7 @@ body {
     background-color: #eee;
 }
 
-/* Carrito */
+/* --- Carrito */
 .carrito {
     position: relative;
     display: inline-block;
@@ -169,7 +169,7 @@ body {
     font-size: 30px;
 }
 
-/* Contador */
+/* Contador del carrito*/
 .carrito .contador {
     position: absolute;
     top: -2px;
@@ -189,14 +189,11 @@ body {
     right: 0;
     top: 120%;
     background: #fff;
-    width: 300px;
+    width: 320px;
     box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
     border-radius: 12px;
-    padding: 15px;
+    padding: 25px;
     z-index: 1002;
-}
-.carrito:hover .carrito-dropdown {
-    display: block; /* se muestra al pasar el mouse */
 }
 .carrito-dropdown h4 {
     margin: 0 0 10px;
@@ -206,32 +203,51 @@ body {
 }
 .carrito-item {
     display: flex;
-    align-items: center;
+    gap: 10px;
     margin-bottom: 12px;
+    align-items: flex-start;
 }
+
 .carrito-item img {
     width: 50px;
     height: 50px;
     border-radius: 8px;
-    margin-right: 10px;
 }
-.carrito-info {
+
+.carrito-detalle {
+    display: flex;
+    flex-direction: column;
     flex: 1;
 }
+
+.carrito-info {
+    display: flex;
+    justify-content: space-between; /* nombre izquierda, precio derecha */
+    align-items: center;
+    font-weight: bold;
+}
+
 .carrito-info .nombre {
     font-size: 14px;
-    margin: 0;
 }
+
 .carrito-info .precio {
-    font-size: 13px;
+    font-size: 14px;
     color: #666;
-    margin: 5px 0;
 }
+
+.carrito-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
 .cantidad {
     display: flex;
-    align-items: center;
     gap: 5px;
 }
+
 .cantidad button {
     border: none;
     background: #eee;
@@ -239,14 +255,16 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .fa-trash {
     color: #888;
     cursor: pointer;
-    margin-left: 10px;
 }
+
 .fa-trash:hover {
     color: red;
 }
+
 .carrito-subtotal {
     border-top: 1px solid #ddd;
     padding-top: 10px;
@@ -269,7 +287,40 @@ body {
     background: #e65b50;
 }
 
-/* Barra de navegación sticky */
+/* Mensaje de envío gratis */
+.envio-gratis {
+    background: #f1f1f1;
+    color: #333;
+    font-size: 13px;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Mensaje de agregado */
+.mensaje-agregado {
+    background: #e6ffe9;
+    color: #2d8a45;
+    font-size: 13px;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    display: none; /* oculto por defecto */
+    animation: fadeInOut 2.5s ease-in-out forwards;
+}
+
+/* Animación de mostrar/ocultar */
+@keyframes fadeInOut {
+    0% {opacity: 0;}
+    10% {opacity: 1;}
+    90% {opacity: 1;}
+    100% {opacity: 0;}
+}
+
+/* --- Barra de navegación sticky */
 .barra-tareas {
     background-color: #f7effc;
     color: #ffffff;

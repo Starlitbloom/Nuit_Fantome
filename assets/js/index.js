@@ -51,12 +51,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const contador = document.getElementById("contador");
     const carritoItems = document.getElementById("carritoItems");
     const subtotalEl = document.getElementById("subtotal");
+    const mensajeAgregado = document.getElementById("mensajeAgregado");
+    const faltanteEnvio = document.getElementById("faltanteEnvio");
+    const envioGratis = document.getElementById("envioGratis");
 
-    let productos = []; // Muestra la lista de productos en el carrito
+    const MIN_ENVIO_GRATIS = 24990; // Umbral para envío gratis
+    let productos = []; // Lista de productos en el carrito
 
+    // ------------------------------------
     // Función para agregar un producto
+    // ------------------------------------
     function agregarProducto(producto) {
-        // Revisar si ya está
         const existe = productos.find(p => p.id === producto.id);
         if (existe) {
             existe.cantidad++;
@@ -64,47 +69,63 @@ document.addEventListener("DOMContentLoaded", function() {
             productos.push({...producto, cantidad: 1});
         }
         actualizarCarrito();
-        mostrarDropdown(); // Muestra el dropdown al agregar
+        mostrarDropdown();
+        mostrarMensajeAgregado();
     }
 
+    // ------------------------------------
     // Actualiza la UI del carrito
+    // ------------------------------------
     function actualizarCarrito() {
         contador.textContent = productos.reduce((acc, p) => acc + p.cantidad, 0);
 
-        carritoItems.innerHTML = "";
+        carritoItems.innerHTML = ""; // limpiar antes de agregar
         let subtotal = 0;
 
         productos.forEach(p => {
             subtotal += p.precio * p.cantidad;
-            carritoItems.innerHTML += `
-                <div class="carrito-item">
-                    <img src="${p.img}" alt="${p.nombre}">
+
+            const item = document.createElement("div");
+            item.classList.add("carrito-item");
+
+            item.innerHTML = `
+                <img src="${p.img}" alt="${p.nombre}">
+                <div class="carrito-detalle">
                     <div class="carrito-info">
-                        <p class="nombre">${p.nombre}</p>
-                        <p class="precio">$${p.precio}</p>
+                        <span class="nombre">${p.nombre}</span>
+                        <span class="precio">$${p.precio}</span>
+                    </div>
+                    <div class="carrito-actions">
                         <div class="cantidad">
                             <button class="menos">-</button>
                             <span>${p.cantidad}</span>
                             <button class="mas">+</button>
                         </div>
+                        <i class="fas fa-trash"></i>
                     </div>
-                    <i class="fas fa-trash"></i>
                 </div>
             `;
+            carritoItems.appendChild(item);
         });
 
         subtotalEl.textContent = `$${subtotal}`;
         agregarEventosItems();
+        actualizarEnvioGratis(subtotal);
     }
 
-    // Agrega eventos a los botones +, -, borrar
+    // ------------------------------------
+    // Eventos de botones +, -, borrar
+    // ------------------------------------
     function agregarEventosItems() {
         const botonesMas = carritoItems.querySelectorAll(".mas");
         const botonesMenos = carritoItems.querySelectorAll(".menos");
         const botonesTrash = carritoItems.querySelectorAll(".fa-trash");
 
         botonesMas.forEach((btn, i) => {
-            btn.addEventListener("click", () => { productos[i].cantidad++; actualizarCarrito(); });
+            btn.addEventListener("click", () => { 
+                productos[i].cantidad++; 
+                actualizarCarrito(); 
+            });
         });
         botonesMenos.forEach((btn, i) => {
             btn.addEventListener("click", () => { 
@@ -114,26 +135,57 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
         botonesTrash.forEach((btn, i) => {
-            btn.addEventListener("click", () => { productos.splice(i,1); actualizarCarrito(); });
+            btn.addEventListener("click", () => { 
+                productos.splice(i,1); 
+                actualizarCarrito(); 
+            });
         });
     }
 
-    // Mostrar/ocultar dropdown al hacer click en carrito
+    // ------------------------------------
+    // Mostrar/ocultar dropdown
+    // ------------------------------------
     carrito.addEventListener("click", function(e) {
         if(e.target.closest(".carrito-dropdown")) return; // no cerrar si se clickea dentro
         dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
     });
 
-    // Cerrar si se hace click fuera
     window.addEventListener("click", function(e) {
         if(!carrito.contains(e.target)) dropdown.style.display = "none";
     });
 
-    // Función para mostrar dropdown
     function mostrarDropdown() {
         dropdown.style.display = "block";
     }
 
-    // Ejemplo: agregar producto al carrito (puedes usar botones de tu listado de productos)
+    // ------------------------------------
+    // Mensaje de producto agregado
+    // ------------------------------------
+    function mostrarMensajeAgregado() {
+        mensajeAgregado.style.display = "block";
+        setTimeout(() => {
+            mensajeAgregado.style.display = "none";
+        }, 2500);
+    }
+
+    // ------------------------------------
+    // Actualiza aviso de envío gratis
+    // ------------------------------------
+    function actualizarEnvioGratis(subtotal) {
+        if (subtotal >= MIN_ENVIO_GRATIS) {
+            envioGratis.textContent = "🎉 ¡Ya tienes envío gratis!";
+            envioGratis.style.background = "#e6ffe9";
+            envioGratis.style.color = "#2d8a45";
+        } else {
+            const faltante = MIN_ENVIO_GRATIS - subtotal;
+            faltanteEnvio.textContent = `$${faltante}`;
+            envioGratis.style.background = "#f9f3e7";
+            envioGratis.style.color = "#b98b2b";
+        }
+    }
+
+    // ------------------------------------
+    // Ejemplo: agregar un producto para probar
+    // ------------------------------------
     // agregarProducto({id:1, nombre:"Cuaderno Fantôme", precio:5000, img:"assets/img/producto1.jpg"});
 });
