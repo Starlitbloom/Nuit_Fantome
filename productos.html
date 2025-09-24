@@ -30,7 +30,7 @@
   <script>
   // === Catálogo (puedes editar/agregar) ===
   const productos = [
-    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio NF", precio:12990 },
+    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif" },
     { id:"acu01", categoria:"Acuarelas", nombre:"Set Acuarelas 24 Colores", precio:16990 },
     { id:"pin01", categoria:"Pinturas personalizadas", nombre:"Pintura personalizada A5", precio:14990 },
     { id:"cua01", categoria:"Cuadernos & Libretas", nombre:"Cuaderno A5 “Luna Mística”", precio:4990 },
@@ -66,18 +66,24 @@
     alert('Producto añadido al carrito');
   }
 
-  // === Render cards ===
  function renderCard(p){
   const card = document.createElement('article');
   card.className = 'card';
+
+  const media = p.img
+    ? `<a href="producto.html?id=${p.id}"><img src="${p.img}" alt="${p.nombre}" class="ph"></a>`
+    : `<a href="producto.html?id=${p.id}"><div class="ph"></div></a>`;
+
   card.innerHTML = `
-    <div class="ph"></div> <!-- ahora el tamaño se controla en estilos.css -->
-    <div class="title" style="margin-top:6px">${p.nombre}</div>
+    ${media}
+    <a class="title" href="producto.html?id=${p.id}" style="display:block;margin-top:6px">${p.nombre}</a>
     <div class="price">${toCLP(p.precio)}</div>
     <button class="btn" onclick="addToCart('${p.id}',1)">Añadir</button>
   `;
   return card;
 }
+
+
 
 
   function renderProductosGrid(){
