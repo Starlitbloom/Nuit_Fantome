@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalle de producto — Nuit Fantôme</title>
+  <link rel="stylesheet" href="assets/css/estilos.css">
+  <style>
+    .breadcrumb{font-size:.9rem;margin:16px 0;color:#666}
+    .breadcrumb a{color:#0366d6;text-decoration:none}
+    .product-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}
+    .product-media{border:1px solid #e5e5e5;border-radius:12px;padding:12px}
+    .product-media .main{width:100%;height:360px;object-fit:cover;border-radius:10px;background:#2f2f2f}
+    .thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .thumbs img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid #ddd;cursor:pointer}
+    .product-info h1{margin:0 0 6px}
+    .product-price{color:#9c27b0;font-weight:700;font-size:1.2rem;margin:6px 0 14px}
+    .qty{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .qty input{width:80px;padding:8px;border:1px solid #ccc;border-radius:8px;text-align:center}
+    .related{margin-top:28px}
+    .related h3{margin-bottom:12px}
+    .muted{color:#777}
+    @media (max-width:900px){.product-layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="productos.html">Productos</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <a href="carrito.html">Cart (<span id="cart-count">0</span>)</a>
+  </header>
+
+  <main class="container">
+    <div id="bc" class="breadcrumb"></div>
+
+    <section id="detalle" class="product-layout"></section>
+
+    <section class="related">
+      <h3>Productos relacionados</h3>
+      <div id="relacionados" class="cards"></div>
+    </section>
+  </main>
+
+  <script>
+  /* === Catálogo (mismo id y rutas que en productos.html) === */
+  const productos = [
+    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón frontal. Ideal para notas, lápices y clips." },
+    { id:"acu01", categoria:"Acuarelas", nombre:"Set Acuarelas 24 Colores", precio:16990, img:"", desc:"Alta pigmentación con estuche metálico." },
+    { id:"pin01", categoria:"Pinturas personalizadas", nombre:"Pintura personalizada A5", precio:14990, img:"", desc:"Ilustración a pedido (3–5 días)." },
+    { id:"cua01", categoria:"Cuadernos & Libretas", nombre:"Cuaderno A5 “Luna Mística”", precio:4990, img:"", desc:"80 hojas, papel marfil 90g, tapa dura." },
+    { id:"pap01", categoria:"Papel Bond", nombre:"Resma Carta 500h", precio:6990, img:"", desc:"Blancura 92, 75 g/m²." },
+    { id:"lap01", categoria:"Lapiceros", nombre:"Pluma estilográfica Nuit (F)", precio:9990, img:"", desc:"Cartucho universal; cuerpo negro." },
+    { id:"mar01", categoria:"Marcadores", nombre:"Set 6 marcadores pastel", precio:7990, img:"", desc:"Punta biselada; tinta permanente." },
+    { id:"car01", categoria:"Carpetas/Archivadores", nombre:"Archivador lomo ancho A4", precio:3990, img:"", desc:"120 hojas aprox., color grafito." },
+    { id:"not01", categoria:"Notas adhesivas", nombre:"Notas adhesivas lunares", precio:1990, img:"", desc:"3 pad, 75x75mm." },
+    { id:"tin01", categoria:"Tintas", nombre:"Tinta violeta tenue 30ml", precio:5890, img:"", desc:"A base de agua." }
+  ];
+
+  /* === Utils + carrito === */
+  const $ = s => document.querySelector(s);
+  const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
+  const CART_KEY = 'nf_cart';
+  const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || [] } catch { return [] } };
+  const saveCart = c => { localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
+  const updateCartCount = () => { const el = $('#cart-count'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); };
+  function addToCart(id, qty=1){ const c=loadCart(); const it=c.find(i=>i.id===id); if(it) it.qty+=qty; else c.push({id,qty}); saveCart(c); alert('Producto añadido al carrito'); }
+
+  /* === Detalle === */
+  const getParam = k => new URLSearchParams(location.search).get(k);
+
+  function renderDetalle(){
+    const id = getParam('id');
+    const p = productos.find(x=>x.id===id) || productos[0];
+
+    // Migas
+    $('#bc').innerHTML = `<a href="index.html">Home</a> › <a href="productos.html">${p.categoria || 'Categoría'}</a> › <span class="muted">${p.nombre}</span>`;
+
+    // Media izquierda
+    const media = `
+      <div class="product-media">
+        ${p.img ? `<img class="main" src="${p.img}" alt="${p.nombre}">` : `<div class="main"></div>`}
+        <div class="thumbs">
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
+        </div>
+      </div>
+    `;
+
+    // Info derecha
+    const info = `
+      <div class="product-info">
+        <h1>${p.nombre}</h1>
+        <div class="product-price">${toCLP(p.precio)}</div>
+        <p class="muted">${p.desc || 'Descripción del producto.'}</p>
+
+        <div class="qty">
+          <label for="qty">Cantidad</label>
+          <input id="qty" type="number" min="1" value="1">
+        </div>
+
+        <button class="btn" onclick="addToCart('${p.id}', parseInt(document.getElementById('qty').value)||1)">
+          Añadir al carrito
+        </button>
+      </div>
+    `;
+
+    $('#detalle').innerHTML = media + info;
+
+    // Relacionados
+    const relWrap = $('#relacionados'); relWrap.innerHTML='';
+    productos.filter(x=>x.id!==p.id).slice(0,4).forEach(r=>{
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = `producto.html?id=${r.id}`;
+      a.innerHTML = `
+        ${r.img ? `<img src="${r.img}" alt="${r.nombre}" class="ph">` : `<div class="ph"></div>`}
+        <div class="title" style="margin-top:6px">${r.nombre}</div>
+        <div class="price">${toCLP(r.precio)}</div>
+      `;
+      relWrap.appendChild(a);
+    });
+  }
+
+  updateCartCount();
+  renderDetalle();
+  </script>
+</body>
+</html>

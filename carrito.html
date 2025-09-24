@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrito — Nuit Fantôme</title>
+  <link rel="stylesheet" href="assets/css/estilos.css">
+  <style>
+    .cart{width: min(900px, 95%); margin: 20px auto;}
+    .row{display:grid; grid-template-columns: 1fr 110px 120px 90px; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid #eee;}
+    .row h4{margin:0}
+    .qty input{width:80px; padding:6px; text-align:center; border:1px solid #ccc; border-radius:8px;}
+    .tot{display:flex; justify-content:flex-end; gap:20px; margin-top:16px; align-items:center;}
+    .empty{padding:20px; text-align:center; color:#777}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="productos.html">Productos</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <a href="carrito.html">Cart (<span id="cart-count">0</span>)</a>
+  </header>
+
+  <main class="cart">
+    <h2>Tu carrito</h2>
+    <div id="cart-list"></div>
+
+    <div class="tot">
+      <button class="btn" id="clear">Vaciar</button>
+      <div><strong>Total: <span id="grand">$0</span></strong></div>
+    </div>
+  </main>
+
+  <script>
+  // == catálogo (mismo id/precio que en productos.html; añade img cuando quieras) ==
+  const productos = [
+    { id:"org01", nombre:"Organizador de escritorio blanco", precio:12990 },
+    { id:"acu01", nombre:"Set Acuarelas 24 Colores", precio:16990 },
+    { id:"pin01", nombre:"Pintura personalizada A5", precio:14990 },
+    { id:"cua01", nombre:"Cuaderno A5 “Luna Mística”", precio:4990 },
+    { id:"pap01", nombre:"Resma Carta 500h", precio:6990 },
+    { id:"lap01", nombre:"Pluma estilográfica Nuit (F)", precio:9990 },
+    { id:"mar01", nombre:"Set 6 marcadores pastel", precio:7990 },
+    { id:"car01", nombre:"Archivador lomo ancho A4", precio:3990 },
+    { id:"not01", nombre:"Notas adhesivas lunares", precio:1990 },
+    { id:"tin01", nombre:"Tinta violeta tenue 30ml", precio:5890 }
+  ];
+
+  // == helpers / carrito ==
+  const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
+  const CART_KEY='nf_cart';
+  const loadCart=()=>{ try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return[]} };
+  const saveCart=c=>{ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
+  const updateCartCount=()=>{ const el=document.getElementById('cart-count'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); };
+
+  function setQty(id, qty){
+    qty = Math.max(1, qty|0);
+    const c=loadCart(); const it=c.find(i=>i.id===id); if(!it) return;
+    it.qty = qty; saveCart(c); render();
+  }
+  function removeItem(id){
+    let c=loadCart(); c=c.filter(i=>i.id!==id); saveCart(c); render();
+  }
+  function clearCart(){ saveCart([]); render(); }
+
+  function render(){
+    const list=document.getElementById('cart-list'); list.innerHTML='';
+    const cart = loadCart();
+    if(cart.length===0){ list.innerHTML = `<div class="empty">Tu carrito está vacío.</div>`; document.getElementById('grand').textContent=toCLP(0); return; }
+
+    let total=0;
+    // encabezado
+    const head=document.createElement('div');
+    head.className='row';
+    head.innerHTML=`<strong>Producto</strong><strong>Cantidad</strong><strong>Precio</strong><strong>Subtotal</strong>`;
+    list.appendChild(head);
+
+    cart.forEach(it=>{
+      const p = productos.find(x=>x.id===it.id); if(!p) return;
+      const sub = p.precio * it.qty; total += sub;
+
+      const row=document.createElement('div');
+      row.className='row';
+      row.innerHTML = `
+        <div>
+          <h4>${p.nombre}</h4>
+          <button class="btn" style="margin-top:6px" onclick="removeItem('${it.id}')">Eliminar</button>
+        </div>
+        <div class="qty"><input type="number" min="1" value="${it.qty}" onchange="setQty('${it.id}', this.value)"></div>
+        <div>${toCLP(p.precio)}</div>
+        <div>${toCLP(sub)}</div>
+      `;
+      list.appendChild(row);
+    });
+
+    document.getElementById('grand').textContent = toCLP(total);
+  }
+
+  document.getElementById('clear').onclick = clearCart;
+  updateCartCount();
+  render();
+  </script>
+</body>
+</html>
