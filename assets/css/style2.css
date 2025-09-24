@@ -1,66 +1,419 @@
-.contacto {
-  padding: 60px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Estilo de Contacto */
+body {
+    background-color: rgb(22, 1, 43); /* morado oscuro */
+    
+    color: white; /* texto en blanco para que contraste */
+    font-family: 'Merriweather', sans-serif;
+    margin: 0; /* elimina margen por defecto */
+    padding: 0; /* elimina padding por defecto */
 }
 
-.contacto-contenido {
+/* Barra superior */
+.top-bar {
+    width: 100%;
+    background-color: rgb(189, 139, 43); 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    z-index: 1002; /* encima de todo */
+}
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+}
+.top-bar a:hover {
+    text-decoration: underline;
+}
+.redes-sociales a {
+    margin-left: 10px;
+    font-size: 16px;
+    
+}
+
+/* Contenedor superior */
+.header-superior {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between; /* logo a la izquierda, usuario/carrito a la derecha */
+    align-items: center;
+    padding: 10px 80px;
+    background-color: rgb(22, 1, 43);
+}
+
+/* Logo */
+.logo img {
+    margin-top: 20px;
+    height: 210px;
+    width: auto; /* mantiene proporción original, asi no se deforma */
+}
+
+/* Barra de búsqueda centrada */
+.busqueda form {
+    display: flex;
+    align-items: center;
+}
+.busqueda input {
+    width: 300px;
+    font-size: 16px; /* Cambia este valor al tamaño que quieras */
+    font-family: 'Merriweather', sans-serif;
+    padding: 12px 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.busqueda button {
+    background-color: transparent;
+    border: none;
+    margin-left: -45px;       /* icono dentro de la barra */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.busqueda button i {
+    font-size: 20px;          /* tamaño de la lupa */
+    color: rgb(189, 139, 43);
+}
+
+/* Usuario / carrito a la derecha */
+.usuario-carrito {
+    display: flex;
+    align-items: center;
+}
+.usuario-carrito a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+}
+.usuario-carrito img {
+    height: 30px;
+    margin-left: 10px;
+}
+
+/* Botón ACCEDER */
+.btn-acceder {
+    background-color: rgb(189, 139, 43);
+    color: white;
+    font-family: 'Merriweather', sans-serif;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* animación suave */
+}
+
+/* Hover: más oscuro */
+.btn-acceder:hover {
+    background-color: rgb(131, 95, 29);
+}
+
+/* Contenedor del dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Contenido del dropdown */
+.dropdown-content {
+    display: none;              /* oculto por defecto */
+    position: absolute;
+    top: 110%; /* un poquito más abajo que el botón */
+    left: 50%; /* centra horizontalmente */
+    transform: translateX(-50%); /* ajusta al centro */
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 1001;
+    text-align: center; /* centra los textos dentro */
+}
+
+/* Links dentro del dropdown */
+.dropdown-content a {
+    display: block;
+    width: 100%;              /* ocupar todo el ancho */
+    padding: 12px 0 !important;  /* quitamos margen lateral */
+    margin: 0 !important;
+    text-align: center !important; /* 🔹 fuerza al centro */
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;   /* asegura que no se desordene */
+}
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+.dropdown-content a:hover {
+    background-color: #eee;
+}
+
+/* Carrito */
+.carrito {
+    position: relative;
+    display: inline-block;
+    margin-left: 25px;
+    cursor: pointer;
+    font-size: 22px;
+    color: rgb(189, 139, 43);
+}
+.carrito i {
+    font-size: 30px;
+}
+
+/* Contador */
+.carrito .contador {
+    position: absolute;
+    top: -2px;
+    right: -10px;
+    background: rgb(189, 139, 43);
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Dropdown del carrito */
+.carrito-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background: #fff;
+    width: 300px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 15px;
+    z-index: 1002;
+}
+.carrito:hover .carrito-dropdown {
+    display: block; /* se muestra al pasar el mouse */
+}
+.carrito-dropdown h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}
+.carrito-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.carrito-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+.carrito-info {
+    flex: 1;
+}
+.carrito-info .nombre {
+    font-size: 14px;
+    margin: 0;
+}
+.carrito-info .precio {
+    font-size: 13px;
+    color: #666;
+    margin: 5px 0;
+}
+.cantidad {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.cantidad button {
+    border: none;
+    background: #eee;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.fa-trash {
+    color: #888;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.fa-trash:hover {
+    color: red;
+}
+.carrito-subtotal {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    font-weight: bold;
+    text-align: right;
+}
+.btn-finalizar {
+    width: 100%;
+    background: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.btn-finalizar:hover {
+    background: #e65b50;
+}
+
+/* Barra de navegación sticky */
+.barra-tareas {
+    background-color: #f7effc;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.barra-tareas ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  background-color: #f4ecfa; /* color base */
+  margin: -15px;
+  padding: 14px;
+}
+.barra-tareas ul li {
+  position: relative;
+}
+.barra-tareas ul li a {
+  display: block;
+  padding: 14px 30px;
+  text-decoration: none;
+  color: #636263;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+/* Separador entre los ítems */
+.barra-tareas ul li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background-color: #cacaca; /* línea tenue */
+}
+/* Página activa */
+.barra-tareas ul li a.active {
+  color: rgb(44, 44, 44); /* más oscurito */
+  font-weight: 600;
+}
+
+/* Hover */
+.barra-tareas ul li a:hover {
+  color: #2c2c2c; /* más oscurito en hover */
+}
+
+/* ---- Sección de portada contacto */
+.contact-hero {
+  position: relative;
+  width: 100%;
+  height: 200px; /* más pequeña */
+  overflow: hidden;
+}
+
+.contact-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* hace que la imagen se recorte bien */
+  display: block;
+}
+
+.contact-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
-  margin-bottom: 40px;
+}
+.contact-text h1,
+.contact-text p {
+  display: inline-block;
+  background-color: goldenrod; /* fondo dorado */
+  color: white; /* letra blanca */
+  padding: 8px 15px;
+  border-radius: 5px;
+  margin: 5px 0;
 }
 
-.contacto h2 {
-  font-size: 32px;
-  margin-bottom: 10px;
+/* ---- Sección de contacto */
+.contacto {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.contacto h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ff69b4;
 }
 
 .contacto p {
-  font-size: 18px;
-  color: #555;
+  text-align: center;
   margin-bottom: 30px;
+  color: #555;
 }
 
+/* Formulario */
 .form-contacto {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 15px;
+}
+
+.form-contacto label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #444;
 }
 
 .form-contacto input,
 .form-contacto textarea {
-  width: 100%;
-  max-width: 500px;
-  padding: 12px 15px;
-  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  font-size: 14px;
+  transition: border 0.3s;
 }
 
 .form-contacto input:focus,
 .form-contacto textarea:focus {
+  border-color: #ff69b4;
   outline: none;
-  border-color: #7b2cbf; /* morado elegante */
 }
 
+/* Botón */
 .form-contacto button {
-  background-color: #7b2cbf;
-  color: white;
-  font-size: 18px;
-  padding: 12px 25px;
+  padding: 12px;
+  background: #ff69b4;
+  color: #fff;
   border: none;
   border-radius: 8px;
+  font-size: 16px;
   cursor: pointer;
   transition: background 0.3s;
 }
 
 .form-contacto button:hover {
-  background-color: #5a189a;
+  background: #e0559e;
 }
 
-.contacto-mapa h3 {
-  font-size: 22px;
-  margin-bottom: 15px;
-  text-align: center;
-}
