@@ -9,119 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const btnAcceder = document.querySelector(".btn-acceder");
-        const dropdown = document.querySelector(".dropdown-content");
 
-        btnAcceder.addEventListener("click", function () {
-            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-        });
 
-        // Cierra el menú si hago click fuera
-        window.addEventListener("click", function (e) {
-            if (!e.target.matches(".btn-acceder")) {
-                if (dropdown.style.display === "block") {
-                    dropdown.style.display = "none";
-                }
-            }
-        });
-    });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const carrito = document.getElementById("carrito");
-    const dropdown = document.getElementById("carritoDropdown");
-    const contador = document.getElementById("contador");
-    const carritoItems = document.getElementById("carritoItems");
-    const subtotalEl = document.getElementById("subtotal");
-
-    let productos = []; // lista de productos en el carrito
-
-    // Función para agregar un producto
-    function agregarProducto(producto) {
-        // Revisar si ya está
-        const existe = productos.find(p => p.id === producto.id);
-        if (existe) {
-            existe.cantidad++;
-        } else {
-            productos.push({...producto, cantidad: 1});
-        }
-        actualizarCarrito();
-        mostrarDropdown(); // muestra el dropdown al agregar
-    }
-
-    // Actualiza la UI del carrito
-    function actualizarCarrito() {
-        contador.textContent = productos.reduce((acc, p) => acc + p.cantidad, 0);
-
-        carritoItems.innerHTML = "";
-        let subtotal = 0;
-
-        productos.forEach(p => {
-            subtotal += p.precio * p.cantidad;
-            carritoItems.innerHTML += `
-                <div class="carrito-item">
-                    <img src="${p.img}" alt="${p.nombre}">
-                    <div class="carrito-info">
-                        <p class="nombre">${p.nombre}</p>
-                        <p class="precio">$${p.precio}</p>
-                        <div class="cantidad">
-                            <button class="menos">-</button>
-                            <span>${p.cantidad}</span>
-                            <button class="mas">+</button>
-                        </div>
-                    </div>
-                    <i class="fas fa-trash"></i>
-                </div>
-            `;
-        });
-
-        subtotalEl.textContent = `$${subtotal}`;
-        agregarEventosItems();
-    }
-
-    // Agrega eventos a los botones +, -, borrar
-    function agregarEventosItems() {
-        const botonesMas = carritoItems.querySelectorAll(".mas");
-        const botonesMenos = carritoItems.querySelectorAll(".menos");
-        const botonesTrash = carritoItems.querySelectorAll(".fa-trash");
-
-        botonesMas.forEach((btn, i) => {
-            btn.addEventListener("click", () => { productos[i].cantidad++; actualizarCarrito(); });
-        });
-        botonesMenos.forEach((btn, i) => {
-            btn.addEventListener("click", () => { 
-                if(productos[i].cantidad > 1) productos[i].cantidad--; 
-                else productos.splice(i,1);
-                actualizarCarrito(); 
-            });
-        });
-        botonesTrash.forEach((btn, i) => {
-            btn.addEventListener("click", () => { productos.splice(i,1); actualizarCarrito(); });
-        });
-    }
-
-    // Mostrar/ocultar dropdown al hacer click en carrito
-    carrito.addEventListener("click", function(e) {
-        if(e.target.closest(".carrito-dropdown")) return; // no cerrar si se clickea dentro
-        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-    });
-
-    // Cerrar si se hace click fuera
-    window.addEventListener("click", function(e) {
-        if(!carrito.contains(e.target)) dropdown.style.display = "none";
-    });
-
-    // Función para mostrar dropdown
-    function mostrarDropdown() {
-        dropdown.style.display = "block";
-    }
-
-    // Ejemplo: agregar producto al carrito (puedes usar botones de tu listado de productos)
-    // agregarProducto({id:1, nombre:"Cuaderno Fantôme", precio:5000, img:"assets/img/producto1.jpg"});
-});
-</script>
 
 <body>
     <!-- Barra superior -->
@@ -277,6 +166,6 @@ document.addEventListener("DOMContentLoaded", function() {
         <p>&copy; 2025 Nuit Fantome. Todos los derechos reservados.</p>
         <p><a href="contacto.html">Contacto</a> | <a href="nosotros.html">Nosotros</a></p>
     </footer>
-    <script src="./assets/js/slider.js"></script>
+    <script src="./assets/js/index.js"></script>
 </body>
 </html>
