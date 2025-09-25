@@ -171,22 +171,88 @@
 
         <!-- Sección Newsletter / Únete a nuestro club -->
         <section class="newsletter">
+            <img src="assets/img/club.png" alt="Fondo newsletter" class="newsletter-img">
             <div class="newsletter-contenido">
                 <h2>¡Únete a nuestro club!</h2>
                 <p>Se parte de nuestra comunidad para que estemos en contacto y podamos compartir la mejor información, tips, sorpresas, descuentos, lanzamientos y más!</p>
+            
                 <form class="newsletter-form">
-                    <input type="email" placeholder="Ingresa tu email" required>
+                    <div class="input-container">
+                        <i class="bi bi-envelope-at-fill"></i>
+                        <input type="email" placeholder="Ingresa tu email" required>
+                    </div>
                     <button type="submit">Suscribirse</button>
                 </form>
             </div>
         </section>
 
+        <!-- Sección Tipos de Envío -->
+        <section class="envios">
+            <h2>Conoce nuestros tipos de envío</h2>
+            <p>Estos son los envíos que ofrecemos en nuestra tienda para que tus compras lleguen rápido y seguro.</p>
+
+            <div class="envios-cards">
+                <div class="envio-card retiro" style="background-image: url('assets/img/fondo_envio1.png');">
+                    <h3>Retiro en tienda</h3>
+                    <p>Retira tus productos directamente en nuestra tienda física.</p>
+                </div>
+
+                <div class="envio-card metropolitana" style="background-image: url('assets/img/fondo_envio2.png');">
+                    <h3>Región Metropolitana</h3>
+                    <p>Envío express y estándar dentro de Santiago.</p>
+                </div>
+
+                <div class="envio-card otras" style="background-image: url('assets/img/fondo_envio3.png');">
+                    <h3>Otras regiones</h3>
+                    <p>Envío estándar a todo Chile (Chilexpress y Correos de Chile).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección final con imagen, logo, texto y redes sociales -->
+        <section class="final-final">
+            <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
+
+            <div class="final-contenido">
+                <!-- Logo a la izquierda -->
+                <div class="final-logo">
+                    <img src="assets/img/logo.png" alt="Logo Nuit Fantome">
+                </div>
+
+                <!-- Texto motivacional al centro -->
+                <div class="final-texto">
+                    <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
+                    Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
+                </div>
+
+                <!-- Redes sociales a la derecha -->
+                <div class="final-redes">
+                    <div class="siguenos">Síguenos</div>
+                    <div class="iconos-redes">
+                        <a href="#"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+                        <a href="#"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+                        <a href="#"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Nuit Fantome. Todos los derechos reservados.</p>
-        <p><a href="contacto.html">Contacto</a> | <a href="nosotros.html">Nosotros</a></p>
+    <footer class="footer-final">
+        <div class="footer-contenido">
+            <!-- Texto -->
+         <div class="footer-texto">
+                © 2025 Nuit Fantome. Todos los derechos reservados.
+            </div>
+        
+            <!-- Métodos de pago -->
+            <div class="footer-pagos">
+                <img src="assets/img/webpay.png" alt="Webpay">
+                <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
+                <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+            </div>
+        </div>
     </footer>
     <script src="./assets/js/index.js"></script>
 </body>

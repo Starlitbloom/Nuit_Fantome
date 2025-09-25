@@ -7,6 +7,26 @@ body {
     padding: 0; /* elimina padding por defecto */
 }
 
+/* Evitar scroll horizontal */
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Aplicar box-sizing a todo para evitar desbordes por padding/margin */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Ajuste general de contenedores flexibles */
+.container {
+    max-width: 1200px; /* evita que contenedores grandes generen scroll */
+    margin: 0 auto; /* centra horizontalmente */
+    padding: 0 20px; /* espacio interno mínimo */
+}
+
 /* --- Barra superior */
 .top-bar {
     width: 100%;
@@ -43,7 +63,7 @@ body {
     display: flex;
     justify-content: space-between; /* logo a la izquierda, usuario/carrito a la derecha */
     align-items: center;
-    padding: 10px 80px;
+    padding: 10px 40px;
     background-color: rgb(22, 1, 43);
 }
 
@@ -512,29 +532,29 @@ body {
 
 .contenido-fondo {
   position: relative;
-  max-width: 800px;
+  max-width: 900px;
   padding: 20px;
-  
+
   border-radius: 10px;
   z-index: 2; /* para que quede encima de la imagen */
   color: rgb(120, 36, 204); /* aquí cambias el color del texto */
 }
 
 .contenido-fondo h2 {
-  font-size: 36px;
+  font-size: 40px;
   margin-bottom: 15px;
   color: rgb(94, 25, 163); /* título más oscuro */
 }
 
 .contenido-fondo p {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   margin-bottom: 20px;
 }
 
 .btn-comprar {
   display: inline-block;
-  padding: 12px 25px;
+  padding: 17px 25px;
   background-color: rgb(189, 139, 43);
   color: white;
   text-decoration: none;
@@ -549,7 +569,7 @@ body {
 
 /* --- Sección de productos */
 .productos-recientes {
-    color: #333;
+    color: #ffffff;
     padding: 60px 20px;
     text-align: center;
 }
@@ -622,26 +642,50 @@ body {
 
 /* --- Sección Newsletter --- */
 .newsletter {
-    background-color: #f7f0e7; /* color suave de fondo */
-    padding: 60px 20px;
+    position: relative;
+    width: 100%;
+    height: 400px; /* ajusta según lo que quieras */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
 }
 
+.newsletter-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* cubre toda la sección */
+    z-index: 1;
+}
+
 .newsletter-contenido {
-    max-width: 700px;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
     margin: 0 auto;
+    padding: 20px;
+    color: rgb(94, 25, 163); /* morado */
+    text-shadow: 
+        -1px -1px 0 white,
+         1px -1px 0 white,
+        -1px  1px 0 white,
+         1px  1px 0 white; /* borde blanco */
+    transform: translateY(-40px); /* lo sube un poco */
 }
 
 .newsletter h2 {
-    font-size: 36px;
-    color: #3c2f2f; /* título más oscuro */
+    font-size: 50px;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .newsletter p {
-    font-size: 18px;
-    color: #555555;
-    line-height: 1.6;
+    font-size: 22px;
+    line-height: 1.8;
     margin-bottom: 30px;
 }
 
@@ -650,28 +694,271 @@ body {
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    align-items: stretch; /* Alinea input y botón verticalmente */
 }
 
-.newsletter-form input[type="email"] {
-    padding: 12px 15px;
-    font-size: 16px;
-    border-radius: 25px;
-    border: 1px solid #ccc;
-    flex: 1 1 250px; /* ancho flexible */
+.input-container {
+    position: relative; /* Contenedor relativo para que el ícono se posicione dentro */
+    flex: 1 1 250px;
     max-width: 400px;
 }
 
+/* Ícono dentro del input */
+.input-container i {
+    position: absolute;
+    top: 50%;
+    left: 15px; /* distancia desde el borde izquierdo */
+    transform: translateY(-50%);
+    font-size: 22px; /* tamaño del ícono */
+    color: rgb(94, 25, 163); /* morado */
+    pointer-events: none; /* para que no bloquee el input */
+}
+
+/* Ajuste del input para dejar espacio al ícono */
+.input-container input[type="email"] {
+    width: 100%;
+    padding: 0 15px 0 45px; /* eliminamos padding top/bottom */
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    height: 100%; /* ocupa toda la altura del contenedor flex */
+    box-sizing: border-box;
+}
+
 .newsletter-form button {
-    padding: 12px 25px;
+    flex: 0 0 auto; /* no flexea, mantiene su tamaño */
+    padding: 0px 25px;
     background-color: rgb(189, 139, 43);
     color: white;
+    font-size: 16px;
     font-weight: bold;
     border: none;
     border-radius: 25px;
     cursor: pointer;
+    height: 50px; /* fija la altura para que coincida con el input */
     transition: background-color 0.3s;
 }
 
 .newsletter-form button:hover {
     background-color: rgb(131, 95, 29);
 }
+
+/* --- Sección Envios */
+.envios {
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.envios h2 {
+    font-size: 28px;
+    color: rgb(255, 255, 255);
+    margin-bottom: 15px;
+}
+
+.envios p {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+/* Contenedor de las cards */
+.envios-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Cada card de envío */
+.envio-card {
+    position: relative; /* para el texto encima */
+    width: 580px;
+    height: 200px; /* altura de la card */
+    border-radius: 15px;
+    overflow: hidden; /* recorta bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centra el texto verticalmente */
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-size: cover; /* hace que la imagen llene la card */
+    background-position: center;
+}
+
+.envio-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.envio-card h3 {
+    background-color: rgb(255, 255, 255); /* rectángulo blanco semitransparente */
+    font-size: 36px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.envio-card p {
+    font-size: 18px;
+    text-shadow: 
+        -1px -1px 0 white,
+         1px -1px 0 white,
+        -1px  1px 0 white,
+         1px  1px 0 white; /* borde blanco */
+}
+
+/* Retiro en tienda - morado oscuro */
+.envio-card.retiro h3,
+.envio-card.retiro p {
+    color: rgb(75, 0, 130); /* morado oscuro */
+}
+
+/* Región Metropolitana - azul oscuro */
+.envio-card.metropolitana h3,
+.envio-card.metropolitana p {
+    color: rgb(0, 51, 102); /* azul oscuro */
+}
+
+/* Otras regiones - amarillo oscuro */
+.envio-card.otras h3,
+.envio-card.otras p {
+    color: rgb(153, 102, 0); /* amarillo oscuro */
+}
+
+/* --- Sección Final */
+.final-final {
+    position: relative;
+    width: 100%;
+    height: 350px; /* puedes ajustar según la altura que quieras */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.final-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* ajusta qué parte de la imagen se ve */
+    z-index: 1;
+}
+
+.final-contenido {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    align-items: center; /* centra verticalmente */
+    justify-content: space-between; /* logo izquierda, redes derecha */
+    padding: 0 90px; /* elimina cualquier padding extra */
+}
+
+/* Logo */
+.final-logo {
+    display: flex;
+    align-items: center;
+}
+.final-logo img {
+    width: 360px;
+    height: auto;
+    transform: translateY(25px); /* baja el logo 15px */
+}
+
+/* Texto central */
+.final-texto {
+    flex: 0 1 900px; /* limita ancho máximo del texto */
+    color: rgb(255, 255, 255);
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    text-shadow: 1px 1px 4px rgba(36, 0, 59, 0.788);
+}
+
+/* Redes sociales */
+.final-redes {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centra la columna */
+    margin: 0; /* elimina márgenes */
+}
+
+.final-redes .siguenos {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.iconos-redes {
+    display: flex;
+    gap: 15px;
+}
+
+.iconos-redes img {
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s;
+}
+
+.iconos-redes img:hover {
+    transform: scale(1.2);
+}
+
+/* --- Footer */
+.footer-final {
+    background-color: rgb(22, 1, 43); /* morado oscuro */
+    padding: 10px 90px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-left: -650px; /* elimina margen lateral */
+}
+
+.footer-contenido {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; /* texto izquierda, pagos derecha */
+    align-items: center;
+}
+
+.footer-texto {
+    font-size: 16px;
+    flex: 0 0 auto;
+    text-align: left;
+    flex-grow: 1; /* ocupa todo el espacio disponible */
+}
+
+.footer-pagos {
+    display: flex;
+    gap: 20px; /* más espacio entre iconos */
+    flex: 0 0 auto; 
+    flex-shrink: 0; /* no se encojan */
+    margin-left: 1090px;
+}
+
+.footer-pagos img {
+    height: 50px; /* tamaño pequeño */
+    margin-left: 15px;
+    border: 1px solid #ccc; /* borde gris */
+    border-radius: 5px;
+    padding: 3px;
+}
+
