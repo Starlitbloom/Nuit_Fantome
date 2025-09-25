@@ -456,7 +456,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(128, 0, 128, 0.3); /* morado transparente */
+  background-color: rgba(80, 2, 80, 0.3); /* morado transparente */
   opacity: 0;
   display: flex;
   justify-content: center;
@@ -476,42 +476,54 @@ body {
   opacity: 1; /* aparece overlay morado */
 }
 
+.doble-imagenes {
+  display: flex;
+  gap: 0;
+  margin: 0;         /* elimina márgenes arriba y abajo */
+  padding: 0;
+}
+
+/* --- Sección de imagen movimiento */
 .fondo-movimiento {
-  width: 100%;              /* ocupa todo el ancho */
-  height: 300px;            /* ajusta altura si quieres más o menos */
+  position: relative;
+  width: 100%;
+  height: 400px;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin: 0;
+  padding: 0;
   color: white;
-  background: url('/assets/img/fondo_papel.jpg') repeat-y; /* tu imagen de fondo */
-  background-size: cover;
-  animation: moverFondo 20s linear infinite;
-  margin: 0;                /* sin margen */
-  padding: 0;               /* sin padding */
 }
 
-@keyframes moverFondo {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 -400px; /* ajusta según altura */
-  }
+.fondo-img {
+  position: absolute;
+  top: -800px;
+  left: 0;
+  width: 100%;
+  height: 300%; /* más alto que el contenedor para permitir scroll */
+  object-fit: cover;
+  transform: translateY(0);
+  transition: transform 0.1s linear; /* suaviza el movimiento */
+  z-index: 1;
 }
 
 .contenido-fondo {
+  position: relative;
   max-width: 800px;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.4); /* overlay semitransparente */
+  
   border-radius: 10px;
-  z-index: 2;
+  z-index: 2; /* para que quede encima de la imagen */
+  color: rgb(120, 36, 204); /* aquí cambias el color del texto */
 }
 
 .contenido-fondo h2 {
   font-size: 36px;
   margin-bottom: 15px;
+  color: rgb(94, 25, 163); /* título más oscuro */
 }
 
 .contenido-fondo p {
@@ -535,8 +547,8 @@ body {
   background-color: rgb(131, 95, 29);
 }
 
+/* --- Sección de productos */
 .productos-recientes {
-    background-color: white;
     color: #333;
     padding: 60px 20px;
     text-align: center;
@@ -606,4 +618,60 @@ body {
 .producto p {
     font-size: 16px;
     color: #666;
+}
+
+/* --- Sección Newsletter --- */
+.newsletter {
+    background-color: #f7f0e7; /* color suave de fondo */
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.newsletter-contenido {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.newsletter h2 {
+    font-size: 36px;
+    color: #3c2f2f; /* título más oscuro */
+    margin-bottom: 20px;
+}
+
+.newsletter p {
+    font-size: 18px;
+    color: #555555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.newsletter-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.newsletter-form input[type="email"] {
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    flex: 1 1 250px; /* ancho flexible */
+    max-width: 400px;
+}
+
+.newsletter-form button {
+    padding: 12px 25px;
+    background-color: rgb(189, 139, 43);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.newsletter-form button:hover {
+    background-color: rgb(131, 95, 29);
 }

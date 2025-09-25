@@ -189,3 +189,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // ------------------------------------
     // agregarProducto({id:1, nombre:"Cuaderno Fantôme", precio:5000, img:"assets/img/producto1.jpg"});
 });
+
+/* Efecto parallax */
+window.addEventListener("scroll", function() {
+  let scrollPos = window.scrollY;
+  document.querySelector(".fondo-img").style.transform = `translateY(${scrollPos * 0.5}px)`;
+});
