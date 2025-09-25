@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuit Fantome - Papelería</title>
+    <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -22,12 +23,15 @@
             <a href="mailto:contacto@nuitfantome.com"><i class="fas fa-envelope"></i></a>
         </div>
     </div>
+    
     <header>
         <!-- Fila superior: logo, búsqueda, usuario/carrito -->
         <div class="header-superior">
             <!-- Logo a la izquierda -->
             <div class="logo">
-            <img src="./assets/img/logo.png" alt="Logo Nuit Fantome">
+                <a href="index.html">
+                    <img src="./assets/img/logo.png" alt="Logo Nuit Fantome">
+                </a>
             </div>
 
             <!-- Barra de búsqueda en el centro -->
@@ -50,35 +54,15 @@
                     </div>
                 </div>    
                 <!-- Carrito -->
-                <div class="carrito" id="carrito">
-                    <i class="bi bi-bag"></i>
-                    <span class="contador" id="contador">0</span>
-
-                    <!-- Dropdown del carrito -->
-                    <div class="carrito-dropdown" id="carritoDropdown">
-                        <!-- Mensaje de envío gratis -->
-                        <div class="envio-gratis" id="envioGratis">
-                            ¡Te faltan <span id="faltanteEnvio">$20.000</span> para llegar al ENVIO GRATIS!
-                        </div>
-
-                        <!-- Mensaje de confirmación -->
-                        <div class="mensaje-agregado" id="mensajeAgregado">
-                            🎟️ ¡Agregaste un producto a tu carrito!
-                        </div>
-
-                        <h4>Tu carrito</h4>
-                        <div class="carrito-items" id="carritoItems">
-                            <!-- Aquí se van agregando los productos -->
-                        </div>
-                        <div class="carrito-subtotal">
-                            <p>Subtotal: <span id="subtotal">$0</span></p>
-                        </div>
-                        <button class="btn-finalizar">Finalizar compra</button>
+                <a href="carrito.html" style="text-decoration: none;">
+                    <div class="carrito">
+                        <i class="bi bi-bag"></i>
+                        <span class="contador" id="contador">0</span>
                     </div>
-                </div>
+                </a>
+
             </div>
         </div>
-
             <!-- Barra de navegación sticky -->
             <nav class="barra-tareas">
                 <ul>
@@ -152,20 +136,9 @@
 
         <!-- Productos destacados -->
         <section class="productos-recientes">
-            <h2>Productos recientes</h2>
-            <div class="grid-productos">
-                <!-- Repite este bloque 8 veces para 8 productos -->
-                <div class="producto">
-                    <img src="assets/img/producto1.jpg" alt="Producto 1">
-                    <h3>Cuaderno Fantôme</h3>
-                    <p>$3.500</p>
-                </div>
-                <div class="producto">
-                    <img src="assets/img/producto2.jpg" alt="Producto 2">
-                    <h3>Lápiz de colores</h3>
-                    <p>$1.200</p>
-                </div>
-                <!-- ... más productos -->
+            <h2>Productos destacados</h2>
+            <div class="grid-productos" id="productos-container">
+            <!-- Aquí se insertan los productos con JS -->
             </div>
         </section>
 
@@ -229,9 +202,9 @@
                 <div class="final-redes">
                     <div class="siguenos">Síguenos</div>
                     <div class="iconos-redes">
-                        <a href="#"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
-                        <a href="#"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
-                        <a href="#"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+                        <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+                        <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+                        <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
                     </div>
                 </div>
             </div>

@@ -57,7 +57,7 @@ html, body {
     
 }
 
-/* Contenedor superior */
+/* --- Contenedor superior */
 .header-superior {
     margin-top: 25px;
     display: flex;
@@ -67,7 +67,7 @@ html, body {
     background-color: rgb(22, 1, 43);
 }
 
-/* --- Logo */
+/* Logo */
 .logo img {
     margin-top: 20px;
     height: 190px;
@@ -202,152 +202,15 @@ html, body {
     font-weight: bold;
 }
 
-/* Dropdown del carrito */
-.carrito-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 120%;
-    background: #fff;
-    width: 320px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    border-radius: 12px;
-    padding: 25px;
-    z-index: 1002;
-}
-.carrito-dropdown h4 {
-    margin: 0 0 10px;
-    font-size: 16px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 8px;
-}
-.carrito-item {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
-    align-items: flex-start;
-}
-
-.carrito-item img {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-}
-
-.carrito-detalle {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.carrito-info {
-    display: flex;
-    justify-content: space-between; /* nombre izquierda, precio derecha */
-    align-items: center;
-    font-weight: bold;
-}
-
-.carrito-info .nombre {
-    font-size: 14px;
-}
-
-.carrito-info .precio {
-    font-size: 14px;
-    color: #666;
-}
-
-.carrito-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 5px;
-}
-
-.cantidad {
-    display: flex;
-    gap: 5px;
-}
-
-.cantidad button {
-    border: none;
-    background: #eee;
-    padding: 4px 8px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.fa-trash {
-    color: #888;
-    cursor: pointer;
-}
-
-.fa-trash:hover {
-    color: red;
-}
-
-.carrito-subtotal {
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-    font-weight: bold;
-    text-align: right;
-}
-.btn-finalizar {
-    width: 100%;
-    background: #ff6f61;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.btn-finalizar:hover {
-    background: #e65b50;
-}
-
-/* Mensaje de envío gratis */
-.envio-gratis {
-    background: #f1f1f1;
-    color: #333;
-    font-size: 13px;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    text-align: center;
-    font-weight: 500;
-}
-
-/* Mensaje de agregado */
-.mensaje-agregado {
-    background: #e6ffe9;
-    color: #2d8a45;
-    font-size: 13px;
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    text-align: center;
-    display: none; /* oculto por defecto */
-    animation: fadeInOut 2.5s ease-in-out forwards;
-}
-
-/* Animación de mostrar/ocultar */
-@keyframes fadeInOut {
-    0% {opacity: 0;}
-    10% {opacity: 1;}
-    90% {opacity: 1;}
-    100% {opacity: 0;}
-}
-
 /* --- Barra de navegación sticky */
 .barra-tareas {
     background-color: #f7effc;
     color: #ffffff;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
+
 .barra-tareas ul {
   list-style: none;
   display: flex;
@@ -356,9 +219,11 @@ html, body {
   margin: -15px;
   padding: 14px;
 }
+
 .barra-tareas ul li {
   position: relative;
 }
+
 .barra-tareas ul li a {
   display: block;
   padding: 14px 30px;
@@ -389,7 +254,7 @@ html, body {
   color: #2c2c2c; /* más oscurito en hover */
 }
 
-/* Slider */
+/* --- Slider */
 .slider {
   margin-top: -15px;  
   position: relative;
@@ -604,18 +469,24 @@ html, body {
 
 .grid-productos {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    max-width: 1200px;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    gap: 40px;
+    max-width: none;
     margin: 0 auto;
+    padding: 0 20px; /* opcional, para no tocar los bordes */
 }
 
 .producto {
     background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* todas iguales */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
 }
 
 .producto:hover {
@@ -625,19 +496,37 @@ html, body {
 
 .producto img {
     width: 100%;
-    height: auto;
+    height: 250px; /* todas las imágenes del mismo tamaño */
+    object-fit: cover;
     border-radius: 8px;
     margin-bottom: 10px;
 }
 
-.producto h3 {
-    font-size: 18px;
+/* Categoría */
+.producto .categoria {
+    font-size: 14px;
+    color: #777;
     margin: 5px 0;
 }
 
-.producto p {
-    font-size: 16px;
-    color: #666;
+/* Nombre */
+.producto h3 {
+    font-size: 20px;
+    color: rgb(94, 25, 163); /* morado */
+    margin: 5px 0;
+}
+.producto a {
+    text-decoration: none; /* quita subrayado */
+    color: inherit;        /* hereda el color del texto de la card */
+    display: block;        /* opcional: que todo el bloque sea clickeable */
+}
+
+/* Precio */
+.producto .precio {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-top: 8px;
 }
 
 /* --- Sección Newsletter --- */
