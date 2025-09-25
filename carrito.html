@@ -4,14 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Carrito — Nuit Fantôme</title>
+
   <link rel="stylesheet" href="assets/css/estilos.css">
+
   <style>
     .cart{width: min(900px, 95%); margin: 20px auto;}
+    /* columnas: Producto | Cantidad | Precio | Subtotal */
     .row{display:grid; grid-template-columns: 1fr 110px 120px 90px; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid #eee;}
     .row h4{margin:0}
     .qty input{width:80px; padding:6px; text-align:center; border:1px solid #ccc; border-radius:8px;}
     .tot{display:flex; justify-content:flex-end; gap:20px; margin-top:16px; align-items:center;}
     .empty{padding:20px; text-align:center; color:#777}
+
+    /* 👇 NUEVO: miniatura y layout dentro de la 1ª columna */
+    .prod{display:flex; align-items:center; gap:10px;}
+    .thumb{width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid #eee;}
+    .prod a{color:#333; text-decoration:none}
+    .prod a:hover{text-decoration:underline}
+    .muted{color:#777; font-size:.9rem;}
   </style>
 </head>
 <body>
@@ -36,18 +46,90 @@
   </main>
 
   <script>
-  // == catálogo (mismo id/precio que en productos.html; añade img cuando quieras) ==
+  // == catálogo ==
   const productos = [
-    { id:"org01", nombre:"Organizador de escritorio blanco", precio:12990 },
-    { id:"acu01", nombre:"Set Acuarelas 24 Colores", precio:16990 },
-    { id:"pin01", nombre:"Pintura personalizada A5", precio:14990 },
-    { id:"cua01", nombre:"Cuaderno A5 “Luna Mística”", precio:4990 },
-    { id:"pap01", nombre:"Resma Carta 500h", precio:6990 },
-    { id:"lap01", nombre:"Pluma estilográfica Nuit (F)", precio:9990 },
-    { id:"mar01", nombre:"Set 6 marcadores pastel", precio:7990 },
-    { id:"car01", nombre:"Archivador lomo ancho A4", precio:3990 },
-    { id:"not01", nombre:"Notas adhesivas lunares", precio:1990 },
-    { id:"tin01", nombre:"Tinta violeta tenue 30ml", precio:5890 }
+    // Organizador (igual)
+    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
+      desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
+
+    // Resto con descripciones
+    { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg",
+      desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
+
+    { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg",
+      desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos." },
+
+    { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg",
+      desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m." },
+
+    { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg",
+      desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal." },
+
+    { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg",
+      desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes." },
+
+    { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg",
+      desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura." },
+
+    { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg",
+      desc:"Estuche Kuromi con compartimentos y cierre resistente; capacidad para 40–60 útiles." },
+
+    { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg",
+      desc:"Estuche My Melody con elásticos y bolsillo interno; materiales lavables y durables." },
+
+    { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg",
+      desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
+
+    { id:"gom02", categoria:"Borradores", nombre:"Borrador eléctrico recargable", precio:11990, img:"assets/img/goma-electrica.jpg",
+      desc:"Borrador eléctrico recargable por USB; elimina trazos finos sin dañar el papel." },
+
+    { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg",
+      desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas." },
+
+    { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg",
+      desc:"Set de 10 lápices de color de mina suave; trazo cremoso y colores vibrantes." },
+
+    { id:"lap25", categoria:"Lápices de colores", nombre:"Set lápices de colores – 25 unidades", precio:7990, img:"assets/img/lapices-25.jpg",
+      desc:"Set de 25 lápices de color; minas resistentes y mezclables, ideal para ilustración." },
+
+    { id:"lap30", categoria:"Lápices de colores", nombre:"Set lápices de colores – 30 unidades", precio:20000, img:"assets/img/lapices-30.jpg",
+      desc:"Set de 30 lápices de color; incluye tonos piel y pasteles, estuche rígido." },
+
+    { id:"pinc01", categoria:"Pinceles / Acuarela", nombre:"Pinceles para acuarela (pack)", precio:8990, img:"assets/img/pinceles-acuarelas.jpg",
+      desc:"Pack de pinceles para acuarela con cerdas sintéticas finas y mangos ergonómicos." },
+
+    { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg",
+      desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos." },
+
+    { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg",
+      desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling." },
+
+    { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg",
+      desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc." },
+
+    { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg",
+      desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche." },
+
+    { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg",
+      desc:"Bolígrafos Sakura de tinta gel pigmentada; secado rápido y punta 0.5 mm." },
+
+    { id:"set02", categoria:"Sets", nombre:"Set papelería “Gato Azul”", precio:10990, img:"assets/img/set-gato-azul.jpg",
+      desc:"Set temático gato azul: stickers, papeles, notas y accesorios combinados." },
+
+    { id:"set01", categoria:"Sets", nombre:"Set papelería “Gato Rosado”", precio:10990, img:"assets/img/set-gato-rosado.jpg",
+      desc:"Set temático gato rosado; selección coordinada para journaling y scrap." },
+
+    { id:"washi60", categoria:"Cintas / Washi", nombre:"Set 60 washi tapes", precio:16990, img:"assets/img/set60-cintas.jpg",
+      desc:"Mega set de 60 washi tapes variados; anchos y patrones mixtos para proyectos creativos." },
+
+    { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg",
+      desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos." },
+
+    { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg",
+      desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave." },
+
+    { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg",
+      desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking." }
   ];
 
   // == helpers / carrito ==
@@ -86,9 +168,15 @@
       const row=document.createElement('div');
       row.className='row';
       row.innerHTML = `
-        <div>
-          <h4>${p.nombre}</h4>
-          <button class="btn" style="margin-top:6px" onclick="removeItem('${it.id}')">Eliminar</button>
+        <div class="prod">
+          <a href="producto.html?id=${it.id}">
+            <img class="thumb" src="${p.img || 'assets/img/placeholder.jpg'}" alt="${p.nombre}" loading="lazy">
+          </a>
+          <div>
+            <a href="producto.html?id=${it.id}"><strong>${p.nombre}</strong></a>
+            <div class="muted">${p.categoria || ''}</div>
+            <button class="btn" style="margin-top:6px" onclick="removeItem('${it.id}')">Eliminar</button>
+          </div>
         </div>
         <div class="qty"><input type="number" min="1" value="${it.qty}" onchange="setQty('${it.id}', this.value)"></div>
         <div>${toCLP(p.precio)}</div>
