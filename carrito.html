@@ -46,7 +46,7 @@
       font-weight:600;
     }
 
-    /* Info de pagos (fichas ordenadas) */
+    /* Info de pagos */
     .pay-info{ margin:6px 0 0 26px; line-height:1.45; }
     .pay-info.box{
       background:#f9fafb;
@@ -54,17 +54,22 @@
       border-radius:8px;
       padding:12px;
     }
-    .kv{
-      display:grid;
-      grid-template-columns:120px 1fr; /* etiqueta | valor */
-      column-gap:10px;
-      row-gap:6px;
-      align-items:center;
-    }
-    .kv dt{margin:0; font-weight:600; color:#333;}
+    .kv{display:grid;grid-template-columns:120px 1fr;column-gap:10px;row-gap:6px;align-items:center;}
+    .kv dt{margin:0;font-weight:600;color:#333;}
     .kv dd{margin:0;}
     .pay-info a{ color:#7c3aed; text-decoration:none; }
     .pay-info a:hover{ text-decoration:underline; }
+
+    /* ======= Formulario de envío ======= */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    @media (max-width:700px){.form-grid{grid-template-columns:1fr}}
+    .input{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
+    .input.error{border-color:#e53935;box-shadow:0 0 0 2px rgba(229,57,53,.08)}
+    .help{font-size:.85rem;color:#777;margin-top:6px}
+
+    /* ETA */
+    .eta{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:10px;margin-top:10px;font-size:.95rem}
+    .eta small{color:#777}
 
     @media (max-width: 900px){
       .checkout{grid-template-columns: 1fr;}
@@ -89,8 +94,9 @@
     <!-- Checkout: envío + medios de pago + resumen -->
     <section class="checkout">
       <!-- ENVÍO -->
-      <section class="panel">
+      <section class="panel" id="shipPanel">
         <h3>Envío a todo Chile</h3>
+
         <label for="region">Región</label>
         <select id="region"></select>
 
@@ -109,6 +115,44 @@
         <!-- AVISO DE ENVÍO GRATIS -->
         <div id="freeBanner" class="free-banner hidden">
           ¡Envío estándar GRATIS por compras sobre $24.990!
+        </div>
+
+        <!-- ETA -->
+        <div class="eta">
+          <strong>Entrega estimada:</strong> <span id="etaText">—</span><br/>
+          <small>Plazos en <u>días hábiles</u>. La confirmación de pago puede afectar la salida del pedido.</small>
+        </div>
+
+        <!-- Datos del destinatario -->
+        <div class="form-grid">
+          <div>
+            <label for="ship-name">Nombre y apellido</label>
+            <input id="ship-name" class="input" placeholder="Ej: Camila Salas">
+          </div>
+          <div>
+            <label for="ship-rut">RUT</label>
+            <input id="ship-rut" class="input" placeholder="12.345.678-9">
+          </div>
+          <div>
+            <label for="ship-comuna">Comuna</label>
+            <select id="ship-comuna"></select>
+          </div>
+          <div>
+            <label for="ship-phone">Teléfono</label>
+            <input id="ship-phone" class="input" placeholder="+56 9 xxxx xxxx">
+          </div>
+          <div style="grid-column:1 / -1">
+            <label for="ship-address">Dirección</label>
+            <input id="ship-address" class="input" placeholder="Calle y número">
+          </div>
+          <div style="grid-column:1 / -1">
+            <label for="ship-extra">Depto, casa, referencia (opcional)</label>
+            <input id="ship-extra" class="input" placeholder="Ej: Torre B, depto 501">
+          </div>
+          <div style="grid-column:1 / -1">
+            <label for="ship-note">Nota para el pedido (opcional)</label>
+            <textarea id="ship-note" class="input" rows="3" placeholder="Horario de entrega, indicaciones, etc."></textarea>
+          </div>
         </div>
 
         <p class="muted" style="margin-top:10px">
@@ -166,84 +210,49 @@
   <script>
   // == catálogo ==
   const productos = [
-    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
-      desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
-    { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg",
-      desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
-    { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg",
-      desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos." },
-    { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg",
-      desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m." },
-    { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg",
-      desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal." },
-    { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg",
-      desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes." },
-    { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg",
-      desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura." },
-    { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg",
-      desc:"Estuche Kuromi con compartimentos y cierre resistente; capacidad para 40–60 útiles." },
-    { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg",
-      desc:"Estuche My Melody con elásticos y bolsillo interno; materiales lavables y durables." },
-    { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg",
-      desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
-    { id:"gom02", categoria:"Borradores", nombre:"Borrador eléctrico recargable", precio:11990, img:"assets/img/goma-electrica.jpg",
-      desc:"Borrador eléctrico recargable por USB; elimina trazos finos sin dañar el papel." },
-    { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg",
-      desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas." },
-    { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg",
-      desc:"Set de 10 lápices de color de mina suave; trazo cremoso y colores vibrantes." },
-    { id:"lap25", categoria:"Lápices de colores", nombre:"Set lápices de colores – 25 unidades", precio:7990, img:"assets/img/lapices-25.jpg",
-      desc:"Set de 25 lápices de color; minas resistentes y mezclables, ideal para ilustración." },
-    { id:"lap30", categoria:"Lápices de colores", nombre:"Set lápices de colores – 30 unidades", precio:20000, img:"assets/img/lapices-30.jpg",
-      desc:"Set de 30 lápices de color; incluye tonos piel y pasteles, estuche rígido." },
-    { id:"pinc01", categoria:"Pinceles / Acuarela", nombre:"Pinceles para acuarela (pack)", precio:8990, img:"assets/img/pinceles-acuarelas.jpg",
-      desc:"Pack de pinceles para acuarela con cerdas sintéticas finas y mangos ergonómicos." },
-    { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg",
-      desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos." },
-    { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg",
-      desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling." },
-    { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg",
-      desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc." },
-    { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg",
-      desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche." },
-    { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg",
-      desc:"Bolígrafos Sakura de tinta gel pigmentada; secado rápido y punta 0.5 mm." },
-    { id:"set02", categoria:"Sets", nombre:"Set papelería “Gato Azul”", precio:10990, img:"assets/img/set-gato-azul.jpg",
-      desc:"Set temático gato azul: stickers, papeles, notas y accesorios combinados." },
-    { id:"set01", categoria:"Sets", nombre:"Set papelería “Gato Rosado”", precio:10990, img:"assets/img/set-gato-rosado.jpg",
-      desc:"Set temático gato rosado; selección coordinada para journaling y scrap." },
-    { id:"washi60", categoria:"Cintas / Washi", nombre:"Set 60 washi tapes", precio:16990, img:"assets/img/set60-cintas.jpg",
-      desc:"Mega set de 60 washi tapes variados; anchos y patrones mixtos para proyectos creativos." },
-    { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg",
-      desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos." },
-    { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg",
-      desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave." },
-    { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg",
-      desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking." }
+    { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
+    { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
+    { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg", desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos." },
+    { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg", desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m." },
+    { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg", desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal." },
+    { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg", desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes." },
+    { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg", desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura." },
+    { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg", desc:"Estuche Kuromi con compartimentos y cierre resistente; capacidad para 40–60 útiles." },
+    { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg", desc:"Estuche My Melody con elásticos y bolsillo interno; materiales lavables y durables." },
+    { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg", desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
+    { id:"gom02", categoria:"Borradores", nombre:"Borrador eléctrico recargable", precio:11990, img:"assets/img/goma-electrica.jpg", desc:"Borrador eléctrico recargable por USB; elimina trazos finos sin dañar el papel." },
+    { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg", desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas." },
+    { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg", desc:"Set de 10 lápices de color de mina suave; trazo cremoso y colores vibrantes." },
+    { id:"lap25", categoria:"Lápices de colores", nombre:"Set lápices de colores – 25 unidades", precio:7990, img:"assets/img/lapices-25.jpg", desc:"Set de 25 lápices de color; minas resistentes y mezclables, ideal para ilustración." },
+    { id:"lap30", categoria:"Lápices de colores", nombre:"Set lápices de colores – 30 unidades", precio:20000, img:"assets/img/lapices-30.jpg", desc:"Set de 30 lápices de color; incluye tonos piel y pasteles, estuche rígido." },
+    { id:"pinc01", categoria:"Pinceles / Acuarela", nombre:"Pinceles para acuarela (pack)", precio:8990, img:"assets/img/pinceles-acuarelas.jpg", desc:"Pack de pinceles para acuarela con cerdas sintéticas finas y mangos ergonómicos." },
+    { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg", desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos." },
+    { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg", desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling." },
+    { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg", desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc." },
+    { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg", desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche." },
+    { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg", desc:"Bolígrafos Sakura de tinta gel pigmentada; secado rápido y punta 0.5 mm." },
+    { id:"set02", categoria:"Sets", nombre:"Set papelería “Gato Azul”", precio:10990, img:"assets/img/set-gato-azul.jpg", desc:"Set temático gato azul: stickers, papeles, notas y accesorios combinados." },
+    { id:"set01", categoria:"Sets", nombre:"Set papelería “Gato Rosado”", precio:10990, img:"assets/img/set-gato-rosado.jpg", desc:"Set temático gato rosado; selección coordinada para journaling y scrap." },
+    { id:"washi60", categoria:"Cintas / Washi", nombre:"Set 60 washi tapes", precio:16990, img:"assets/img/set60-cintas.jpg", desc:"Mega set de 60 washi tapes variados; anchos y patrones mixtos para proyectos creativos." },
+    { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg", desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos." },
+    { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg", desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave." },
+    { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg", desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking." }
   ];
 
-  // == helpers / carrito ==
+  // helpers / carrito
   const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
   const CART_KEY='nf_cart';
   const loadCart=()=>{ try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return[]} };
   const saveCart=c=>{ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
   const updateCartCount=()=>{ const el=document.getElementById('cart-count'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); };
 
-  function setQty(id, qty){
-    qty = Math.max(1, qty|0);
-    const c=loadCart(); const it=c.find(i=>i.id===id); if(!it) return;
-    it.qty = qty; saveCart(c); render();
-  }
-  function removeItem(id){
-    let c=loadCart(); c=c.filter(i=>i.id!==id); saveCart(c); render();
-  }
+  function setQty(id, qty){ qty=Math.max(1, qty|0); const c=loadCart(); const it=c.find(i=>i.id===id); if(!it) return; it.qty=qty; saveCart(c); render(); }
+  function removeItem(id){ let c=loadCart(); c=c.filter(i=>i.id!==id); saveCart(c); render(); }
   function clearCart(){ saveCart([]); render(); }
 
-  // ======= ENVÍOS A TODO CHILE =======
-  // Umbral envío gratis
+  // ENVÍOS
   const FREE_SHIP_THRESHOLD = 24990;
 
-  // Zonas simplificadas por región
   const regiones = [
     {name:'Arica y Parinacota', zone:'norte'},
     {name:'Tarapacá', zone:'norte'},
@@ -263,89 +272,113 @@
     {name:'Magallanes y Antártica', zone:'austral'}
   ];
 
-  // Tarifas referenciales
   const SHIPPING = {
     retiro: 0,
     standard: { rm:3990, centro:4990, norte:5990, sur:5990, austral:6990 },
-    express: { rm:6990 } // solo RM
+    express: { rm:6990 }
   };
 
-  // UI envío/pago
   const selRegion  = document.getElementById('region');
   const selMethod  = document.getElementById('ship-method');
   const freeBanner = document.getElementById('freeBanner');
   const expressHelp = document.getElementById('expressHelp');
   const optExpress = Array.from(selMethod.options).find(o => o.value === 'express');
+  const selComuna  = document.getElementById('ship-comuna');
+  const etaText    = document.getElementById('etaText');
 
-  // Pago: mostrar info según selección
+  // Comunas por región
+  const COMUNAS = {
+    'Arica y Parinacota':['Arica','Camarones','Putre','General Lagos'],
+    'Tarapacá':['Iquique','Alto Hospicio','Pozo Almonte','Camiña','Colchane','Huara','Pica'],
+    'Antofagasta':['Antofagasta','Mejillones','Sierra Gorda','Taltal','Calama','Ollagüe','San Pedro de Atacama','Tocopilla','María Elena'],
+    'Atacama':['Copiapó','Caldera','Tierra Amarilla','Chañaral','Diego de Almagro','Vallenar','Freirina','Huasco','Alto del Carmen'],
+    'Coquimbo':['La Serena','Coquimbo','Andacollo','La Higuera','Paihuano','Vicuña','Illapel','Canela','Los Vilos','Salamanca','Ovalle','Combarbalá','Monte Patria','Punitaqui','Río Hurtado'],
+    'Valparaíso':['Valparaíso','Viña del Mar','Concón','Quintero','Puchuncaví','Quillota','La Calera','Hijuelas','La Cruz','Nogales','San Antonio','Cartagena','El Tabo','El Quisco','Algarrobo','Santo Domingo','San Felipe','Llaillay','Catemu','Panquehue','Putaendo','Santa María','Los Andes','Calle Larga','Rinconada','San Esteban','Petorca','Cabildo','La Ligua','Papudo','Zapallar','Isla de Pascua','Juan Fernández'],
+    'Metropolitana de Santiago':['Santiago','Cerrillos','Cerro Navia','Conchalí','El Bosque','Estación Central','Huechuraba','Independencia','La Cisterna','La Florida','La Granja','La Pintana','La Reina','Las Condes','Lo Barnechea','Lo Espejo','Lo Prado','Macul','Maipú','Ñuñoa','Pedro Aguirre Cerda','Peñalolén','Providencia','Pudahuel','Quilicura','Quinta Normal','Recoleta','Renca','San Joaquín','San Miguel','San Ramón','Vitacura','Puente Alto','Pirque','San José de Maipo','San Bernardo','Buin','Calera de Tango','Paine','Melipilla','Alhué','Curacaví','María Pinto','San Pedro','Talagante','El Monte','Isla de Maipo','Padre Hurtado','Peñaflor','Colina','Lampa','Tiltil'],
+    'O’Higgins':['Rancagua','Machalí','Graneros','Codegua','Mostazal','Requínoa','Rengo','Malloa','Quinta de Tilcoco','San Vicente','Pichidegua','Peumo','Las Cabras','Coltauco','Doñihue','Coinco','Olivar','Pichilemu','La Estrella','Marchihue','Navidad','Litueche','San Fernando','Chimbarongo','Nancagua','Placilla','Santa Cruz','Lolol','Pumanque','Peralillo'],
+    'Maule':['Talca','Curepto','Empedrado','Maule','Pencahue','Pelarco','Río Claro','San Clemente','San Rafael','Constitución','Curicó','Hualañé','Licantén','Vichuquén','Rauco','Romeral','Sagrada Familia','Teno','Molina','Linares','Colbún','Longaví','Parral','Retiro','San Javier','Villa Alegre','Yerbas Buenas','Cauquenes','Chanco','Pelluhue'],
+    'Ñuble':['Chillán','Chillán Viejo','Bulnes','Cobquecura','Coelemu','Coihueco','El Carmen','Ninhue','Ñiquén','Pemuco','Pinto','Portezuelo','Quillón','Quirihue','Ránquil','San Carlos','San Fabián','San Ignacio','San Nicolás','Trehuaco','Yungay'],
+    'Biobío':['Concepción','Talcahuano','Hualpén','Chiguayante','San Pedro de la Paz','Penco','Tomé','Hualqui','Florida','Santa Juana','Arauco','Cañete','Contulmo','Curanilahue','Lebu','Los Álamos','Tirúa','Coronel','Lota','Los Ángeles','Mulchén','Nacimiento','Negrete','Quilaco','Santa Bárbara','Alto Biobío','Antuco','Cabrero','Laja','San Rosendo','Tucapel','Yumbel'],
+    'La Araucanía':['Temuco','Padre Las Casas','Cunco','Curarrehue','Freire','Gorbea','Lautaro','Loncoche','Melipeuco','Nueva Imperial','Perquenco','Pitrufquén','Pucón','Saavedra','Teodoro Schmidt','Toltén','Vilcún','Villarrica','Cholchol','Carahue','Galvarino','Angol','Collipulli','Curacautín','Ercilla','Lonquimay','Los Sauces','Lumaco','Purén','Renaico','Traiguén','Victoria'],
+    'Los Ríos':['Valdivia','Corral','Lanco','Los Lagos','Máfil','Mariquina','Paillaco','Panguipulli','La Unión','Futrono','Lago Ranco','Río Bueno'],
+    'Los Lagos':['Puerto Montt','Puerto Varas','Llanquihue','Frutillar','Fresia','Los Muermos','Maullín','Calbuco','Osorno','San Pablo','Purranque','Río Negro','Puyehue','San Juan de la Costa','Puerto Octay','Castro','Ancud','Quellón','Dalcahue','Chonchi','Queilén','Puqueldón','Quinchao','Curaco de Vélez','Chaitén','Futaleufú','Hualaihué','Palena'],
+    'Aysén':['Coyhaique','Aysén','Cisnes','Guaitecas','Chile Chico','Río Ibáñez','Cochrane',"O'Higgins",'Tortel','Lago Verde'],
+    'Magallanes y Antártica':['Punta Arenas','Río Verde','Laguna Blanca','San Gregorio','Puerto Natales','Torres del Paine','Porvenir','Primavera','Timaukel','Cabo de Hornos','Antártica']
+  };
+
+  function populateComunas(){
+    const list = COMUNAS[selRegion.value] || [];
+    selComuna.innerHTML = '<option value="">Selecciona comuna…</option>' + list.map(c=>`<option value="${c}">${c}</option>`).join('');
+  }
+
+  // pagos info
   const payInfos = {
     webpay   : document.getElementById('pay-webpay'),
     transfer : document.getElementById('pay-transfer'),
     mp       : document.getElementById('pay-mp')
   };
-  const payRadios = document.querySelectorAll('input[name=pay]');
-  function showPayInfo(method){
-    Object.entries(payInfos).forEach(([k,el])=>{
-      if(el) el.classList.toggle('hidden', k!==method);
-    });
-  }
-  payRadios.forEach(r=> r.addEventListener('change', e=> showPayInfo(e.target.value)));
-  // estado inicial
-  showPayInfo(document.querySelector('input[name=pay]:checked').value);
+  document.querySelectorAll('input[name=pay]').forEach(r=> r.addEventListener('change', e=>{
+    Object.entries(payInfos).forEach(([k,el])=> el.classList.toggle('hidden', k!==e.target.value));
+  }));
+  (function initPay(){ const v=document.querySelector('input[name=pay]:checked').value; Object.entries(payInfos).forEach(([k,el])=> el.classList.toggle('hidden', k!==v)); })();
 
-  // Rellena regiones
+  // regiones
   selRegion.innerHTML = regiones.map(r=>`<option>${r.name}</option>`).join('');
-  // Por defecto RM
   selRegion.value = 'Metropolitana de Santiago';
 
   let currentSubtotal = 0;
 
-  // Habilita/Deshabilita Express según región
   function toggleExpressAvailability(){
     const zone = (regiones.find(r=>r.name===selRegion.value)||{}).zone || 'rm';
     const enabled = zone === 'rm';
-
     if (optExpress){
       optExpress.disabled = !enabled;
       optExpress.textContent = enabled ? 'Envío express RM (24–48h)' : 'Envío express (solo RM)';
     }
-    if (!enabled && selMethod.value==='express'){
-      selMethod.value='standard';
-    }
-    if (expressHelp){
-      expressHelp.classList.toggle('hidden', enabled);
-    }
+    if (!enabled && selMethod.value==='express'){ selMethod.value='standard'; }
+    if (expressHelp){ expressHelp.classList.toggle('hidden', enabled); }
   }
 
   function shippingCost(){
     const zone = (regiones.find(r=>r.name===selRegion.value)||{}).zone || 'rm';
     let method = selMethod.value;
-
-    // Express solo disponible en RM (protección)
-    if(zone!=='rm' && method==='express'){
-      method='standard';
-      selMethod.value='standard';
-    }
-
+    if(zone!=='rm' && method==='express'){ method='standard'; selMethod.value='standard'; }
     let cost = 0;
-    if(method==='retiro'){
-      cost = SHIPPING.retiro;
-    } else if(method==='express'){
-      cost = SHIPPING.express.rm;
-    } else { // estándar
-      cost = SHIPPING.standard[zone] ?? SHIPPING.standard.centro;
-      // envío gratis por umbral
-      if(currentSubtotal >= FREE_SHIP_THRESHOLD) cost = 0;
-    }
-
-    // Mostrar/ocultar banner de envío gratis
+    if(method==='retiro'){ cost = SHIPPING.retiro; }
+    else if(method==='express'){ cost = SHIPPING.express.rm; }
+    else { cost = SHIPPING.standard[zone] ?? SHIPPING.standard.centro;
+           if(currentSubtotal >= FREE_SHIP_THRESHOLD) cost = 0; }
     if(freeBanner){
       const show = (method==='standard' && currentSubtotal >= FREE_SHIP_THRESHOLD);
       freeBanner.classList.toggle('hidden', !show);
     }
-
     return cost;
   }
+
+  // === ETA ===
+  function addBusinessDays(from, days){
+    const d = new Date(from);
+    let remaining = days;
+    while(remaining>0){
+      d.setDate(d.getDate()+1);
+      const dow = d.getDay(); // 0 dom, 6 sáb
+      if(dow!==0 && dow!==6) remaining--;
+    }
+    return d;
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString('es-CL',{weekday:'short', day:'numeric', month:'short'});
+  }
+  function etaString(){
+    const m = selMethod.value;
+    if(m==='retiro') return 'Retiro en tienda (24–48h hábiles).';
+    const start = m==='express' ? 1 : 2;
+    const end   = m==='express' ? 2 : 5;
+    const a = addBusinessDays(new Date(), start);
+    const b = addBusinessDays(new Date(), end);
+    return `${fmtDate(a)} – ${fmtDate(b)}`;
+  }
+  function updateETA(){ etaText.textContent = etaString(); }
 
   function updateSummary(){
     const ship = shippingCost();
@@ -353,13 +386,78 @@
     document.getElementById('sum-ship').textContent = toCLP(ship);
     const total = currentSubtotal + ship;
     document.getElementById('sum-total').textContent = toCLP(total);
+    updateETA();
   }
 
   selRegion.addEventListener('change', () => {
     toggleExpressAvailability();
+    populateComunas();
     updateSummary();
+    saveShip();
   });
-  selMethod.addEventListener('change', updateSummary);
+  selMethod.addEventListener('change', () => { updateSummary(); saveShip(); });
+  selComuna.addEventListener('change', saveShip);
+
+  // persistencia/validación
+  const SHIP_KEY = 'nf_ship';
+  const shipInputs = {
+    name   : document.getElementById('ship-name'),
+    rut    : document.getElementById('ship-rut'),
+    comuna : document.getElementById('ship-comuna'),
+    phone  : document.getElementById('ship-phone'),
+    address: document.getElementById('ship-address'),
+    extra  : document.getElementById('ship-extra'),
+    note   : document.getElementById('ship-note'),
+  };
+
+  function readShipForm(){
+    return {
+      region : selRegion.value,
+      method : selMethod.value,
+      name   : shipInputs.name.value.trim(),
+      rut    : shipInputs.rut.value.trim(),
+      comuna : shipInputs.comuna.value.trim(),
+      phone  : shipInputs.phone.value.trim(),
+      address: shipInputs.address.value.trim(),
+      extra  : shipInputs.extra.value.trim(),
+      note   : shipInputs.note.value.trim(),
+    };
+  }
+  function saveShip(){ localStorage.setItem(SHIP_KEY, JSON.stringify(readShipForm())); }
+  function fillShipForm(data){
+    if(!data) return;
+    if(data.region) selRegion.value = data.region;
+    toggleExpressAvailability();
+    populateComunas();
+    if(data.method) selMethod.value = data.method;
+    Object.keys(shipInputs).forEach(k => { if(k!=='comuna' && data[k]) shipInputs[k].value = data[k]; });
+    if(data.comuna) selComuna.value = data.comuna;
+  }
+  function loadShip(){ try{ fillShipForm(JSON.parse(localStorage.getItem(SHIP_KEY))); }catch{} }
+
+  Object.values(shipInputs).forEach(el=>{
+    el.addEventListener('input', ()=>{ el.classList.remove('error'); saveShip(); });
+  });
+
+  function formatRUT(v){
+    v = v.replace(/[^\dkK]/g,'').toUpperCase();
+    if(!v) return '';
+    let body = v.slice(0,-1), dv = v.slice(-1), r='';
+    while(body.length>3){ r='.'+body.slice(-3)+r; body=body.slice(0,-3); }
+    return (body+r)+'-'+dv;
+  }
+  shipInputs.rut.addEventListener('blur', ()=>{ shipInputs.rut.value = formatRUT(shipInputs.rut.value); });
+
+  function validateShip(){
+    if(selMethod.value==='retiro') return true;
+    let ok = true;
+    ['name','rut','address'].forEach(k=>{
+      const el = shipInputs[k];
+      if(!el.value.trim()){ el.classList.add('error'); ok=false; }
+    });
+    if(!selComuna.value){ selComuna.classList.add('error'); ok=false; }
+    return ok;
+  }
 
   function render(){
     const list=document.getElementById('cart-list'); list.innerHTML='';
@@ -373,14 +471,12 @@
       return;
     }
 
-    // encabezado
     const head=document.createElement('div');
     head.className='row';
     head.innerHTML=`<strong>Producto</strong><strong>Cantidad</strong><strong>Precio</strong><strong>Subtotal</strong>`;
     list.appendChild(head);
 
     let subtotal=0;
-
     cart.forEach(it=>{
       const p = productos.find(x=>x.id===it.id); if(!p) return;
       const sub = p.precio * it.qty; subtotal += sub;
@@ -411,6 +507,11 @@
   }
 
   document.getElementById('checkout').addEventListener('click', ()=>{
+    if(!validateShip()){
+      alert('Completa los datos de envío: nombre, RUT, comuna y dirección.');
+      return;
+    }
+    saveShip();
     const method = document.querySelector('input[name=pay]:checked').value;
     if(method==='webpay'){
       alert('Te redirigiremos a Webpay para completar el pago.');
@@ -422,7 +523,10 @@
   });
 
   // Inicializaciones
+  populateComunas();
+  loadShip();
   toggleExpressAvailability();
+  updateETA();
   updateCartCount();
   render();
   </script>
