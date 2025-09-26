@@ -5,15 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalle de producto — Nuit Fantôme</title>
 
-  <!-- Tu CSS global -->
-  <link rel="stylesheet" href="assets/css/estilos.css">
+  <!-- MISMOS CSS DEL INDEX -->
+  <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
 
+  <!-- Ocultar buscador en detalle + estilos ligeros -->
   <style>
-    /* ====== Estilos base del detalle (tuyos) ====== */
+    .busqueda{display:none!important}
+    .container{max-width:1200px;margin:0 auto;padding:16px}
     .breadcrumb{font-size:.9rem;margin:16px 0;color:#666}
     .breadcrumb a{color:#0366d6;text-decoration:none}
     .product-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}
-    .product-media{border:1px solid #e5e5e5;border-radius:12px;padding:12px}
+    .product-media{border:1px solid #e5e5e5;border-radius:12px;padding:12px;background:#fff}
     .product-media .main{width:100%;height:460px;object-fit:cover;border-radius:10px;background:#2f2f2f}
     .thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
     .thumbs img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid #ddd;cursor:pointer}
@@ -21,114 +27,172 @@
     .product-price{color:#9c27b0;font-weight:700;font-size:1.2rem;margin:6px 0 14px}
     .qty{display:flex;align-items:center;gap:10px;margin:10px 0}
     .qty input{width:80px;padding:8px;border:1px solid #ccc;border-radius:8px;text-align:center}
-    .related{margin-top:28px}
-    .related h3{margin-bottom:12px}
-    .muted{color:#777}
+    .muted{color:#bbb}
     @media (max-width:900px){.product-layout{grid-template-columns:1fr}}
 
-    /* ====== NUEVO: selector de diseño / set ====== */
-    :root{
-      --ink:#3a2a63;--muted:#6b5aa6;--violet:#7c3aed;--violet-200:#a78bfa;--line:#eee9ff;
-    }
-    .opt-actions{display:flex;align-items:center;gap:12px;margin:12px 0}
-    .opt-chip{background:#f3f0ff;color:var(--muted);border-radius:999px;padding:6px 10px;font-weight:700}
-
-    .opt-modal{position:fixed;inset:0;display:grid;place-items:center;z-index:60}
-    .opt-modal.hidden{display:none}
-    .opt-modal .scrim{position:absolute;inset:0;background:rgba(17,16,40,.45);backdrop-filter:blur(2px)}
-    .opt-modal .box{
-      position:relative; z-index:1; width:min(720px,92vw);
-      background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
-      box-shadow:0 20px 40px rgba(30,27,75,.22)
-    }
-    .opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:10px}
-    .opt-card{
-      border:1px solid #ece7ff;border-radius:12px;cursor:pointer;background:#fff;overflow:hidden;
-      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-    }
-    .opt-card:hover{transform:translateY(-2px);box-shadow:0 12px 20px rgba(30,27,75,.12)}
-    .opt-card.selected{border-color:var(--violet-200);box-shadow:0 0 0 3px rgba(124,58,237,.20) inset}
-    .opt-card img{width:100%;height:110px;object-fit:cover;display:block}
-    .opt-card .label{padding:8px 10px;font-weight:700;color:var(--ink)}
-    .btn{
-      background:linear-gradient(90deg, var(--violet) 0%, var(--violet-200) 100%);
+    /* Chip + botón */
+    .btn-detalle{
+      background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
       color:#fff;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;
       box-shadow:0 8px 18px rgba(124,58,237,.25);
     }
+    #optLabel{background:#f3f0ff;color:#2b2452;border-radius:999px;padding:6px 10px;font-weight:700;display:inline-block}
+
+    /* MODAL Elegir diseño */
+    .opt-modal{position:fixed;inset:0;display:none;z-index:99999}
+    .opt-modal.show{display:flex;align-items:center;justify-content:center}
+    .opt-modal .scrim{position:absolute;inset:0;background:rgba(17,16,40,.5);backdrop-filter:blur(2px)}
+    .opt-modal .box{position:relative;z-index:1;width:min(720px,92vw);background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 20px 40px rgba(30,27,75,.22)}
+    .opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
+    .opt-btn{border:1px solid #ece7ff;border-radius:12px;background:#fff;cursor:pointer;min-height:96px;padding:10px;font-weight:700;transition:.1s}
+    .opt-btn:hover{transform:translateY(-2px);box-shadow:0 12px 20px rgba(30,27,75,.12)}
+    .opt-btn.selected{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(124,58,237,.20) inset}
+
+    /* Grids para relacionados y vistos (mismo look que cards) */
+    .section-grid{padding:28px 0}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:10px;transition:.15s}
+    .card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(30,27,75,.10)}
+    .card .ph{width:100%;height:180px;object-fit:cover;border-radius:10px}
+    .card .title{font-weight:700;color:#2b254a;text-decoration:none;display:block;margin-top:6px}
+    .card .price{color:#7c3aed;font-weight:800}
   </style>
 </head>
 <body>
-  <!-- Header simple -->
-  <header class="header">
-    <nav>
-      <a href="index.html">Inicio</a>
-      <a href="productos.html">Productos</a>
-      <a href="blogs.html">Blogs</a>
-      <a href="contacto.html">Contacto</a>
+  <!-- Top bar + Header (idénticos al index, sin buscador funcional) -->
+  <div class="top-bar">
+    <div class="info-envios"><span>ENVÍOS GRATIS DESDE $24.990</span></div>
+    <div class="derecha-redes-sociales">
+      <a href="cambios.html">Cambios o Devoluciones</a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="mailto:contacto@nuitfantome.com"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+  <header>
+    <div class="header-superior">
+      <div class="logo"><a href="index.html"><img src="./assets/img/logo.png" alt="Logo Nuit Fantome"></a></div>
+      <div class="busqueda"></div>
+      <div class="usuario-carrito">
+        <div class="dropdown">
+          <button class="btn-acceder">ACCEDER</button>
+          <div class="dropdown-content">
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="register.html">Registrarse</a>
+          </div>
+        </div>
+        <a href="carrito.html" style="text-decoration:none">
+          <div class="carrito"><i class="bi bi-bag"></i><span class="contador" id="contador">0</span></div>
+        </a>
+      </div>
+    </div>
+    <nav class="barra-tareas">
+      <ul>
+        <li><a href="index.html">INICIO</a></li>
+        <li><a href="productos.html" class="active">PRODUCTOS</a></li>
+        <li><a href="nosotros.html">NOSOTROS</a></li>
+        <li><a href="blogs.html">BLOGS</a></li>
+        <li><a href="contacto.html">CONTACTO</a></li>
+      </ul>
     </nav>
-    <a href="carrito.html">Cart (<span id="cart-count">0</span>)</a>
   </header>
 
+  <!-- CUERPO -->
   <main class="container">
     <div id="bc" class="breadcrumb"></div>
     <section id="detalle" class="product-layout"></section>
 
-    <section class="related">
-      <h3>Productos relacionados</h3>
+    <!-- RELACIONADOS -->
+    <section class="section-grid">
+      <h3 style="margin:18px 0 10px;color:#fff">Productos relacionados</h3>
       <div id="relacionados" class="cards"></div>
+    </section>
+
+    <!-- VISTOS RECIENTEMENTE -->
+    <section class="section-grid">
+      <h3 style="margin:18px 0 10px;color:#fff">Productos que viste recientemente</h3>
+      <div id="vistosGrid" class="cards"></div>
     </section>
   </main>
 
-  <!-- Modal selección de diseño / set -->
-  <div id="optModal" class="opt-modal hidden" aria-hidden="true">
+  <!-- SECCIÓN FINAL (idéntica al index) -->
+  <section class="final-final">
+    <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
+    <div class="final-contenido">
+      <div class="final-logo"><img src="assets/img/logo.png" alt="Logo Nuit Fantome"></div>
+      <div class="final-texto">
+        <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
+        Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
+      </div>
+      <div class="final-redes">
+        <div class="siguenos">Síguenos</div>
+        <div class="iconos-redes">
+          <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+          <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+          <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer-final">
+    <div class="footer-contenido">
+      <div class="footer-texto">© 2025 Nuit Fantome. Todos los derechos reservados.</div>
+      <div class="footer-pagos">
+        <img src="assets/img/webpay.png" alt="Webpay">
+        <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
+        <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL Elegir diseño -->
+  <div id="optModal" class="opt-modal" aria-hidden="true">
     <div class="scrim" onclick="closeOptModal()"></div>
-    <div class="box">
-      <h3 style="margin:0 0 8px">Elige un diseño</h3>
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="optTitle" onclick="event.stopPropagation()">
+      <h3 id="optTitle" style="margin:0 0 8px">Elige un diseño</h3>
       <div id="optGrid" class="opt-grid"></div>
       <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
-        <button class="btn" onclick="closeOptModal()">Listo</button>
+        <button class="btn-detalle" onclick="closeOptModal()">Listo</button>
       </div>
     </div>
   </div>
 
   <script>
-  /* === Catálogo con algunas opciones (sets/diseños) === */
+  /* === Catálogo (con opciones donde corresponde) === */
   const productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
       desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
 
     { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg",
-      desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
+      desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, 15 mm x 5 m c/u." },
 
     { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg",
-      desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos." },
+      desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos.",
+      opciones:[{t:"Rosa"},{t:"Lila"},{t:"Celeste"},{t:"Verde"}] },
 
     { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg",
       desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m.",
-      opciones:[
-        {t:"Amarillo"}, {t:"Rosa"}, {t:"Verde"}, {t:"Morado"}
-      ]},
+      opciones:[{t:"Amarillo"},{t:"Rosa"},{t:"Verde"},{t:"Morado"}] },
 
     { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg",
-      desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal." },
+      desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal.",
+      opciones:[{t:"Pastel 1"},{t:"Pastel 2"},{t:"Pastel 3"},{t:"Pastel 4"}] },
 
     { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg",
-      desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes." },
+      desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes.",
+      opciones:[{t:"Rosa"},{t:"Blanco"},{t:"Amarillo"},{t:"Celeste"}] },
 
     { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg",
-      desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura." },
+      desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura.",
+      opciones:[{t:"Lila"},{t:"Rosa"},{t:"Lavanda"}] },
 
     { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg",
       desc:"Estuche Kuromi con compartimentos y cierre resistente; capacidad para 40–60 útiles.",
-      opciones:[
-        {t:"Cinnamoroll"},{t:"My Melody"},{t:"Kuromi"},{t:"Pompompurin"}
-      ]},
+      opciones:[{t:"Cinnamoroll"},{t:"My Melody"},{t:"Kuromi"},{t:"Pompompurin"}] },
 
     { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg",
       desc:"Estuche My Melody con elásticos y bolsillo interno; materiales lavables y durables.",
-      opciones:[
-        {t:"My Melody"},{t:"Cinnamoroll"},{t:"Pompompurin"},{t:"Hello Kitty"},{t:"Gudetama"},{t:"Keroppi"}
-      ]},
+      opciones:[{t:"My Melody"},{t:"Cinnamoroll"},{t:"Pompompurin"},{t:"Hello Kitty"},{t:"Gudetama"},{t:"Keroppi"}] },
 
     { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg",
       desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
@@ -137,7 +201,8 @@
       desc:"Borrador eléctrico recargable por USB; elimina trazos finos sin dañar el papel." },
 
     { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg",
-      desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas." },
+      desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas.",
+      opciones:[{t:"Verde/Azul"},{t:"Rosa/Celeste"},{t:"Mix pastel"}] },
 
     { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg",
       desc:"Set de 10 lápices de color de mina suave; trazo cremoso y colores vibrantes." },
@@ -152,16 +217,20 @@
       desc:"Pack de pinceles para acuarela con cerdas sintéticas finas y mangos ergonómicos." },
 
     { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg",
-      desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos." },
+      desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos.",
+      opciones:[{t:"Cinnamoroll"},{t:"Pompompurin"}] },
 
     { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg",
-      desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling." },
+      desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling.",
+      opciones:[{t:"Kuromi"},{t:"My Melody"}] },
 
     { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg",
-      desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc." },
+      desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc.",
+      opciones:[{t:"Pochacco"},{t:"Hello Kitty"}] },
 
     { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg",
-      desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche." },
+      desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche.",
+      opciones:[{t:"Celeste"},{t:"Rosa"},{t:"Lila"},{t:"Verde"}] },
 
     { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg",
       desc:"Bolígrafos Sakura de tinta gel pigmentada; secado rápido y punta 0.5 mm." },
@@ -176,127 +245,139 @@
       desc:"Mega set de 60 washi tapes variados; anchos y patrones mixtos para proyectos creativos." },
 
     { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg",
-      desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos." },
+      desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos.",
+      opciones:[{t:"Lila"},{t:"Menta"},{t:"Celeste"}] },
 
     { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg",
-      desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave." },
+      desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave.",
+      opciones:[{t:"Lila"},{t:"Rosa"},{t:"Celeste"}] },
 
     { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg",
-      desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking." }
+      desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking.",
+      opciones:[{t:"Morado"},{t:"Rosa"},{t:"Dorado"}] }
   ];
 
-  /* === Utils + carrito === */
+  /* Utils + carrito + recientes */
   const $ = s => document.querySelector(s);
   const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
-  const CART_KEY = 'nf_cart';
-  const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || [] } catch { return [] } };
-  const saveCart = c => { localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
-  const updateCartCount = () => { const el = $('#cart-count'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); };
-
-  // === NUEVO: addToCart acepta opción elegida (opt) ===
+  const CART_KEY='nf_cart', RECENT_KEY='nf_recent';
+  const loadCart=()=>{ try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return[]} };
+  const saveCart=c=>{ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
+  function updateCartCount(){ const el=document.getElementById('contador'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); }
   function addToCart(id, qty=1, opt=""){
-    const c=loadCart();
-    const it=c.find(i=>i.id===id && (i.opt||"")===opt);
-    if(it) it.qty+=qty; else c.push({id,qty,opt});
-    saveCart(c);
-    alert('Producto añadido al carrito' + (opt ? ` (${opt})` : ''));
+    const c=loadCart(); const it=c.find(i=>i.id===id && (i.opt||"")===opt);
+    if(it) it.qty+=qty; else c.push({id,qty,opt}); saveCart(c);
+    alert('Producto añadido al carrito' + (opt?` (${opt})`:''));
+  }
+  const loadRecent=()=>{ try{return JSON.parse(localStorage.getItem(RECENT_KEY))||[]}catch{return[]} };
+  const saveRecent=arr=> localStorage.setItem(RECENT_KEY, JSON.stringify(arr));
+  function addRecentlyViewed(id){
+    let arr = loadRecent().filter(x=>x!==id);
+    arr.unshift(id);
+    if(arr.length>12) arr = arr.slice(0,12);
+    saveRecent(arr);
   }
 
-  /* === Estado selección de opción (del producto actual) === */
-  let selectedOpt = "";
-  let currentProd  = null;
-
+  /* Modal opciones */
+  let selectedOpt="", currentProd=null;
   function openOptModal(prodId){
     const p = productos.find(x=>x.id===prodId);
     if(!p || !p.opciones) return;
-    currentProd = p;
-    const grid = document.getElementById('optGrid');
-    grid.innerHTML = '';
+    currentProd=p; selectedOpt="";
+    const grid=document.getElementById('optGrid'); grid.innerHTML='';
     p.opciones.forEach(o=>{
-      const card = document.createElement('div');
-      card.className = 'opt-card' + (selectedOpt===o.t ? ' selected':'');
-      card.onclick = ()=>{
-        selectedOpt = o.t;
-        updateOptLabel();
-        document.querySelectorAll('.opt-card').forEach(el=>el.classList.remove('selected'));
-        card.classList.add('selected');
-      };
-      card.innerHTML = `${o.img ? `<img src="${o.img}" alt="${o.t}">` : ''}<div class="label">${o.t}</div>`;
-      grid.appendChild(card);
+      const b=document.createElement('button');
+      b.type='button'; b.className='opt-btn'; b.textContent=o.t;
+      b.onclick=()=>{ selectedOpt=o.t; grid.querySelectorAll('.opt-btn').forEach(el=>el.classList.remove('selected')); b.classList.add('selected'); updateOptLabel(); closeOptModal(); };
+      grid.appendChild(b);
     });
-    document.getElementById('optModal').classList.remove('hidden');
+    document.getElementById('optModal').classList.add('show');
   }
-  function closeOptModal(){ document.getElementById('optModal').classList.add('hidden'); }
-  function updateOptLabel(){
-    const lbl = document.getElementById('optLabel');
-    if(lbl) lbl.textContent = selectedOpt ? `Elegido: ${selectedOpt}` : 'Ninguno';
+  function closeOptModal(){ document.getElementById('optModal').classList.remove('show'); }
+  function updateOptLabel(){ const lbl=document.getElementById('optLabel'); if(lbl) lbl.textContent = selectedOpt?`Elegido: ${selectedOpt}`:'Ninguno'; }
+
+  /* Render relacionados + vistos */
+  function renderRelated(base){
+    const wrap = document.getElementById('relacionados'); wrap.innerHTML='';
+    // prioriza misma categoría, si no hay toma cualquiera
+    let list = productos.filter(p=>p.id!==base.id && p.categoria===base.categoria);
+    if(list.length<4) list = [...list, ...productos.filter(p=>p.id!==base.id && p.categoria!==base.categoria)];
+    list.slice(0,4).forEach(p=>{
+      const a = document.createElement('a');
+      a.className='card'; a.href=`producto.html?id=${p.id}`;
+      a.innerHTML = `
+        ${p.img?`<img class="ph" src="${p.img}" alt="${p.nombre}">`:`<div class="ph"></div>`}
+        <div class="title">${p.nombre}</div>
+        <div class="price">${toCLP(p.precio)}</div>`;
+      wrap.appendChild(a);
+    });
+  }
+  function renderRecentlyViewed(currentId){
+    const wrap = document.getElementById('vistosGrid'); wrap.innerHTML='';
+    const ids = loadRecent().filter(id=>id!==currentId);
+    if(ids.length===0){ wrap.innerHTML='<div class="muted">Aún no has visto productos.</div>'; return; }
+    ids.slice(0,8).forEach(id=>{
+      const p = productos.find(x=>x.id===id); if(!p) return;
+      const a = document.createElement('a');
+      a.className='card'; a.href=`producto.html?id=${p.id}`;
+      a.innerHTML = `
+        ${p.img?`<img class="ph" src="${p.img}" alt="${p.nombre}">`:`<div class="ph"></div>`}
+        <div class="title">${p.nombre}</div>
+        <div class="price">${toCLP(p.precio)}</div>`;
+      wrap.appendChild(a);
+    });
   }
 
-  /* === Detalle === */
+  /* Detalle */
   const getParam = k => new URLSearchParams(location.search).get(k);
-
   function renderDetalle(){
-    const id = getParam('id');
-    const p = productos.find(x=>x.id===id) || productos[0];
-
-    currentProd = p;
-    selectedOpt = "";
+    const id=getParam('id'); const p=productos.find(x=>x.id===id) || productos[0];
+    currentProd=p; selectedOpt="";
 
     // Migas
-    $('#bc').innerHTML = `<a href="index.html">Inicio</a> › <a href="productos.html">${p.categoria || 'Categoría'}</a> › <span class="muted">${p.nombre}</span>`;
+    document.getElementById('bc').innerHTML =
+      `<a href="index.html">Inicio</a> › <a href="productos.html">${p.categoria||'Categoría'}</a> › <span class="muted">${p.nombre}</span>`;
 
-    // Media izquierda
+    // Guardar como visto
+    addRecentlyViewed(p.id);
+
+    // Media
     const media = `
       <div class="product-media">
         ${p.img ? `<img class="main" src="${p.img}" alt="${p.nombre}">` : `<div class="main"></div>`}
         <div class="thumbs">
-          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
-          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
-          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">` : ''}
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">`:''}
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">`:''}
+          ${p.img ? `<img src="${p.img}" alt="thumb" onclick="document.querySelector('.main').src='${p.img}'">`:''}
         </div>
-      </div>
-    `;
+      </div>`;
 
-    // Info derecha
+    // Info
     const info = `
       <div class="product-info">
         <h1>${p.nombre}</h1>
         <div class="product-price">${toCLP(p.precio)}</div>
-        <p class="muted">${p.desc || 'Descripción del producto.'}</p>
+        <p class="muted" style="color:#ddd">${p.desc||''}</p>
 
         ${p.opciones ? `
-          <div class="opt-actions">
-            <button class="btn" onclick="openOptModal('${p.id}')">Elegir diseño</button>
-            <span id="optLabel" class="opt-chip">Ninguno</span>
-          </div>
-        ` : ``}
+          <div class="opt-actions" style="display:flex;gap:12px;align-items:center;margin:12px 0">
+            <button class="btn-detalle" onclick="openOptModal('${p.id}')">Elegir diseño</button>
+            <span id="optLabel">Ninguno</span>
+          </div>` : ``}
 
         <div class="qty">
           <label for="qty">Cantidad</label>
           <input id="qty" type="number" min="1" value="1">
         </div>
 
-        <button class="btn" onclick="addToCart('${p.id}', parseInt(document.getElementById('qty').value)||1, selectedOpt)">
-          Añadir al carrito
-        </button>
-      </div>
-    `;
+        <button class="btn-detalle" onclick="addToCart('${p.id}', parseInt(document.getElementById('qty').value)||1, selectedOpt)">Añadir al carrito</button>
+      </div>`;
 
-    $('#detalle').innerHTML = media + info;
+    document.getElementById('detalle').innerHTML = media + info;
 
-    // Relacionados
-    const relWrap = $('#relacionados'); relWrap.innerHTML='';
-    productos.filter(x=>x.id!==p.id).slice(0,4).forEach(r=>{
-      const a = document.createElement('a');
-      a.className = 'card';
-      a.href = `producto.html?id=${r.id}`;
-      a.innerHTML = `
-        ${r.img ? `<img src="${r.img}" alt="${r.nombre}" class="ph">` : `<div class="ph"></div>`}
-        <div class="title" style="margin-top:6px">${r.nombre}</div>
-        <div class="price">${toCLP(r.precio)}</div>
-      `;
-      relWrap.appendChild(a);
-    });
+    // Relacionados + Vistos
+    renderRelated(p);
+    renderRecentlyViewed(p.id);
 
     updateOptLabel();
   }
@@ -306,4 +387,5 @@
   </script>
 </body>
 </html>
+
 
