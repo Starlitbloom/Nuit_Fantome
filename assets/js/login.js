@@ -1,10 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-  const usuarios = [
-    { email: "usuario1@ejemplo.com", password: "1234" },
-    { email: "usuario2@ejemplo.com", password: "abcd" }
-  ];
-
   const form = document.getElementById("login-form");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
@@ -16,12 +11,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Limpiar mensajes anteriores
     emailError.textContent = "";
     passwordError.textContent = "";
+    passwordError.style.color = "rgb(94, 25, 163)"; // color original
 
     let valid = true;
 
@@ -41,6 +36,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (!valid) return;
 
+    // Obtener usuarios desde localStorage
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
     // Buscar usuario
     const usuario = usuarios.find(u => u.email === email);
 
@@ -57,30 +55,32 @@ document.addEventListener("DOMContentLoaded", function() {
     passwordError.textContent = "¡Inicio de sesión exitoso!";
     passwordError.style.color = "green";
 
-    // Aquí podrías redirigir a otra página:
-    // window.location.href = "home.html";
+    // Redirigir a index.html después de 1 segundo
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1000);
   });
 
 });
 
 /* Menu desplegable */
-    document.addEventListener("DOMContentLoaded", function () {
-        const btnAcceder = document.querySelector(".btn-acceder");
-        const dropdown = document.querySelector(".dropdown-content");
+document.addEventListener("DOMContentLoaded", function () {
+    const btnAcceder = document.querySelector(".btn-acceder");
+    const dropdown = document.querySelector(".dropdown-content");
 
-        btnAcceder.addEventListener("click", function () {
-            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-        });
-
-        // Se cierra el menú si se hace click fuera
-        window.addEventListener("click", function (e) {
-            if (!e.target.matches(".btn-acceder")) {
-                if (dropdown.style.display === "block") {
-                    dropdown.style.display = "none";
-                }
-            }
-        });
+    btnAcceder.addEventListener("click", function () {
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
     });
+
+    // Se cierra el menú si se hace click fuera
+    window.addEventListener("click", function (e) {
+        if (!e.target.matches(".btn-acceder")) {
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            }
+        }
+    });
+});
 
 /* Menu desplegable */
 function actualizarContador() {

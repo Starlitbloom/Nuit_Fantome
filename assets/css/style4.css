@@ -254,69 +254,110 @@ html, body {
   color: #2c2c2c; /* más oscurito en hover */
 }
 
-/* REGISTER */
-/* Contenedor formulario */
-.form-container {
-  max-width: 400px;
-  margin: 60px auto;
-  padding: 25px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+/* --- Sección Registro */
+.register-section {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.register-box {
+  background-color: #c8d6f8;
+  padding: 40px;
+  border-radius: 15px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   text-align: center;
 }
-.form-container h2 {
-  margin-bottom: 20px;
-  color: #333;
+
+.register-box h2 {
+  color: rgb(94, 25, 163); /* morado */
+  font-size: 32px;
+  margin-bottom: 10px;
 }
 
-/* Grupos del formulario */
-.form-group {
-  text-align: left;
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
-  color: #444;
-}
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-/* Botón */
-.btn {
-  width: 100%;
-  padding: 12px;
-  background: #ff6f61;
-  border: none;
-  border-radius: 8px;
-  color: white;
+.register-box p {
+  color: #757575; /* gris */
   font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.btn:hover {
-  background: #e65b50;
+  margin-bottom: 30px;
 }
 
-/* Footer form */
-.form-footer {
-  margin-top: 15px;
-  font-size: 13px;
+/* --- Input container */
+.input-container {
+  position: relative;
+  margin-bottom: 30px;
 }
-.form-footer a {
-  color: #ff6f61;
+
+.input-container i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(94, 25, 163); /* iconos morados */
+  font-size: 18px;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 12px 12px 12px 40px; /* espacio para el icono */
+  border-radius: 10px;
+  border: 1px solid #aaa;
+  outline: none;
+  font-size: 16px;
+}
+
+.input-container input:focus {
+  border: 1px solid rgb(36, 5, 65);
+  box-shadow: inset 0 0 0 1px rgb(32, 5, 66);
+}
+
+/* --- Mensajes de error debajo del input */
+.error-message {
+  position: absolute;
+  bottom: -20px;       /* justo debajo del input */
+  left: 45px;          /* alineado con el texto del input (espacio del icono) */
+  font-size: 13px;
+  color: rgb(94, 25, 163);
+  white-space: nowrap; /* evita que se vaya a otra línea */
+  display: block;
+}
+
+/* --- Botón Crear Cuenta */
+.btn-crear {
+  background-color: rgb(189, 139, 43);
+  font-family: 'Merriweather', sans-serif;
+  color: white;
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 250px; /* menos ancho lateral */
+  margin: 20px auto 0 auto;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+.btn-crear:hover {
+  background-color: rgb(131, 95, 29);
+}
+
+/* --- Texto de login */
+.login-text {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #757575;
+}
+
+.login-text a {
+  color: rgb(94, 25, 163);
   text-decoration: none;
 }
-.form-footer a:hover {
-  text-decoration: underline;
+
+/* --- Iconos dentro de inputs */
+.input-container i {
+  color: rgb(94, 25, 163);
 }
 
 /* --- Sección Final */

@@ -280,7 +280,7 @@ html, body {
 }
 
 .login-box {
-  background-color: #c8d6f8; /* dorado más intenso */
+  background-color: #c8d6f8;
   padding: 40px 30px;
   border-radius: 15px;
   width: 100%;
@@ -462,7 +462,7 @@ html, body {
 }
 
 /* Hover opcional */
-.btn-login:hover {
+.btn-crear-cuenta:hover {
 
   background-color: rgb(131, 95, 29);
 }
