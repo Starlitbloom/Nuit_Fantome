@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detalle de producto — Nuit Fantôme</title>
+  <title>Detalle de producto — Nuit Fantome</title>
 
   <!-- MISMOS CSS DEL INDEX -->
   <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
@@ -406,6 +406,32 @@
 
     updateOptLabel();
   }
+
+  /* Menu desplegable */
+document.addEventListener("DOMContentLoaded", function () {
+    const btnAcceder = document.querySelector(".btn-acceder");
+    const dropdown = document.querySelector(".dropdown-content");
+
+    btnAcceder.addEventListener("click", function () {
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    });
+
+    // Se cierra el menú si se hace click fuera
+    window.addEventListener("click", function (e) {
+        if (!e.target.matches(".btn-acceder")) {
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            }
+        }
+    });
+});
+
+/* Menu desplegable */
+function actualizarContador() {
+    const contador = document.getElementById("contador");
+    const total = productos.reduce((acc, p) => acc + p.cantidad, 0);
+    contador.textContent = total;
+}
 
   updateCartCount();
   renderDetalle();

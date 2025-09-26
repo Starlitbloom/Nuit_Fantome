@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/css/estilos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
   <style>
     .hero-prods{width:min(1100px,94%);margin:18px auto 8px;padding:18px;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.06);border:1px solid #eee}
     .hero-prods h1{margin:0 0 6px}
@@ -370,6 +371,31 @@
     const p = productos.find(x=>x.id===prodId);
     if(p && p.opciones){ onCardElegir(prodId); return; }
     addToCart(prodId,1,'');
+  }
+  /* Menu desplegable */
+  document.addEventListener("DOMContentLoaded", function () {
+      const btnAcceder = document.querySelector(".btn-acceder");
+      const dropdown = document.querySelector(".dropdown-content");
+
+      btnAcceder.addEventListener("click", function () {
+          dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+      });
+
+      // Se cierra el menú si se hace click fuera
+      window.addEventListener("click", function (e) {
+          if (!e.target.matches(".btn-acceder")) {
+              if (dropdown.style.display === "block") {
+                  dropdown.style.display = "none";
+              }
+          }
+      });
+  });
+
+  /* Menu desplegable */
+  function actualizarContador() {
+      const contador = document.getElementById("contador");
+      const total = productos.reduce((acc, p) => acc + p.cantidad, 0);
+      contador.textContent = total;
   }
 
   updateCartCount();

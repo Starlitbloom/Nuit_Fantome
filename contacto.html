@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contacto - Nuit Fantôme</title>
   <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style2.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
@@ -70,85 +70,122 @@
                     <li><a href="productos.html">PRODUCTOS</a></li>
                     <li><a href="nosotros.html">NOSOTROS</a></li>
                     <li><a href="blogs.html">BLOGS</a></li>
-                    <li><a href="contacto.html">CONTACTO</a></li>
+                    <li><a href="contacto.html" class="active">CONTACTO</a></li>
                 </ul>
             </nav>
     </header>
 
-        <!-- Hero de contacto -->
-        <section class="contacto-hero">
-          <img src="./assets/img/contacto_hero.jpg" alt="Imagen de contacto" class="contact-img">
-          <div class="contact-text">
+    <!-- Sección de contacto -->
+    <main class="contacto">
+        <section class="contact-hero">
+        <img src="assets/img/fondo_contacto.png" alt="Contacto" class="contact-hero-img">
+        <!-- título blanco sobre la imagen -->
+        <div class="contact-hero-title">
+        <div class="title-box">
             <h1>Ponte en contacto con nosotras</h1>
-            <p>Toda nuestra información está más abajo</p>
-          </div>
+        </div>
+        <div class="subtitle-box">
+            <p>Toda nuestra info de contacto está aquí abajo</p>
+        </div>
+        </div>
+
+        <!-- recuadro superpuesto (solo en la parte inferior de la imagen) -->
+        <div class="contact-overlay">
+            <h2 class="overlay-title">Contactate con nosotras</h2>
+            <p class="overlay-sub">Si necesitas ayuda con pedidos, cambios o consultas generales, escríbenos aquí.</p>
+
+            <!-- FORMULARIO -->
+            <form id="contactForm" class="contact-form" novalidate>
+
+            <!-- ASUNTO -->
+            <label class="label-strong" for="asunto">Asunto</label>
+            <div class="field">
+                <select id="asunto" >
+                <option value="">Selecciona una opción</option>
+                <option value="estado">Estado de mi pedido</option>
+                <option value="cambio">Quiero hacer un cambio</option>
+                <option value="devolucion">Quiero devolver mi compra</option>
+                <option value="cancelar">Quiero cancelar mi compra</option>
+                <option value="experiencia">Experiencia en tienda</option>
+                </select>
+            </div>
+
+            <!-- CONTENEDOR DINÁMICO: aquí se inyectan los sub-asuntos y campos -->
+            <div id="dynamicArea"></div>
+
+            <!-- Botón enviar (siempre visible dentro del recuadro) -->
+            <div class="form-actions">
+                <button type="submit" class="btn-enviar">Enviar</button>
+            </div>
+            </form>
+        </div>
         </section>
 
-    </header>
-
-  <!-- Sección de contacto -->
-  <main class="contacto">
-    <section class="contacto-contenido">
-      <h2>Contáctanos</h2>
-      <p>¿Tienes dudas, sugerencias o quieres más información sobre nuestros productos? Escríbenos:</p>
-      
-      <form class="form-contacto">
-        <input type="text" placeholder="Tu nombre" required>
-        <input type="email" placeholder="Tu correo" required>
-        <textarea placeholder="Escribe tu mensaje..." rows="5" required></textarea>
-        <button type="submit">Enviar mensaje</button>
-      </form>
-    </section>
-
-    <section class="contacto-mapa">
-      <h3>Ubícanos</h3>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3..."
-              width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-    </section>
-    <!-- Sección final con imagen, logo, texto y redes sociales -->
-      <section class="final-final">
-          <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
-
-          <div class="final-contenido">
-              <!-- Logo a la izquierda -->
-              <div class="final-logo">
-                  <img src="assets/img/logo.png" alt="Logo Nuit Fantome">
-              </div>
-
-              <!-- Texto motivacional al centro -->
-              <div class="final-texto">
-                  <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
-                  Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
-              </div>
-
-              <!-- Redes sociales a la derecha -->
-              <div class="final-redes">
-                  <div class="siguenos">Síguenos</div>
-                  <div class="iconos-redes">
-                      <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
-                      <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
-                      <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
-                  </div>
-              </div>
-          </div>
-      </section>
-  </main>
-  <!-- Footer -->
-    <footer class="footer-final">
-        <div class="footer-contenido">
-            <!-- Texto -->
-         <div class="footer-texto">
-                © 2025 Nuit Fantome. Todos los derechos reservados.
+        <!-- Después de la imagen volvemos al fondo normal de la página -->
+        <section class="contact-info-wrap container">
+            <div class="contact-info-grid">
+                <div class="contact-card correo" style="background-image: url('assets/img/fondo_envio1.png');">
+                    <h3>Correo</h3>
+                    <p>contacto@nuitfantome.com</p>
+                </div>
+                <div class="contact-card telefono" style="background-image: url('assets/img/fondo_envio2.png');">
+                    <h3>Teléfono</h3>
+                    <p>+56 9 1234 5678</p>
+                </div>
+                <div class="contact-card direccion" style="background-image: url('assets/img/fondo_envio3.png');">
+                    <h3>Dirección</h3>
+                    <p>Santiago, Chile</p>
+                </div>
             </div>
+        </section>
         
-            <!-- Métodos de pago -->
-            <div class="footer-pagos">
-                <img src="assets/img/webpay.png" alt="Webpay">
-                <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
-                <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+
+        <!-- Sección final con imagen, logo, texto y redes sociales -->
+        <section class="final-final">
+            <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
+
+            <div class="final-contenido">
+                <!-- Logo a la izquierda -->
+                <div class="final-logo">
+                    <img src="assets/img/logo.png" alt="Logo Nuit Fantome">
+                </div>
+
+                <!-- Texto motivacional al centro -->
+                <div class="final-texto">
+                    <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
+                    Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
+                </div>
+
+                <!-- Redes sociales a la derecha -->
+                <div class="final-redes">
+                    <div class="siguenos">Síguenos</div>
+                    <div class="iconos-redes">
+                        <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+                        <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+                        <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </footer>
+        </section>
+
+    </main>
+    <!-- Footer -->
+        <footer class="footer-final">
+            <div class="footer-contenido">
+                <!-- Texto -->
+            <div class="footer-texto">
+                    © 2025 Nuit Fantome. Todos los derechos reservados.
+                </div>
+            
+                <!-- Métodos de pago -->
+                <div class="footer-pagos">
+                    <img src="assets/img/webpay.png" alt="Webpay">
+                    <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
+                    <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+                </div>
+            </div>
+        </footer>
   <script src="./assets/js/index.js"></script>
+  <script src="./assets/js/contacto.js"></script>
 </body>
 </html>

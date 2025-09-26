@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Carrito — Nuit Fantôme</title>
+  <title>Carrito — Nuit Fantome</title>
 
   <!-- Ícono + estilos globales del sitio (header/footer) -->
   <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="assets/css/estilos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
   <style>
     /* === Tema pastel Nuit Fantôme — Carrito === */
     :root{
@@ -24,7 +24,7 @@
       --panel:#ffffff;
       --line:#eee9ff;
     }
-    body{background:var(--bg);}
+    body{background:var(--bg) ;}
     .cart{width: min(1000px, 95%); margin: 24px auto 28px;}
 
     /* Título “Tu carrito” bonito */
@@ -707,6 +707,31 @@
       alert('Has elegido Transferencia. Verifica los datos bancarios y adjunta el comprobante.');
     }
   });
+  /* Menu desplegable */
+  document.addEventListener("DOMContentLoaded", function () {
+      const btnAcceder = document.querySelector(".btn-acceder");
+      const dropdown = document.querySelector(".dropdown-content");
+
+      btnAcceder.addEventListener("click", function () {
+          dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+      });
+
+      // Se cierra el menú si se hace click fuera
+      window.addEventListener("click", function (e) {
+          if (!e.target.matches(".btn-acceder")) {
+              if (dropdown.style.display === "block") {
+                  dropdown.style.display = "none";
+              }
+          }
+      });
+  });
+
+  /* Menu desplegable */
+  function actualizarContador() {
+      const contador = document.getElementById("contador");
+      const total = productos.reduce((acc, p) => acc + p.cantidad, 0);
+      contador.textContent = total;
+  }
 
   // Inicializaciones
   populateComunas();

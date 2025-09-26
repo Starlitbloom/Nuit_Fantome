@@ -1,10 +1,14 @@
+
+
+
+
 /* Reset */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Merriweather', sans-serif;
   line-height: 1.6;
-  background: #fafafa;
+  background: rgb(22, 1, 43);
   color: #333;
 }
 

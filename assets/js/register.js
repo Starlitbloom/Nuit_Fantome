@@ -1,93 +1,139 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("registerForm");
 
-  const form = document.getElementById("registerForm");
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-  // Inputs
-  const emailInput = document.getElementById("email");
-  const telefonoInput = document.getElementById("telefono");
-  const cumpleInput = document.getElementById("cumpleanos");
-  const passwordInput = document.getElementById("password");
-  const confirmPasswordInput = document.getElementById("confirmPassword");
+        // Inputs
+        const emailInput = document.getElementById("email");
+        const telefonoInput = document.getElementById("telefono");
+        const cumpleanosInput = document.getElementById("cumpleanos");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
 
-  // Mensajes de error
-  const emailError = document.getElementById("email-error");
-  const telefonoError = document.getElementById("telefono-error");
-  const cumpleError = document.getElementById("cumpleanos-error");
-  const passwordError = document.getElementById("password-error");
-  const confirmPasswordError = document.getElementById("confirmPassword-error");
+        // Error spans
+        const emailError = document.getElementById("email-error");
+        const telefonoError = document.getElementById("telefono-error");
+        const cumpleanosError = document.getElementById("cumpleanos-error");
+        const passwordError = document.getElementById("password-error");
+        const confirmPasswordError = document.getElementById("confirmPassword-error");
 
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
+        // Limpiar mensajes
+        emailError.textContent = "";
+        telefonoError.textContent = "";
+        cumpleanosError.textContent = "";
+        passwordError.textContent = "";
+        confirmPasswordError.textContent = "";
 
-    // Limpiar errores
-    emailError.textContent = "";
-    telefonoError.textContent = "";
-    cumpleError.textContent = "";
-    passwordError.textContent = "";
-    confirmPasswordError.textContent = "";
+        let valid = true;
 
-    let valid = true;
+        // Validar email
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            emailError.textContent = "Por favor ingresa tu correo.";
+            valid = false;
+        } else if (!emailRegex.test(email)) {
+            emailError.textContent = "Correo inválido.";
+            valid = false;
+        }
 
-    const email = emailInput.value.trim();
-    const telefono = telefonoInput.value.trim();
-    const cumple = cumpleInput.value.trim();
-    const password = passwordInput.value.trim();
-    const confirmPassword = confirmPasswordInput.value.trim();
+        // Validar teléfono
+        const telefono = telefonoInput.value.trim();
+        const telefonoRegex = /^\d{8,9}$/;
+        if (!telefono) {
+            telefonoError.textContent = "Por favor ingresa tu teléfono.";
+            valid = false;
+        } else if (!telefonoRegex.test(telefono)) {
+            telefonoError.textContent = "Teléfono debe tener 8 o 9 dígitos.";
+            valid = false;
+        }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Validar cumpleaños
+        const cumpleanos = cumpleanosInput.value.trim();
+        if (!cumpleanos) {
+            cumpleanosError.textContent = "Por favor ingresa tu fecha de cumpleaños.";
+            valid = false;
+        }
 
-    // Validaciones
-    if (!email) {
-      emailError.textContent = "Por favor ingresa tu correo.";
-      valid = false;
-    } else if (!emailRegex.test(email)) {
-      emailError.textContent = "Correo inválido.";
-      valid = false;
-    }
+        // Validar contraseña
+        const password = passwordInput.value.trim();
+        if (!password) {
+            passwordError.textContent = "Por favor ingresa tu contraseña.";
+            valid = false;
+        } else if (password.length < 6) {
+            passwordError.textContent = "La contraseña debe tener al menos 6 caracteres.";
+            valid = false;
+        }
 
-    if (!telefono) {
-      telefonoError.textContent = "Por favor ingresa tu teléfono.";
-      valid = false;
-    } else if (!/^\d{8,9}$/.test(telefono)) {
-      telefonoError.textContent = "El teléfono debe tener 8 o 9 dígitos.";
-      valid = false;
-    }
+        // Validar confirmación
+        const confirmPassword = confirmPasswordInput.value.trim();
+        if (!confirmPassword) {
+            confirmPasswordError.textContent = "Confirma tu contraseña.";
+            valid = false;
+        } else if (password !== confirmPassword) {
+            confirmPasswordError.textContent = "Las contraseñas no coinciden.";
+            valid = false;
+        }
 
-    if (!cumple) {
-      cumpleError.textContent = "Por favor ingresa tu cumpleaños.";
-      valid = false;
-    }
+        if (!valid) return;
 
-    if (!password) {
-      passwordError.textContent = "Por favor ingresa tu contraseña.";
-      valid = false;
-    } else if (password.length < 6) {
-      passwordError.textContent = "La contraseña debe tener al menos 6 caracteres.";
-      valid = false;
-    }
+        // Guardar usuario en localStorage
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+        // Revisar si ya existe el correo
+        if (usuarios.some(u => u.email === email)) {
+            emailError.textContent = "Este correo ya está registrado.";
+            return;
+        }
 
-    if (!confirmPassword) {
-      confirmPasswordError.textContent = "Por favor confirma tu contraseña.";
-      valid = false;
-    } else if (password !== confirmPassword) {
-      confirmPasswordError.textContent = "Las contraseñas no coinciden.";
-      valid = false;
-    }
+        usuarios.push({ email, telefono, cumpleanos, password });
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-    if (!valid) return;
+        alert("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.");
+        form.reset();
 
-    // Guardar usuario en localStorage
-    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    // Verificar si el email ya existe
-    if (usuarios.some(u => u.email === email)) {
-      emailError.textContent = "Este correo ya está registrado.";
-      return;
-    }
+        // Redirigir a login
+        window.location.href = "login.html";
+    });
 
-    usuarios.push({ email, telefono, cumple, password });
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-    alert("¡Usuario registrado correctamente!");
-    form.reset();
-  });
+    // Toggle contraseña
+    const toggleButtons = document.querySelectorAll(".toggle-password");
+    toggleButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const input = this.parentElement.querySelector("input");
+            if (input.type === "password") {
+                input.type = "text";
+                this.querySelector("i").classList.replace("bi-eye-fill", "bi-eye-slash-fill");
+            } else {
+                input.type = "password";
+                this.querySelector("i").classList.replace("bi-eye-slash-fill", "bi-eye-fill");
+            }
+        });
+    });
 });
+
+/* Menu desplegable */
+document.addEventListener("DOMContentLoaded", function () {
+    const btnAcceder = document.querySelector(".btn-acceder");
+    const dropdown = document.querySelector(".dropdown-content");
+
+    btnAcceder.addEventListener("click", function () {
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    });
+
+    // Se cierra el menú si se hace click fuera
+    window.addEventListener("click", function (e) {
+        if (!e.target.matches(".btn-acceder")) {
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            }
+        }
+    });
+});
+
+/* Menu desplegable */
+function actualizarContador() {
+    const contador = document.getElementById("contador");
+    const total = productos.reduce((acc, p) => acc + p.cantidad, 0);
+    contador.textContent = total;
+}

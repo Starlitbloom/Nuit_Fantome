@@ -71,17 +71,20 @@ const productos = [
 
 const contenedor = document.getElementById("productos-container");
 
-// Generar productos dinámicamente
+// Generar productos dinámicamente con enlaces a su ID en producto.html
 productos.forEach(producto => {
     const div = document.createElement("div");
     div.classList.add("producto");
     div.innerHTML = `
-        <a href="producto.html">
             <img src="${producto.img}" alt="${producto.nombre}">
             <p class="categoria">${producto.categoria}</p>
             <h3>${producto.nombre}</h3>
             <p class="precio">${producto.precio}</p>
-        </a>
     `;
+    div.addEventListener("click", () => {
+        window.location.href = `producto.html?id=${producto.id}`;
+    });
+      
     contenedor.appendChild(div);
 });
+

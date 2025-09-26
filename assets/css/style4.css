@@ -298,13 +298,16 @@ html, body {
   font-size: 18px;
 }
 
+/* Input */
 .input-container input {
   width: 100%;
-  padding: 12px 12px 12px 40px; /* espacio para el icono */
+  padding: 12px 40px 12px 40px; /* espacio para iconos izquierda y derecha */
   border-radius: 10px;
   border: 1px solid #aaa;
   outline: none;
   font-size: 16px;
+  position: relative; /* importante para que z-index funcione */
+  z-index: 1;
 }
 
 .input-container input:focus {
@@ -355,9 +358,38 @@ html, body {
   text-decoration: none;
 }
 
-/* --- Iconos dentro de inputs */
-.input-container i {
+/* Mantener el icono del input a la izquierda */
+.input-container i.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   color: rgb(94, 25, 163);
+  font-size: 18px;
+}
+
+
+.input-container .toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  right: 50px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: rgb(94, 25, 163);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  z-index: 2; /* aseguramos que esté por encima del input */
+}
+
+.input-container .toggle-password:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /* --- Sección Final */
