@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -82,6 +82,31 @@
     .modal .m-meta{color:#7b7596; font-size:12px; display:flex; gap:10px; align-items:center}
     .modal .close{position:sticky; top:0; float:right; margin:10px 10px 0 0; background:#f3f0ff;border:0;border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:800}
 
+    /* ===== Galería en Vista Rápida ===== */
+    .gallery{margin:14px 0 10px}
+    .g-main{
+      width:100%;
+      height:320px;
+      object-fit:cover;
+      border-radius:12px;
+      border:1px solid #eee;
+    }
+    .g-thumbs{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .g-thumbs img{
+      width:88px; height:64px; object-fit:cover; cursor:pointer;
+      border-radius:8px; border:2px solid transparent; transition:.15s;
+    }
+    .g-thumbs img.active{border-color:#7c3aed}
+    @media (max-width:560px){
+      .g-main{height:240px}
+      .g-thumbs img{width:72px; height:54px}
+    }
+
     /* Newsletter */
     .newsletter{margin:8px 0 20px}
     .news-card{
@@ -97,7 +122,6 @@
       .news-card{grid-template-columns:1fr}
     }
 
-    /* Reutilizamos tu bloque final y footer global */
     .final-final{margin-top:28px}
   </style>
 </head>
@@ -190,7 +214,7 @@
       </div>
     </section>
 
-    <!-- FINAL-FINAL (reutilizado) -->
+    <!-- FINAL-FINAL -->
     <section class="final-final">
       <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
       <div class="final-contenido">
@@ -232,13 +256,22 @@
       <div class="content">
         <h3 id="mTitle"></h3>
         <div class="m-meta" id="mMeta"></div>
+
+        <!-- Galería para Vista Rápida -->
+        <div class="gallery" id="mGallery" hidden>
+          <img id="gMain" class="g-main" alt="">
+          <div id="gThumbs" class="g-thumbs"></div>
+        </div>
+
         <p id="mBody" style="margin-top:10px"></p>
       </div>
     </div>
   </div>
 
   <script>
-    // --- Datos de ejemplo (cámbialos por los tuyos) ---
+    /* ========= DATOS =========
+       Para el post de washi tape usamos SOLO los nombres de archivo.
+       El código intentará encontrarlos en varias carpetas. */
     const posts = [
       {
         id:'b01',
@@ -257,7 +290,14 @@
         fecha:'2025-02-20',
         lectura:'4 min',
         categoria:'Creatividad',
-        cover:'assets/img/blog/washi-ideas.jpg',
+        /* La portada y la galería se dan como NOMBRES de archivo */
+        cover:'portada-blogs.jpg',
+        images:[
+          'portada-blogs.jpg',
+          'banderitas.jpg',
+          'marca-pagina.jpg',
+          'marco-washi-tape.jpg'
+        ],
         tags:['washi tape','journaling','diy'],
         extracto:'Cinco formas fáciles de usar washi tape en tu cuaderno y escritorio.',
         cuerpo:`El washi tape es versátil: separadores, marcos, banderitas y patrones combinados. Aquí te dejamos cinco ideas rápidas para transformar páginas y etiquetas.`
@@ -297,13 +337,31 @@
       }
     ];
 
-    // --- Estado y utilidades ---
+    /* ===== Helpers ===== */
     const $ = s => document.querySelector(s);
     const grid = $('#grid'), chipsWrap = $('#chips'), ordenSel = $('#orden');
     const cats = ['Todos', ...Array.from(new Set(posts.map(p=>p.categoria)))];
     const state = { cat:'Todos', orden:'recientes' };
 
     function toDate(s){ return new Date(s); }
+
+    // Rutas que probaremos automáticamente para archivos sueltos
+    const BASE_DIRS = ['', 'assets/img/blog/', 'assets/img/blogs/', 'assets/img/'];
+
+    // Carga "inteligente": prueba varias rutas hasta que una funcione
+    function smartLoad(imgEl, filename){
+      // Si ya viene con "/" asumimos que es una ruta completa
+      if(filename.includes('/')){ imgEl.src = filename; return; }
+      imgEl.dataset.idx = 0;
+      const tryNext = ()=>{
+        const i = parseInt(imgEl.dataset.idx || '0', 10);
+        if(i >= BASE_DIRS.length) return; // sin más opciones
+        imgEl.dataset.idx = i + 1;
+        imgEl.src = BASE_DIRS[i] + filename;
+      };
+      imgEl.onerror = tryNext;
+      tryNext();
+    }
 
     // Chips
     function renderChips(){
@@ -321,8 +379,9 @@
     function card(p){
       const el=document.createElement('article');
       el.className='card';
+      const coverId = `thumb-${p.id}`;
       el.innerHTML = `
-        <img class="thumb" src="${p.cover}" alt="${p.titulo}">
+        <img id="${coverId}" class="thumb" alt="${p.titulo}">
         <div class="body">
           <div class="meta"><span><i class="fa-regular fa-calendar"></i> ${new Date(p.fecha).toLocaleDateString('es-CL')}</span> · <span><i class="fa-regular fa-clock"></i> ${p.lectura}</span></div>
           <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
@@ -333,6 +392,9 @@
             <a class="btn-ghost" href="#!" onclick="openModal('${p.id}')">Vista rápida</a>
           </div>
         </div>`;
+      // Cargar portada (soporta archivo suelto o ruta completa)
+      const imgEl = el.querySelector('#'+coverId);
+      smartLoad(imgEl, p.cover);
       return el;
     }
 
@@ -351,14 +413,57 @@
     }
     ordenSel.addEventListener('change', ()=>{ state.orden = ordenSel.value; render(); });
 
-    // Modal
+    /* ===== Modal + Galería ===== */
     function openModal(id){
       const p = posts.find(x=>x.id===id); if(!p) return;
-      $('#mCover').src = p.cover;
+
+      // Portada superior (inteligente)
+      smartLoad($('#mCover'), p.cover);
       $('#mCover').alt = p.titulo;
+
+      // Título y meta
       $('#mTitle').textContent = p.titulo;
-      $('#mMeta').innerHTML = `<span><i class="fa-regular fa-calendar"></i> ${new Date(p.fecha).toLocaleDateString('es-CL')}</span> · <span><i class="fa-regular fa-clock"></i> ${p.lectura}</span> · <span class="tag">${p.categoria}</span>`;
+      $('#mMeta').innerHTML =
+        `<span><i class="fa-regular fa-calendar"></i> ${new Date(p.fecha).toLocaleDateString('es-CL')}</span> · `+
+        `<span><i class="fa-regular fa-clock"></i> ${p.lectura}</span> · <span class="tag">${p.categoria}</span>`;
+
+      // Cuerpo
       $('#mBody').textContent = p.cuerpo;
+
+      // Galería (solo si hay p.images)
+      const gal = $('#mGallery');
+      const gMain = $('#gMain');
+      const gThumbs = $('#gThumbs');
+      if (Array.isArray(p.images) && p.images.length){
+        gal.hidden = false;
+        gThumbs.innerHTML = '';
+        let current = 0;
+
+        const setMain = (i)=>{
+          current = i;
+          smartLoad(gMain, p.images[i]);
+          gMain.alt = `${p.titulo} — imagen ${i+1}`;
+          [...gThumbs.querySelectorAll('img')].forEach((im,idx)=>{
+            im.classList.toggle('active', idx===i);
+          });
+        };
+
+        p.images.forEach((name,i)=>{
+          const im = document.createElement('img');
+          smartLoad(im, name);
+          im.alt = `miniatura ${i+1}`;
+          im.addEventListener('click', ()=> setMain(i));
+          gThumbs.appendChild(im);
+        });
+
+        setMain(0);
+      }else{
+        gal.hidden = true;
+        gThumbs.innerHTML = '';
+        gMain.removeAttribute('src');
+        gMain.removeAttribute('alt');
+      }
+
       $('#blogModal').classList.add('show');
       document.body.style.overflow='hidden';
     }
@@ -368,7 +473,7 @@
     }
     window.openModal=openModal; window.closeModal=closeModal;
 
-    // Contador del carrito (reutiliza tu lógica global si existe)
+    // Contador del carrito
     function updateCartCount(){
       try{
         const c=JSON.parse(localStorage.getItem('nf_cart'))||[];
