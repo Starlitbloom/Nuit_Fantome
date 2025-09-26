@@ -1,3 +1,259 @@
+body {
+    background-color: rgb(22, 1, 43); /* morado oscuro */
+    
+    color: white; /* texto en blanco para que contraste */
+    font-family: 'Merriweather', sans-serif;
+    margin: 0; /* elimina margen por defecto */
+    padding: 0; /* elimina padding por defecto */
+}
+
+/* Evitar scroll horizontal */
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Aplicar box-sizing a todo para evitar desbordes por padding/margin */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Ajuste general de contenedores flexibles */
+.container {
+    max-width: 1200px; /* evita que contenedores grandes generen scroll */
+    margin: 0 auto; /* centra horizontalmente */
+    padding: 0 20px; /* espacio interno mínimo */
+}
+
+/* --- Barra superior */
+.top-bar {
+    width: 100%;
+    background-color: rgb(189, 139, 43); 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    z-index: 1002; /* encima de todo */
+}
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+}
+.top-bar a:hover {
+    text-decoration: underline;
+}
+.redes-sociales a {
+    margin-left: 10px;
+    font-size: 16px;
+    
+}
+
+/* --- Contenedor superior */
+.header-superior {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between; /* logo a la izquierda, usuario/carrito a la derecha */
+    align-items: center;
+    padding: 10px 40px;
+    background-color: rgb(22, 1, 43);
+}
+
+/* Logo */
+.logo img {
+    margin-top: 20px;
+    height: 190px;
+    width: auto; /* mantiene proporción original, asi no se deforma */
+}
+
+/* Barra de búsqueda centrada */
+.busqueda form {
+    display: flex;
+    align-items: center;
+}
+.busqueda input {
+    width: 300px;
+    font-size: 16px; /* Cambia este valor al tamaño que quieras */
+    font-family: 'Merriweather', sans-serif;
+    padding: 12px 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.busqueda button {
+    background-color: transparent;
+    border: none;
+    margin-left: -45px;       /* icono dentro de la barra */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.busqueda button i {
+    font-size: 20px;          /* tamaño de la lupa */
+    color: rgb(189, 139, 43);
+}
+
+/* Usuario / carrito a la derecha */
+.usuario-carrito {
+    display: flex;
+    align-items: center;
+}
+.usuario-carrito a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+}
+.usuario-carrito img {
+    height: 30px;
+    margin-left: 10px;
+}
+
+/* Botón ACCEDER */
+.btn-acceder {
+    background-color: rgb(189, 139, 43);
+    color: white;
+    font-family: 'Merriweather', sans-serif;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* animación suave */
+}
+
+/* Hover: más oscuro */
+.btn-acceder:hover {
+    background-color: rgb(131, 95, 29);
+}
+
+/* Contenedor del dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Contenido del dropdown */
+.dropdown-content {
+    display: none;              /* oculto por defecto */
+    position: absolute;
+    top: 110%; /* un poquito más abajo que el botón */
+    left: 50%; /* centra horizontalmente */
+    transform: translateX(-50%); /* ajusta al centro */
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 1001;
+    text-align: center; /* centra los textos dentro */
+}
+
+/* Links dentro del dropdown */
+.dropdown-content a {
+    display: block;
+    width: 100%;              /* ocupar todo el ancho */
+    padding: 12px 0 !important;  /* quitamos margen lateral */
+    margin: 0 !important;
+    text-align: center !important; /* 🔹 fuerza al centro */
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;   /* asegura que no se desordene */
+}
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+.dropdown-content a:hover {
+    background-color: #eee;
+}
+
+/* --- Carrito */
+.carrito {
+    position: relative;
+    display: inline-block;
+    margin-left: 25px;
+    cursor: pointer;
+    font-size: 22px;
+    color: rgb(189, 139, 43);
+}
+.carrito i {
+    font-size: 30px;
+}
+
+/* Contador del carrito*/
+.carrito .contador {
+    position: absolute;
+    top: -2px;
+    right: -10px;
+    background: rgb(189, 139, 43);
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* --- Barra de navegación sticky */
+.barra-tareas {
+    background-color: #f7effc;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.barra-tareas ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  background-color: #f4ecfa; /* color base */
+  margin: -15px;
+  padding: 14px;
+}
+
+.barra-tareas ul li {
+  position: relative;
+}
+
+.barra-tareas ul li a {
+  display: block;
+  padding: 14px 30px;
+  text-decoration: none;
+  color: #636263;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+/* Separador entre los ítems */
+.barra-tareas ul li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background-color: #cacaca; /* línea tenue */
+}
+/* Página activa */
+.barra-tareas ul li a.active {
+  color: rgb(44, 44, 44); /* más oscurito */
+  font-weight: 600;
+}
+
+/* Hover */
+.barra-tareas ul li a:hover {
+  color: #2c2c2c; /* más oscurito en hover */
+}
+
 /* Página NOSOTROS */
 .nosotros {
   font-family: 'Merriweather', serif;
@@ -62,3 +318,130 @@
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
+
+/* --- Sección Final */
+.final-final {
+    position: relative;
+    width: 100%;
+    height: 350px; /* puedes ajustar según la altura que quieras */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.final-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* ajusta qué parte de la imagen se ve */
+    z-index: 1;
+}
+
+.final-contenido {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    align-items: center; /* centra verticalmente */
+    justify-content: space-between; /* logo izquierda, redes derecha */
+    padding: 0 90px; /* elimina cualquier padding extra */
+}
+
+/* Logo */
+.final-logo {
+    display: flex;
+    align-items: center;
+}
+.final-logo img {
+    width: 360px;
+    height: auto;
+    transform: translateY(25px); /* baja el logo 15px */
+}
+
+/* Texto central */
+.final-texto {
+    flex: 0 1 900px; /* limita ancho máximo del texto */
+    color: rgb(255, 255, 255);
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    text-shadow: 1px 1px 4px rgba(36, 0, 59, 0.788);
+}
+
+/* Redes sociales */
+.final-redes {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centra la columna */
+    margin: 0; /* elimina márgenes */
+}
+
+.final-redes .siguenos {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.iconos-redes {
+    display: flex;
+    gap: 15px;
+}
+
+.iconos-redes img {
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s;
+}
+
+.iconos-redes img:hover {
+    transform: scale(1.2);
+}
+
+/* --- Footer */
+.footer-final {
+    background-color: rgb(22, 1, 43); /* morado oscuro */
+    padding: 10px 90px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-left: -650px; /* elimina margen lateral */
+}
+
+.footer-contenido {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; /* texto izquierda, pagos derecha */
+    align-items: center;
+}
+
+.footer-texto {
+    font-size: 16px;
+    flex: 0 0 auto;
+    text-align: left;
+    flex-grow: 1; /* ocupa todo el espacio disponible */
+}
+
+.footer-pagos {
+    display: flex;
+    gap: 20px; /* más espacio entre iconos */
+    flex: 0 0 auto; 
+    flex-shrink: 0; /* no se encojan */
+    margin-left: 1090px;
+}
+
+.footer-pagos img {
+    height: 50px; /* tamaño pequeño */
+    margin-left: 15px;
+    border: 1px solid #ccc; /* borde gris */
+    border-radius: 5px;
+    padding: 3px;
+}
+

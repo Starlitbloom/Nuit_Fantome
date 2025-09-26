@@ -3,24 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro</title>
-  <link rel="stylesheet" href="styles4.css">
+  <title>Registro - Nuit Fantome</title>
+  <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
   <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <!-- Header / Navbar -->
-  <header>
-    <nav class="navbar">
-      <a href="index.html" class="logo">MiTienda</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="nosotros.html">Nosotros</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
-        <li><a href="login.html">Acceder</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!-- Barra superior -->
+    <div class="top-bar">
+        <div class="info-envios">
+            <span>ENVÍOS GRATIS DESDE $24.990</span>
+        </div>
+        <div class="derecha-redes-sociales">
+            <a href="cambios.html">Cambios o Devoluciones</a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="mailto:contacto@nuitfantome.com"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+    
+    <header>
+        <!-- Fila superior: logo, búsqueda, usuario/carrito -->
+        <div class="header-superior">
+            <!-- Logo a la izquierda -->
+            <div class="logo">
+                <a href="index.html">
+                    <img src="./assets/img/logo.png" alt="Logo Nuit Fantome">
+                </a>
+            </div>
+
+            <!-- Barra de búsqueda en el centro -->
+            <div class="busqueda">
+                <form action="productos.html" method="get"> 
+                    <input type="text" name="buscar" placeholder="Buscar productos...">
+                    <button type="submit">  
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>  
+            </div>
+
+            <!-- Login/Registro y carrito a la derecha -->
+            <div class="usuario-carrito">
+                <div class="dropdown">
+                    <button class="btn-acceder">ACCEDER</button>
+                    <div class="dropdown-content">
+                        <a href="login.html">Iniciar Sesión</a>
+                        <a href="register.html">Registrarse</a>
+                    </div>
+                </div>    
+                <!-- Carrito -->
+                <a href="carrito.html" style="text-decoration: none;">
+                    <div class="carrito">
+                        <i class="bi bi-bag"></i>
+                        <span class="contador" id="contador">0</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+            <!-- Barra de navegación sticky -->
+            <nav class="barra-tareas">
+                <ul>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="productos.html">PRODUCTOS</a></li>
+                    <li><a href="nosotros.html">NOSOTROS</a></li>
+                    <li><a href="blogs.html">BLOGS</a></li>
+                    <li><a href="contacto.html">CONTACTO</a></li>
+                </ul>
+            </nav>
+    </header>
 
   <!-- Formulario de registro -->
   <main class="form-container">
@@ -52,11 +107,50 @@
         ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
       </p>
     </form>
-  </main>
+    <!-- Sección final con imagen, logo, texto y redes sociales -->
+      <section class="final-final">
+          <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
 
+          <div class="final-contenido">
+              <!-- Logo a la izquierda -->
+              <div class="final-logo">
+                  <img src="assets/img/logo.png" alt="Logo Nuit Fantome">
+              </div>
+
+              <!-- Texto motivacional al centro -->
+              <div class="final-texto">
+                  <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
+                  Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
+              </div>
+
+              <!-- Redes sociales a la derecha -->
+              <div class="final-redes">
+                  <div class="siguenos">Síguenos</div>
+                  <div class="iconos-redes">
+                      <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+                      <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+                      <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+                  </div>
+              </div>
+          </div>
+      </section>
+  </main>
   <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 MiTienda. Todos los derechos reservados.</p>
-  </footer>
+    <footer class="footer-final">
+        <div class="footer-contenido">
+            <!-- Texto -->
+         <div class="footer-texto">
+                © 2025 Nuit Fantome. Todos los derechos reservados.
+            </div>
+        
+            <!-- Métodos de pago -->
+            <div class="footer-pagos">
+                <img src="assets/img/webpay.png" alt="Webpay">
+                <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
+                <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+            </div>
+        </div>
+    </footer>
+  <script src="./assets/js/index.js"></script>
 </body>
 </html>

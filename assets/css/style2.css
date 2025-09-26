@@ -8,7 +8,27 @@ body {
     padding: 0; /* elimina padding por defecto */
 }
 
-/* Barra superior */
+/* Evitar scroll horizontal */
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Aplicar box-sizing a todo para evitar desbordes por padding/margin */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Ajuste general de contenedores flexibles */
+.container {
+    max-width: 1200px; /* evita que contenedores grandes generen scroll */
+    margin: 0 auto; /* centra horizontalmente */
+    padding: 0 20px; /* espacio interno mínimo */
+}
+
+/* --- Barra superior */
 .top-bar {
     width: 100%;
     background-color: rgb(189, 139, 43); 
@@ -38,20 +58,20 @@ body {
     
 }
 
-/* Contenedor superior */
+/* --- Contenedor superior */
 .header-superior {
     margin-top: 25px;
     display: flex;
     justify-content: space-between; /* logo a la izquierda, usuario/carrito a la derecha */
     align-items: center;
-    padding: 10px 80px;
+    padding: 10px 40px;
     background-color: rgb(22, 1, 43);
 }
 
 /* Logo */
 .logo img {
     margin-top: 20px;
-    height: 210px;
+    height: 190px;
     width: auto; /* mantiene proporción original, asi no se deforma */
 }
 
@@ -157,7 +177,7 @@ body {
     background-color: #eee;
 }
 
-/* Carrito */
+/* --- Carrito */
 .carrito {
     position: relative;
     display: inline-block;
@@ -170,7 +190,7 @@ body {
     font-size: 30px;
 }
 
-/* Contador */
+/* Contador del carrito*/
 .carrito .contador {
     position: absolute;
     top: -2px;
@@ -183,101 +203,15 @@ body {
     font-weight: bold;
 }
 
-/* Dropdown del carrito */
-.carrito-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 120%;
-    background: #fff;
-    width: 300px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    border-radius: 12px;
-    padding: 15px;
-    z-index: 1002;
-}
-.carrito:hover .carrito-dropdown {
-    display: block; /* se muestra al pasar el mouse */
-}
-.carrito-dropdown h4 {
-    margin: 0 0 10px;
-    font-size: 16px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 8px;
-}
-.carrito-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-.carrito-item img {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    margin-right: 10px;
-}
-.carrito-info {
-    flex: 1;
-}
-.carrito-info .nombre {
-    font-size: 14px;
-    margin: 0;
-}
-.carrito-info .precio {
-    font-size: 13px;
-    color: #666;
-    margin: 5px 0;
-}
-.cantidad {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.cantidad button {
-    border: none;
-    background: #eee;
-    padding: 4px 8px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.fa-trash {
-    color: #888;
-    cursor: pointer;
-    margin-left: 10px;
-}
-.fa-trash:hover {
-    color: red;
-}
-.carrito-subtotal {
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-    font-weight: bold;
-    text-align: right;
-}
-.btn-finalizar {
-    width: 100%;
-    background: #ff6f61;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.btn-finalizar:hover {
-    background: #e65b50;
-}
-
-/* Barra de navegación sticky */
+/* --- Barra de navegación sticky */
 .barra-tareas {
     background-color: #f7effc;
     color: #ffffff;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
+
 .barra-tareas ul {
   list-style: none;
   display: flex;
@@ -286,9 +220,11 @@ body {
   margin: -15px;
   padding: 14px;
 }
+
 .barra-tareas ul li {
   position: relative;
 }
+
 .barra-tareas ul li a {
   display: block;
   padding: 14px 30px;
@@ -415,5 +351,131 @@ body {
 
 .form-contacto button:hover {
   background: #e0559e;
+}
+
+/* --- Sección Final */
+.final-final {
+    position: relative;
+    width: 100%;
+    height: 350px; /* puedes ajustar según la altura que quieras */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.final-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* ajusta qué parte de la imagen se ve */
+    z-index: 1;
+}
+
+.final-contenido {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    align-items: center; /* centra verticalmente */
+    justify-content: space-between; /* logo izquierda, redes derecha */
+    padding: 0 90px; /* elimina cualquier padding extra */
+}
+
+/* Logo */
+.final-logo {
+    display: flex;
+    align-items: center;
+}
+.final-logo img {
+    width: 360px;
+    height: auto;
+    transform: translateY(25px); /* baja el logo 15px */
+}
+
+/* Texto central */
+.final-texto {
+    flex: 0 1 900px; /* limita ancho máximo del texto */
+    color: rgb(255, 255, 255);
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    text-shadow: 1px 1px 4px rgba(36, 0, 59, 0.788);
+}
+
+/* Redes sociales */
+.final-redes {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centra la columna */
+    margin: 0; /* elimina márgenes */
+}
+
+.final-redes .siguenos {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.iconos-redes {
+    display: flex;
+    gap: 15px;
+}
+
+.iconos-redes img {
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s;
+}
+
+.iconos-redes img:hover {
+    transform: scale(1.2);
+}
+
+/* --- Footer */
+.footer-final {
+    background-color: rgb(22, 1, 43); /* morado oscuro */
+    padding: 10px 90px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-left: -650px; /* elimina margen lateral */
+}
+
+.footer-contenido {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; /* texto izquierda, pagos derecha */
+    align-items: center;
+}
+
+.footer-texto {
+    font-size: 16px;
+    flex: 0 0 auto;
+    text-align: left;
+    flex-grow: 1; /* ocupa todo el espacio disponible */
+}
+
+.footer-pagos {
+    display: flex;
+    gap: 20px; /* más espacio entre iconos */
+    flex: 0 0 auto; 
+    flex-shrink: 0; /* no se encojan */
+    margin-left: 1090px;
+}
+
+.footer-pagos img {
+    height: 50px; /* tamaño pequeño */
+    margin-left: 15px;
+    border: 1px solid #ccc; /* borde gris */
+    border-radius: 5px;
+    padding: 3px;
 }
 
