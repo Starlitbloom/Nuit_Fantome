@@ -3,170 +3,352 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nosotros - Nuit Fantôme</title>
+  <title>Nosotros — Nuit Fantôme</title>
   <link rel="icon" href="assets/img/icono_pag.png" type="image/png">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
+
+  <!-- Estilos propios SOLO para esta página -->
+  <style>
+    :root{
+      --nf-bg:#0f0321;
+      --nf-card:#ffffff;
+      --nf-soft:#f5f2ff;
+      --nf-primary:#7c3aed;
+      --nf-primary-2:#a78bfa;
+      --nf-ink:#2b254a;
+      --nf-muted:#6c6a7a;
+      --nf-ring: rgba(124,58,237,.28);
+    }
+
+    /* Layout base de la página */
+    main.nosotros{color:#fff;background:var(--nf-bg);}
+    .container{width:min(1100px,92%);margin-inline:auto}
+
+    /* HERO */
+    .hero-nosotros{
+      position:relative;
+      background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+      padding:64px 0 54px;
+      text-align:center;
+      overflow:hidden;
+    }
+    .hero-nosotros h1{
+      margin:0;
+      font-size:clamp(28px,4vw,40px);
+      letter-spacing:.5px;
+    }
+    .hero-nosotros p{
+      margin:10px auto 0;
+      color:#e9e6ff;
+      max-width:760px;
+      font-size:clamp(14px,2.2vw,18px);
+    }
+    /* Estrellitas flotando */
+    .spark{
+      position:absolute; width:14px; height:14px; border-radius:50%;
+      background: radial-gradient(#fff,rgba(255,255,255,.1));
+      filter:drop-shadow(0 0 10px #fff);
+      animation: float 8s linear infinite;
+    }
+    .spark.s1{left:8%; top:28%; animation-duration:7.5s}
+    .spark.s2{left:82%; top:22%}
+    .spark.s3{left:18%; top:70%; animation-duration:9s}
+    .spark.s4{left:72%; top:68%; animation-duration:10s}
+    @keyframes float{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+      100%{transform:translateY(0)}
+    }
+
+    /* Tarjeta “quiénes somos” */
+    .card{
+      background:var(--nf-card);
+      color:var(--nf-ink);
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:22px;
+      box-shadow:0 16px 40px rgba(17,16,40,.14);
+    }
+    .card p{color:#4a4568}
+
+    .grid-2{
+      display:grid; gap:18px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+    @media (max-width:900px){ .grid-2{grid-template-columns:1fr} }
+
+    /* Timeline simple */
+    .timeline{
+      position:relative; padding-left:24px;
+    }
+    .timeline::before{
+      content:""; position:absolute; left:8px; top:4px; bottom:4px;
+      width:2px; background:linear-gradient(var(--nf-primary), var(--nf-primary-2));
+      border-radius:999px;
+    }
+    .t-item{position:relative; margin:14px 0 14px 0}
+    .t-item::before{
+      content:""; position:absolute; left:-17px; top:.4em;
+      width:10px; height:10px; border-radius:50%;
+      background:var(--nf-primary); box-shadow:0 0 0 4px var(--nf-ring);
+    }
+    .t-item h4{margin:0 0 4px; font-size:15px; color:#382e76}
+    .t-item p{margin:0; color:#635c86; font-size:14px}
+
+    /* Misión / Visión */
+    .mv{display:grid; gap:16px; grid-template-columns:1fr 1fr; margin-top:16px}
+    @media (max-width:820px){ .mv{grid-template-columns:1fr} }
+    .mv .card{background:linear-gradient(#fff,#fff) padding-box, linear-gradient(90deg,#eae7ff,#fff) border-box; border:1px solid transparent}
+    .mv h3{margin:0 0 8px; color:#382e76}
+
+    /* Valores chips */
+    .valores-wrap{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px}
+    .chip{
+      border:1px solid #ece7ff; background:var(--nf-soft); color:#2b2452;
+      padding:8px 12px; border-radius:999px; font-weight:700; display:inline-flex; align-items:center; gap:8px
+    }
+    .chip i{color:var(--nf-primary)}
+
+    /* Beneficios */
+    .beneficios{
+      display:grid; gap:16px; grid-template-columns:repeat(4,1fr);
+      margin-top:18px
+    }
+    @media (max-width:920px){ .beneficios{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:540px){ .beneficios{grid-template-columns:1fr} }
+    .b-card{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px; color:#2b254a}
+    .b-card h4{margin:10px 0 6px}
+    .b-icon{
+      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(90deg,var(--nf-primary),var(--nf-primary-2)); color:#fff; font-size:18px
+    }
+
+    /* FAQ (acordeón) */
+    .faq{margin-top:8px}
+    details{
+      background:#170a33; border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; padding:12px 14px; margin:10px 0
+    }
+    details[open]{border-color:rgba(124,58,237,.45); box-shadow:0 8px 24px rgba(124,58,237,.12)}
+    summary{cursor:pointer; font-weight:700; color:#e9e6ff; list-style:none}
+    summary::-webkit-details-marker{display:none}
+    details p{color:#cfcbe6; margin:10px 2px 2px}
+
+    /* Espaciados de secciones */
+    section.section{padding:28px 0}
+    .section h2{margin:0 0 10px}
+    /* >>> FIX: color visible en párrafo destacado dentro de tarjeta blanca <<< */
+    .section p.lead{color:#4a4568; font-size:16px; line-height:1.6;}
+
+    /* CTA suave arriba del footer (reutiliza tu bloque final) */
+    .final-final{margin-top:28px}
+  </style>
 </head>
 <body>
   <!-- Barra superior -->
-    <div class="top-bar">
-        <div class="info-envios">
-            <span>ENVÍOS GRATIS DESDE $24.990</span>
-        </div>
-        <div class="derecha-redes-sociales">
-            <a href="cambios.html">Cambios o Devoluciones</a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="mailto:contacto@nuitfantome.com"><i class="fas fa-envelope"></i></a>
-        </div>
+  <div class="top-bar">
+    <div class="info-envios"><span>ENVÍOS GRATIS DESDE $24.990</span></div>
+    <div class="derecha-redes-sociales">
+      <a href="cambios.html">Cambios o Devoluciones</a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="mailto:contacto@nuitfantome.com"><i class="fas fa-envelope"></i></a>
     </div>
-    
-    <header>
-        <!-- Fila superior: logo, búsqueda, usuario/carrito -->
-        <div class="header-superior">
-            <!-- Logo a la izquierda -->
-            <div class="logo">
-                <a href="index.html">
-                    <img src="./assets/img/logo.png" alt="Logo Nuit Fantome">
-                </a>
-            </div>
+  </div>
 
-            <!-- Barra de búsqueda en el centro -->
-            <div class="busqueda">
-                <form action="productos.html" method="get"> 
-                    <input type="text" name="buscar" placeholder="Buscar productos...">
-                    <button type="submit">  
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>  
-            </div>
-
-            <!-- Login/Registro y carrito a la derecha -->
-            <div class="usuario-carrito">
-                <div class="dropdown">
-                    <button class="btn-acceder">ACCEDER</button>
-                    <div class="dropdown-content">
-                        <a href="login.html">Iniciar Sesión</a>
-                        <a href="register.html">Registrarse</a>
-                    </div>
-                </div>    
-                <!-- Carrito -->
-                <a href="carrito.html" style="text-decoration: none;">
-                    <div class="carrito">
-                        <i class="bi bi-bag"></i>
-                        <span class="contador" id="contador">0</span>
-                    </div>
-                </a>
-
-            </div>
+  <!-- Header (igual al resto del sitio) -->
+  <header>
+    <div class="header-superior">
+      <div class="logo"><a href="index.html"><img src="./assets/img/logo.png" alt="Logo Nuit Fantome"></a></div>
+      <div class="busqueda">
+        <form action="productos.html" method="get">
+          <input type="text" name="buscar" placeholder="Buscar productos...">
+          <button type="submit"><i class="bi bi-search"></i></button>
+        </form>
+      </div>
+      <div class="usuario-carrito">
+        <div class="dropdown">
+          <button class="btn-acceder">ACCEDER</button>
+          <div class="dropdown-content">
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="register.html">Registrarse</a>
+          </div>
         </div>
-            <!-- Barra de navegación sticky -->
-            <nav class="barra-tareas">
-                <ul>
-                    <li><a href="index.html">INICIO</a></li>
-                    <li><a href="productos.html">PRODUCTOS</a></li>
-                    <li><a href="nosotros.html">NOSOTROS</a></li>
-                    <li><a href="blogs.html">BLOGS</a></li>
-                    <li><a href="contacto.html">CONTACTO</a></li>
-                </ul>
-            </nav>
-    </header>
+        <a href="carrito.html" style="text-decoration:none">
+          <div class="carrito"><i class="bi bi-bag"></i><span class="contador" id="contador">0</span></div>
+        </a>
+      </div>
+    </div>
+    <nav class="barra-tareas">
+      <ul>
+        <li><a href="index.html">INICIO</a></li>
+        <li><a href="productos.html">PRODUCTOS</a></li>
+        <li><a class="active" href="nosotros.html">NOSOTROS</a></li>
+        <li><a href="blogs.html">BLOGS</a></li>
+        <li><a href="contacto.html">CONTACTO</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main class="nosotros">
+    <!-- HERO -->
     <section class="hero-nosotros">
-      <h1>Sobre nosotros</h1>
-      <p>Conoce más acerca de Nuit Fantôme, nuestra historia y lo que nos inspira.</p>
-    </section>
-
-    <section class="historia">
+      <span class="spark s1"></span><span class="spark s2"></span>
+      <span class="spark s3"></span><span class="spark s4"></span>
       <div class="container">
-        <h2>Nuestra historia</h2>
-        <p>
-          Nuit Fantôme nació con el propósito de crear una papelería diferente: 
-          no solo ofrecer productos de calidad, sino también inspirar a las personas 
-          a plasmar sus ideas, sueños y proyectos de una manera única. Creemos en el 
-          poder de la creatividad y en cómo puede conectar a las personas.
-        </p>
+        <h1>Sobre nosotros</h1>
+        <p>Conoce más acerca de <strong>Nuit Fantôme</strong>, nuestra historia y lo que nos inspira para crear papelería que te acompaña en cada idea ✨</p>
       </div>
     </section>
 
-    <section class="mision-vision">
-      <div class="container">
-        <div class="mision">
-          <h2>Misión</h2>
-          <p>
-            Ser una tienda de papelería que fomente la creatividad y 
-            acompañe a las personas en cada etapa de su vida creativa.
-          </p>
+    <!-- QUIÉNES SOMOS + TIMELINE -->
+    <section class="section">
+      <div class="container grid-2">
+        <article class="card">
+          <h2 style="margin:0 0 8px">¿Quiénes somos?</h2>
+          <p class="lead">Somos una papelería creativa con alma nostálgica. Diseñamos y curamos productos bonitos, funcionales y de calidad, para que planificar, estudiar o crear sea un momento que disfrutes.</p>
+          <p>Creemos en el poder de los colores y los objetos que cuentan historias. Por eso combinamos colecciones temáticas, materiales confiables y un toque kawaii que hace sonreír a tu escritorio.</p>
+        </article>
+
+        <aside class="card">
+          <h3 style="margin:0 0 6px; color:#382e76">Nuestra historia</h3>
+          <div class="timeline">
+            <div class="t-item">
+              <h4>2019 · La idea</h4>
+              <p>Nace el sueño de una papelería distinta que mezcle estética y utilidad.</p>
+            </div>
+            <div class="t-item">
+              <h4>2021 · Primer catálogo</h4>
+              <p>Lanzamos sets temáticos y empezamos a llegar a escritorios de todo Chile.</p>
+            </div>
+            <div class="t-item">
+              <h4>2024 · Comunidad</h4>
+              <p>Sumamos colecciones propias y creamos guías para estudiar y organizar.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- MISIÓN / VISIÓN -->
+    <section class="section">
+      <div class="container mv">
+        <div class="card">
+          <h3>Misión</h3>
+          <p>Fomentar la creatividad y acompañarte en cada etapa con papelería física y digital que te motive a lograrlo todo.</p>
         </div>
-        <div class="vision">
-          <h2>Visión</h2>
-          <p>
-            Convertirnos en una comunidad donde el arte, las ideas y la inspiración 
-            fluyan a través de cada producto que ofrecemos.
-          </p>
+        <div class="card">
+          <h3>Visión</h3>
+          <p>Ser una comunidad donde el arte y las ideas fluyen; un lugar donde cada producto inspira a empezar.</p>
         </div>
       </div>
     </section>
 
-    <section class="valores">
+    <!-- VALORES -->
+    <section class="section">
       <div class="container">
         <h2>Nuestros valores</h2>
-        <ul>
-          <li>✨ Creatividad</li>
-          <li>💜 Pasión</li>
-          <li>🌱 Sostenibilidad</li>
-          <li>🤝 Conexión humana</li>
-        </ul>
+        <div class="valores-wrap">
+          <span class="chip"><i class="fa-solid fa-wand-magic-sparkles"></i> Creatividad</span>
+          <span class="chip"><i class="fa-solid fa-heart"></i> Pasión</span>
+          <span class="chip"><i class="fa-solid fa-seedling"></i> Sostenibilidad</span>
+          <span class="chip"><i class="fa-solid fa-handshake-angle"></i> Conexión humana</span>
+        </div>
       </div>
     </section>
-    <!-- Sección final con imagen, logo, texto y redes sociales -->
-      <section class="final-final">
-          <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
 
-          <div class="final-contenido">
-              <!-- Logo a la izquierda -->
-              <div class="final-logo">
-                  <img src="assets/img/logo.png" alt="Logo Nuit Fantome">
-              </div>
-
-              <!-- Texto motivacional al centro -->
-              <div class="final-texto">
-                  <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital. 
-                  Sabías que si tu escritorio tiene colores y te gusta, la motivación y la productividad llega por sí sola?</p>
-              </div>
-
-              <!-- Redes sociales a la derecha -->
-              <div class="final-redes">
-                  <div class="siguenos">Síguenos</div>
-                  <div class="iconos-redes">
-                      <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
-                      <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
-                      <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
-                  </div>
-              </div>
+    <!-- POR QUÉ ELEGIRNOS -->
+    <section class="section">
+      <div class="container">
+        <h2>¿Por qué elegirnos?</h2>
+        <div class="beneficios">
+          <div class="b-card">
+            <div class="b-icon"><i class="fa-solid fa-star"></i></div>
+            <h4>Calidad que se nota</h4>
+            <p>Papeles, tintas y acabados que resisten el día a día sin sacrificar lo bonito.</p>
           </div>
-      </section>
-  </main>
-  <!-- Footer -->
-    <footer class="footer-final">
-        <div class="footer-contenido">
-            <!-- Texto -->
-         <div class="footer-texto">
-                © 2025 Nuit Fantome. Todos los derechos reservados.
-            </div>
-        
-            <!-- Métodos de pago -->
-            <div class="footer-pagos">
-                <img src="assets/img/webpay.png" alt="Webpay">
-                <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
-                <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
-            </div>
+          <div class="b-card">
+            <div class="b-icon"><i class="fa-solid fa-gift"></i></div>
+            <h4>Colecciones pensadas</h4>
+            <p>Sets coordinados para que todo combine y organizar sea un placer.</p>
+          </div>
+          <div class="b-card">
+            <div class="b-icon"><i class="fa-solid fa-truck"></i></div>
+            <h4>Despacho seguro</h4>
+            <p>Empaques protegidos y seguimiento para que llegue perfecto a tus manos.</p>
+          </div>
+          <div class="b-card">
+            <div class="b-icon"><i class="fa-solid fa-people-group"></i></div>
+            <h4>Comunidad</h4>
+            <p>Tutoriales, ideas y tips para estudiar, planificar y crear sin bloqueo.</p>
+          </div>
         </div>
-    </footer>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="container">
+        <h2>Preguntas frecuentes</h2>
+        <div class="faq">
+          <details>
+            <summary>¿Hacen envíos a todo Chile?</summary>
+            <p>Sí. Enviamos a todo el país con diferentes couriers. Los costos y plazos se calculan en el checkout según tu comuna.</p>
+          </details>
+          <details>
+            <summary>¿Los productos tienen garantía?</summary>
+            <p>Por supuesto. Si algo llega dañado o con fallas, escríbenos dentro de los 10 días y lo cambiamos o reembolsamos.</p>
+          </details>
+          <details>
+            <summary>¿Puedo pedir un regalo?</summary>
+            <p>Sí. Podemos incluir una tarjetita con tu mensaje y empaquetado bonito sin costo adicional.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección final (tu bloque estándar) -->
+    <section class="final-final">
+      <img src="assets/img/fondo_footer.png" alt="Fondo final" class="final-bg">
+      <div class="final-contenido">
+        <div class="final-logo"><img src="assets/img/logo.png" alt="Logo Nuit Fantome"></div>
+        <div class="final-texto">
+          <p>Te ayudamos a planificar para lograrlo todo con nuestra papelería física y digital.
+          Si tu escritorio tiene colores y te encanta, la motivación llega por sí sola ✨</p>
+        </div>
+        <div class="final-redes">
+          <div class="siguenos">Síguenos</div>
+          <div class="iconos-redes">
+            <a href="https://instagram.com"><img src="assets/img/logo_instagram.png" alt="Instagram"></a>
+            <a href="https://facebook.com"><img src="assets/img/logo_facebook.png" alt="Facebook"></a>
+            <a href="mailto:contacto@nuitfantome.com"><img src="assets/img/logo_gmail.png" alt="Email"></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-final">
+    <div class="footer-contenido">
+      <div class="footer-texto">© 2025 Nuit Fantome. Todos los derechos reservados.</div>
+      <div class="footer-pagos">
+        <img src="assets/img/webpay.png" alt="Webpay">
+        <img src="assets/img/transferencia.png" alt="Transferencia bancaria">
+        <img src="assets/img/mercado_pago.png" alt="Mercado Pago">
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS global para contador, etc -->
   <script src="./assets/js/index.js"></script>
 </body>
 </html>
+
+
