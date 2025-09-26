@@ -68,6 +68,7 @@
       background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%); color:#fff;
       border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;
       box-shadow:0 6px 14px rgba(124,58,237,.25);
+      text-decoration:none; display:inline-flex; align-items:center; gap:8px;
     }
     .btn-ghost{background:#f3f0ff;color:#2b2452;border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
 
@@ -82,34 +83,38 @@
     .modal .m-meta{color:#7b7596; font-size:12px; display:flex; gap:10px; align-items:center}
     .modal .close{position:sticky; top:0; float:right; margin:10px 10px 0 0; background:#f3f0ff;border:0;border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:800}
 
-    /* ===== Galería en Vista Rápida ===== */
+    /* ===== Galería ===== */
     .gallery{margin:14px 0 10px}
-    .g-main{
-      width:100%;
-      height:320px;
-      object-fit:cover;
-      border-radius:12px;
-      border:1px solid #eee;
-    }
-    .g-thumbs{
-      margin-top:8px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .g-thumbs img{
-      width:88px; height:64px; object-fit:cover; cursor:pointer;
-      border-radius:8px; border:2px solid transparent; transition:.15s;
-    }
+    .g-main{width:100%;height:320px;object-fit:cover;border-radius:12px;border:1px solid #eee;}
+    .g-thumbs{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+    .g-thumbs img{width:88px;height:64px;object-fit:cover;cursor:pointer;border-radius:8px;border:2px solid transparent;transition:.15s;}
     .g-thumbs img.active{border-color:#7c3aed}
-    @media (max-width:560px){
-      .g-main{height:240px}
-      .g-thumbs img{width:72px; height:54px}
+    @media (max-width:560px){ .g-main{height:240px} .g-thumbs img{width:72px;height:54px} }
+
+    /* Acciones del modal */
+    .m-actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+
+    /* ===== Bloque de tips — estilo claro ===== */
+    .tips{
+      background:#faf8ff;
+      color:#2b254a;
+      border:1px solid #ece7ff;
+      border-radius:12px;
+      padding:14px 16px;
+      margin-top:12px;
     }
+    .tips.plain{white-space:pre-wrap;}
+    .tips h4{margin:0 0 8px; font-size:16px}
+    .tips h5{margin:10px 0 6px; font-size:14px}
+    .tips ul{margin:6px 0 10px 18px; padding:0; list-style:disc}
+    .tips ol{margin:6px 0 10px 18px; padding:0; list-style:decimal}
+    .tips li{margin:4px 0}
+    .tips strong{font-weight:700}
 
     /* Newsletter */
-    .newsletter{margin:8px 0 20px}
+    .newsletter{margin:8px 0 20px; position:relative; z-index:10;} /* encima de cualquier fondo */
     .news-card{
+      position:relative; z-index:10;
       background:linear-gradient(180deg,#1b0a3a,#13062b); border:1px solid rgba(255,255,255,.08); color:#e9e6ff;
       padding:18px;border-radius:16px; display:grid; gap:14px; grid-template-columns:1.2fr .8fr; align-items:center
     }
@@ -117,10 +122,8 @@
     .news-card form{display:flex;gap:8px}
     .news-card input{flex:1; padding:10px 12px; border-radius:10px; border:1px solid #433366; background:#0e0720; color:#fff}
     .news-card button{white-space:nowrap}
-
-    @media (max-width:820px){
-      .news-card{grid-template-columns:1fr}
-    }
+    .news-msg{margin-top:6px; color:#cfcbe6; font-size:14px}
+    @media (max-width:820px){ .news-card{grid-template-columns:1fr} }
 
     .final-final{margin-top:28px}
   </style>
@@ -207,10 +210,12 @@
           <h3>Recibe nuevas guías en tu correo</h3>
           <p style="color:#cfcbe6;margin:0">Una vez por semana: ideas, imprimibles y lanzamientos (sin spam).</p>
         </div>
-        <form onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte! ✨'); this.reset();">
-          <input type="email" required placeholder="tu@email.com">
+        <!-- ✅ Form listo para escribir y con mensaje en envío -->
+        <form id="newsForm" novalidate>
+          <input id="newsEmail" type="email" name="email" autocomplete="email" required placeholder="tu@email.com">
           <button class="btn" type="submit">Suscribirme</button>
         </form>
+        <p id="newsInlineMsg" class="news-msg" aria-live="polite" hidden></p>
       </div>
     </section>
 
@@ -257,21 +262,25 @@
         <h3 id="mTitle"></h3>
         <div class="m-meta" id="mMeta"></div>
 
-        <!-- Galería para Vista Rápida -->
+        <!-- Galería -->
         <div class="gallery" id="mGallery" hidden>
           <img id="gMain" class="g-main" alt="">
           <div id="gThumbs" class="g-thumbs"></div>
         </div>
 
+        <!-- Acciones del modal -->
+        <div id="mActions" class="m-actions"></div>
+
         <p id="mBody" style="margin-top:10px"></p>
+
+        <!-- Bloque de tips -->
+        <div id="mTips" class="tips" hidden></div>
       </div>
     </div>
   </div>
 
   <script>
-    /* ========= DATOS =========
-       Para el post de washi tape usamos SOLO los nombres de archivo.
-       El código intentará encontrarlos en varias carpetas. */
+    /* ========= DATOS ========= */
     const posts = [
       {
         id:'b01',
@@ -279,7 +288,17 @@
         fecha:'2025-03-10',
         lectura:'5 min',
         categoria:'Planificación',
-        cover:'assets/img/blog/bujo-inicio.jpg',
+        cover:'portada-bullet journal.jpg',
+        images:[
+          'portada-bullet journal.jpg',
+          'idea-decoracion.jpg',
+          'portada-decoracion.jpg'
+        ],
+        tips:`💡 Tips para no abrumarte
+-Empieza con lo mínimo: índice, future log, monthly y daily.
+-Usa bolígrafos o lápices comunes (no necesitas decoración al inicio).
+-No busques la perfección: el Bullet Journal es una herramienta, no una obra de arte.
+-Cada mes puedes probar añadir algo nuevo (tracker, notas creativas, etc.).`,
         tags:['bullet journal','hábitos','organización'],
         extracto:'Guía básica con claves sencillas para comenzar tu bullet journal y mantenerlo vivo.',
         cuerpo:`Empezar un bullet journal no requiere cientos de materiales. Con una libreta, un lápiz y esta estructura mínima (index, future log, monthly, daily) ya puedes partir. Lo importante es iterar...`
@@ -290,7 +309,6 @@
         fecha:'2025-02-20',
         lectura:'4 min',
         categoria:'Creatividad',
-        /* La portada y la galería se dan como NOMBRES de archivo */
         cover:'portada-blogs.jpg',
         images:[
           'portada-blogs.jpg',
@@ -308,7 +326,45 @@
         fecha:'2025-01-28',
         lectura:'3 min',
         categoria:'Estudio',
-        cover:'assets/img/blog/pomodoro.jpg',
+        cover:'portada-pomodoro.jpg',
+        tips_html: `
+<h4>⏱️ Rutina Pomodoro de 25 minutos</h4>
+
+<h5>🔹 Antes de empezar (2–3 min)</h5>
+<ul>
+  <li>Prepara tu espacio: agua, cuaderno, lápiz, materiales.</li>
+  <li>Define 1 <strong>tarea concreta</strong> → (ej: leer 5 páginas, resolver 3 ejercicios, resumir un tema).</li>
+  <li>Pon el temporizador en <strong>25 minutos</strong>.</li>
+</ul>
+
+<h5>🔹 Durante los 25 minutos</h5>
+<ol>
+  <li><strong>Minutos 0–5 → Entra en foco</strong>
+    <ul>
+      <li>Revisa qué vas a estudiar.</li>
+      <li>Haz una lectura rápida o repaso previo.</li>
+    </ul>
+  </li>
+  <li><strong>Minutos 6–20 → Trabajo profundo</strong>
+    <ul>
+      <li>Estudia o resuelve ejercicios sin distracciones.</li>
+      <li>Apunta en tu libreta ideas rápidas o dudas (no te detengas a investigar aún).</li>
+    </ul>
+  </li>
+  <li><strong>Minutos 21–25 → Cierre</strong>
+    <ul>
+      <li>Resume lo que aprendiste en 3–4 frases o en un esquema.</li>
+      <li>Marca lo que quedó pendiente para el siguiente Pomodoro.</li>
+    </ul>
+  </li>
+</ol>
+
+<h5>🔹 Después del Pomodoro</h5>
+<ul>
+  <li>Descansa <strong>5 minutos</strong> (levántate, estírate, toma agua).</li>
+  <li>Cada <strong>4 pomodoros</strong> (≈ <strong>2 horas</strong>), haz una pausa larga de <strong>15–30 min</strong>.</li>
+</ul>
+        `,
         tags:['estudio','productividad'],
         extracto:'Pequeñas sesiones enfocadas + descansos cortos: así se ve un ciclo efectivo.',
         cuerpo:`Configura un temporizador de 25 min, apaga notificaciones y define una sola tarea. Descansa 5 min. Repite x4 y toma un descanso largo. Ajusta a tu energía diaria.`
@@ -319,7 +375,14 @@
         fecha:'2024-12-15',
         lectura:'6 min',
         categoria:'Materiales',
-        cover:'assets/img/blog/papel.jpg',
+        cover:'acuarela ligera-portada.jpg',
+        tips:`📒 Papeles recomendados
+-🌿 Clairefontaine PaintOn Mixed Media 250 gsm → excelente para técnicas mixtas, aguanta bien rotuladores y un poco de agua.
+-💧 Clairefontaine Aquapad Bloc Acuarela A5 → ideal para acuarela ligera, con textura suave.
+-🎨 Canson Block Mixed Media Artist 600 gsm → muy resistente, perfecto si quieres aplicar más agua sin que se ondule.
+-🌊 Canson XL Aquarelle Croquera A5 → uno de los más populares para estudiantes y artistas, buena relación precio/calidad.
+-🍃 Hahnemühle Mixed Media Bamboo 265 gsm → ecológico y de gran calidad, superficie perfecta para combinar técnicas.
+-🎀 Himi Watercolor Pad → práctico y económico, muy bueno para empezar a experimentar.`,
         tags:['papel','rotuladores','acuarela'],
         extracto:'Peso, textura y gramaje: cómo escoger sin perderte entre opciones.',
         cuerpo:`Para rotuladores a base de alcohol, busca papeles lisos y resistentes al sangrado (layout/marker). Para acuarela ligera, 200–300 g/m² prensado en frío evitará ondas.`
@@ -330,40 +393,40 @@
         fecha:'2025-03-01',
         lectura:'2 min',
         categoria:'Descargables',
-        cover:'assets/img/blog/plantillas.jpg',
+        cover:'portada-planner.jpg',
+        images:[
+          'portada-planner.jpg',
+          'planner-semanal.jpg',
+          'to-do-list.jpg'
+        ],
+        download:'assets/descargas/plantillas-to-do-planner.zip',
         tags:['printable','gratis'],
         extracto:'Descarga dos plantillas imprimibles para organizar tu semana (PDF).',
         cuerpo:`Incluimos dos PDFs listos para imprimir en tamaño A5/A4: To-Do List y Planner semanal. Tip: imprime en 100 g para una mejor sensación de escritura.`
       }
     ];
 
-    /* ===== Helpers ===== */
+    /* ===== Helpers + Render ===== */
     const $ = s => document.querySelector(s);
     const grid = $('#grid'), chipsWrap = $('#chips'), ordenSel = $('#orden');
     const cats = ['Todos', ...Array.from(new Set(posts.map(p=>p.categoria)))];
     const state = { cat:'Todos', orden:'recientes' };
-
     function toDate(s){ return new Date(s); }
 
-    // Rutas que probaremos automáticamente para archivos sueltos
     const BASE_DIRS = ['', 'assets/img/blog/', 'assets/img/blogs/', 'assets/img/'];
-
-    // Carga "inteligente": prueba varias rutas hasta que una funcione
     function smartLoad(imgEl, filename){
-      // Si ya viene con "/" asumimos que es una ruta completa
-      if(filename.includes('/')){ imgEl.src = filename; return; }
+      if(filename.includes('/')){ imgEl.src = encodeURI(filename); return; }
       imgEl.dataset.idx = 0;
       const tryNext = ()=>{
         const i = parseInt(imgEl.dataset.idx || '0', 10);
-        if(i >= BASE_DIRS.length) return; // sin más opciones
+        if(i >= BASE_DIRS.length) return;
         imgEl.dataset.idx = i + 1;
-        imgEl.src = BASE_DIRS[i] + filename;
+        imgEl.src = encodeURI(BASE_DIRS[i] + filename);
       };
       imgEl.onerror = tryNext;
       tryNext();
     }
 
-    // Chips
     function renderChips(){
       chipsWrap.innerHTML='';
       cats.forEach(c=>{
@@ -375,7 +438,6 @@
       });
     }
 
-    // Tarjeta
     function card(p){
       const el=document.createElement('article');
       el.className='card';
@@ -392,9 +454,7 @@
             <a class="btn-ghost" href="#!" onclick="openModal('${p.id}')">Vista rápida</a>
           </div>
         </div>`;
-      // Cargar portada (soporta archivo suelto o ruta completa)
-      const imgEl = el.querySelector('#'+coverId);
-      smartLoad(imgEl, p.cover);
+      smartLoad(el.querySelector('#'+coverId), p.cover);
       return el;
     }
 
@@ -413,41 +473,29 @@
     }
     ordenSel.addEventListener('change', ()=>{ state.orden = ordenSel.value; render(); });
 
-    /* ===== Modal + Galería ===== */
+    /* ===== Modal + Galería + Descargar + Tips ===== */
     function openModal(id){
       const p = posts.find(x=>x.id===id); if(!p) return;
 
-      // Portada superior (inteligente)
       smartLoad($('#mCover'), p.cover);
       $('#mCover').alt = p.titulo;
 
-      // Título y meta
       $('#mTitle').textContent = p.titulo;
       $('#mMeta').innerHTML =
         `<span><i class="fa-regular fa-calendar"></i> ${new Date(p.fecha).toLocaleDateString('es-CL')}</span> · `+
         `<span><i class="fa-regular fa-clock"></i> ${p.lectura}</span> · <span class="tag">${p.categoria}</span>`;
 
-      // Cuerpo
       $('#mBody').textContent = p.cuerpo;
 
-      // Galería (solo si hay p.images)
-      const gal = $('#mGallery');
-      const gMain = $('#gMain');
-      const gThumbs = $('#gThumbs');
+      const gal = $('#mGallery'), gMain = $('#gMain'), gThumbs = $('#gThumbs');
       if (Array.isArray(p.images) && p.images.length){
         gal.hidden = false;
         gThumbs.innerHTML = '';
-        let current = 0;
-
         const setMain = (i)=>{
-          current = i;
           smartLoad(gMain, p.images[i]);
           gMain.alt = `${p.titulo} — imagen ${i+1}`;
-          [...gThumbs.querySelectorAll('img')].forEach((im,idx)=>{
-            im.classList.toggle('active', idx===i);
-          });
+          [...gThumbs.querySelectorAll('img')].forEach((im,idx)=>im.classList.toggle('active', idx===i));
         };
-
         p.images.forEach((name,i)=>{
           const im = document.createElement('img');
           smartLoad(im, name);
@@ -455,25 +503,49 @@
           im.addEventListener('click', ()=> setMain(i));
           gThumbs.appendChild(im);
         });
-
         setMain(0);
       }else{
         gal.hidden = true;
         gThumbs.innerHTML = '';
-        gMain.removeAttribute('src');
-        gMain.removeAttribute('alt');
+        gMain.removeAttribute('src'); gMain.removeAttribute('alt');
       }
 
-      $('#blogModal').classList.add('show');
+      const actions = document.getElementById('mActions');
+      actions.innerHTML = '';
+      if (p.download){
+        const a = document.createElement('a');
+        a.href = p.download;
+        a.className = 'btn';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.innerHTML = '<i class="bi bi-download"></i> Descargar';
+        actions.appendChild(a);
+      }
+
+      const tipsEl = document.getElementById('mTips');
+      if (p.tips_html){
+        tipsEl.hidden = false;
+        tipsEl.classList.remove('plain');
+        tipsEl.innerHTML = p.tips_html;
+      } else if (p.tips){
+        tipsEl.hidden = false;
+        tipsEl.classList.add('plain');
+        tipsEl.textContent = p.tips;
+      } else {
+        tipsEl.hidden = true;
+        tipsEl.textContent = '';
+      }
+
+      document.getElementById('blogModal').classList.add('show');
       document.body.style.overflow='hidden';
     }
+
     function closeModal(){
-      $('#blogModal').classList.remove('show');
+      document.getElementById('blogModal').classList.remove('show');
       document.body.style.overflow='';
     }
     window.openModal=openModal; window.closeModal=closeModal;
 
-    // Contador del carrito
     function updateCartCount(){
       try{
         const c=JSON.parse(localStorage.getItem('nf_cart'))||[];
@@ -484,9 +556,44 @@
 
     updateCartCount();
     render();
+
+    /* ===== Newsletter: validación y mensaje ===== */
+    (function(){
+      const form = document.getElementById('newsForm');
+      const emailEl = document.getElementById('newsEmail');
+      const msgEl = document.getElementById('newsInlineMsg');
+      if(!form) return;
+
+      form.addEventListener('submit', (ev)=>{
+        ev.preventDefault();
+        const email = (emailEl.value || '').trim();
+        const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if(!ok){
+          msgEl.hidden = false;
+          msgEl.textContent = 'Por favor escribe un correo válido 🙂';
+          emailEl.focus();
+          return;
+        }
+        alert('¡Gracias por suscribirte! 🎉\nTe enviaremos ideas, imprimibles y lanzamientos una vez por semana. Puedes darte de baja cuando quieras.');
+        msgEl.hidden = false;
+        msgEl.textContent = '¡Listo! Revisa tu bandeja (o spam) para confirmar la suscripción.';
+        form.reset();
+      });
+    })();
   </script>
 
   <script src="assets/js/index.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
 
