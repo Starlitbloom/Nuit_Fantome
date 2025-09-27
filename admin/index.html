@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Merriweather', sans-serif;
+      background: rgb(22, 1, 43);
+      color: white;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #f4ecfa;
+      color: #636263;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 20px 0;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      color: #2c2c2c;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar ul li {
+      padding: 15px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar ul li a {
+      display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        text-decoration: none;
+        color: #636263;
+        font-weight: 400;
+        transition: color 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Separador entre los ítems */
+    .sidebar ul li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: #cacaca;
+    }
+
+    /* Hover */
+    .sidebar ul li a:hover {
+    color: #2c2c2c;
+    background-color: #e9e0f7;
+    border-radius: 5px;
+    }
+
+    /* Página activa */
+    .sidebar ul li a.active {
+    color: rgb(44, 44, 44); /* más oscurito */
+    font-weight: 600;
+    }
+    /* Contenido */
+    .main-content {
+      margin-left: 240px;
+      padding: 20px;
+      width: calc(100% - 240px);
+    }
+    .welcome {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    /* Cards métricas */
+    .cards-metricas {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      font-size: 28px;
+      margin: 0;
+    }
+    .positivo {
+      color: green;
+    }
+    .negativo {
+      color: red;
+    }
+
+    /* Perfil e ingresos */
+    .perfil-ingresos {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .perfil-card {
+      flex: 2;
+      display: flex;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      position: relative;
+    }
+    .perfil-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+    .perfil-info h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .editar {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .ingresos-card {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .ingresos-card h2 {
+      font-size: 26px;
+      margin: 10px 0;
+    }
+
+    /* Tabla pedidos */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #1f1f2e;
+      color: white;
+    }
+
+    /* Gráfico */
+    .grafico {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .grafico-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .selector {
+      display: flex;
+      gap: 10px;
+    }
+    .selector button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo" style="text-align:center; margin-bottom:30px;">
+        <img src="../assets/img/logo.png" alt="Logo" style="max-width:100%; height:auto;">
+    </div>
+    <ul>
+        <li><a href="#" class="active"><i class="fa fa-home"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-box"></i> Productos</a></li>
+        <li><a href="#"><i class="fa fa-users"></i> Usuarios</a></li>
+        <li><a href="#"><i class="fa fa-shopping-cart"></i> Pedidos</a></li>
+        <li><a href="#"><i class="fa fa-cog"></i> Configuración</a></li>
+        <li><a href="#"><i class="fa fa-chart-line"></i> Reportes</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="welcome">👋 Bienvenido, <strong>Juan Pérez</strong></div>
+
+    <!-- Métricas -->
+    <div class="cards-metricas">
+      <div class="card">
+        <h3>12,345</h3>
+        <p>Visitas</p>
+        <span class="positivo">+5%</span>
+      </div>
+      <div class="card">
+        <h3>320</h3>
+        <p>Pedidos</p>
+        <span class="negativo">-2%</span>
+      </div>
+      <div class="card">
+        <h3>145</h3>
+        <p>Productos</p>
+        <span class="positivo">+8%</span>
+      </div>
+      <div class="card">
+        <h3>980</h3>
+        <p>Usuarios</p>
+        <span class="positivo">+10%</span>
+      </div>
+    </div>
+
+    <!-- Perfil e ingresos -->
+    <div class="perfil-ingresos">
+      <div class="perfil-card">
+        <img src="https://via.placeholder.com/120" alt="Foto usuario">
+        <div class="perfil-info">
+          <h2>Juan Pérez</h2>
+          <p><b>Fecha Registro:</b> 01/01/2024</p>
+          <p><b>Dirección:</b> Av. Siempre Viva 123</p>
+          <p><b>Región/Comuna:</b> RM / Santiago</p>
+          <p><b>Nacimiento:</b> 15/06/1995</p>
+          <p><b>Email:</b> juanperez@email.com</p>
+          <p><b>Teléfono:</b> +56 9 1234 5678</p>
+        </div>
+        <i class="fa fa-edit editar"></i>
+      </div>
+      <div class="ingresos-card">
+        <p>Ingresos</p>
+        <h2>$1.200.000</h2>
+        <span class="positivo">+12%</span>
+      </div>
+    </div>
+
+    <!-- Tabla pedidos -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>001</td>
+          <td>María López</td>
+          <td>Agenda 2025</td>
+          <td>Pendiente</td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Carlos Díaz</td>
+          <td>Planner Digital</td>
+          <td>Completado</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Gráfico -->
+    <div class="grafico">
+      <div class="grafico-header">
+        <h3>Actividad</h3>
+        <div class="selector">
+          <button>Día</button>
+          <button>Semana</button>
+          <button>Mes</button>
+          <button>Año</button>
+        </div>
+      </div>
+      <canvas id="chart" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('chart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+        datasets: [{
+          label: 'Actividad',
+          data: [120,150,180,300,500,450,600,800,700,650,400,300],
+          borderColor: 'blue',
+          tension: 0.3,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: { enabled: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
