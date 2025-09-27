@@ -159,7 +159,7 @@
 
   <script>
   /* === Catálogo (con opciones donde corresponde) === */
-  const productos = [
+  let productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
       desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
 
@@ -281,6 +281,27 @@
       img:"assets/img/planner-semanal-sailor-moon.jpg",
       desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." }
   ];
+
+  /* 🔁 Merge con lo que se guardó desde el admin */
+  (function(){
+    const STORAGE_KEY = 'nf_catalog_custom_v1';
+    function loadCustom(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+    if (Array.isArray(productos)) {
+      const mapa = new Map(productos.map(p => [p.id, p]));
+      loadCustom().forEach(p => {
+        const cp = { ...p };
+        // Normaliza rutas tipo "../assets/..." para esta página
+        if (typeof cp.img === 'string' && cp.img.startsWith('../')) {
+          cp.img = cp.img.replace(/^\.\.\//, '');
+        }
+        mapa.set(cp.id, cp); // admin gana por id
+      });
+      productos = Array.from(mapa.values());
+    }
+  })();
 
   /* Utils + carrito + recientes */
   const $ = s => document.querySelector(s);
@@ -438,6 +459,3 @@ function actualizarContador() {
   </script>
 </body>
 </html>
-
-
-

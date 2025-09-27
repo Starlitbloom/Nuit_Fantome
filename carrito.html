@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -356,7 +356,7 @@
 
   <script>
   // == Catálogo (igual que productos/producto.html) ==
-  const productos = [
+  let productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
     { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
     { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg", desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos." },
@@ -388,20 +388,34 @@
     { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg", desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave." },
     { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg", desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking." },
     // --- NUEVOS PRODUCTOS ---//
-
     { id:"todo-hk", categoria:"Planners / To-Do", nombre:"To do list — Hello Kitty", precio:1990, img:"assets/img/to-do-list-hello-kitty.jpg", desc:"To do list temático Hello Kitty, ideal para notas rápidas y organización diaria." },
-
     { id:"todo-kuromi", categoria:"Planners / To-Do", nombre:"To do list — Kuromi", precio:1990, img:"assets/img/to-do-list-kuromi.jpg", desc:"To do list con diseño de Kuromi, papel suave para tu día a día." },
-
     { id:"todo-sailor", categoria:"Planners / To-Do", nombre:"To do list — Sailor Moon", precio:1990, img:"assets/img/to-do-list-sailor-moon.jpg", desc:"To do list ilustrado Sailor Moon, compacto y práctico." },
-
     { id:"plan-hk", categoria:"Planners / To-Do", nombre:"Planner semanal — Hello Kitty", precio:2990, img:"assets/img/planner-semanal-hello-kitty.jpg", desc:"Planner semanal Hello Kitty con columnas para cada día y diseño kawaii." },
-
     { id:"plan-kuromi", categoria:"Planners / To-Do", nombre:"Planner semanal — Kuromi", precio:2990, img:"assets/img/planner-kuromi.jpg", desc:"Planner semanal Kuromi en tonos lilas, organiza tu semana con estilo." },
-
     { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal de Sailor Moon, perfecto para fans y organización diaria." }
-
   ];
+
+  /* 🔁 Merge con lo que se guardó desde el admin */
+  (function(){
+    const STORAGE_KEY = 'nf_catalog_custom_v1';
+    function loadCustom(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+    if (Array.isArray(productos)) {
+      const mapa = new Map(productos.map(p => [p.id, p]));
+      loadCustom().forEach(p => {
+        const cp = { ...p };
+        // Si desde admin quedó con "../", lo normalizamos para esta página
+        if (typeof cp.img === 'string' && cp.img.startsWith('../')) {
+          cp.img = cp.img.replace(/^\.\.\//, '');
+        }
+        mapa.set(cp.id, cp); // admin gana por id
+      });
+      productos = Array.from(mapa.values());
+    }
+  })();
 
   // helpers / carrito
   const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
@@ -743,4 +757,3 @@
   </script>
 </body>
 </html>
-
