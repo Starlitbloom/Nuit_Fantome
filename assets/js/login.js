@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Limpiar mensajes anteriores
     emailError.textContent = "";
@@ -20,17 +19,28 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let valid = true;
 
-    // Validaciones
+    // Validar correo
+    const allowedDomains = ["gmail.com", "duocuc.cl", "profesor.duocuc.cl"];
+    const emailParts = email.split("@");
+    const domain = emailParts[1] || "";
+
     if (!email) {
       emailError.textContent = "Por favor ingresa tu correo.";
       valid = false;
-    } else if (!emailRegex.test(email)) {
-      emailError.textContent = "Correo inválido.";
+    } else if (email.length > 100) {
+      emailError.textContent = "El correo no puede superar 100 caracteres.";
+      valid = false;
+    } else if (emailParts.length !== 2 || !allowedDomains.includes(domain)) {
+      emailError.textContent = "Correo no válido";
       valid = false;
     }
 
+    // Validar contraseña
     if (!password) {
       passwordError.textContent = "Por favor ingresa tu contraseña.";
+      valid = false;
+    } else if (password.length < 4 || password.length > 10) {
+      passwordError.textContent = "La contraseña debe tener entre 4 y 10 caracteres.";
       valid = false;
     }
 
@@ -53,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     passwordError.textContent = "¡Inicio de sesión exitoso!";
-    passwordError.style.color = "green";
+    passwordError.style.color = "purple";
 
     // Redirigir a index.html después de 1 segundo
     setTimeout(() => {
