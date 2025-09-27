@@ -168,7 +168,7 @@
 
   <script>
   /* Catálogo con opciones añadidas */
-  const productos = [
+  let productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
 
     { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
@@ -237,8 +237,8 @@
 
     { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg", desc:"Washi tape de flores estilo vintage.",
       opciones:[{t:"Morado"},{t:"Rosa"},{t:"Dorado"}] },
-     // --- NUEVOS PRODUCTOS ---//
 
+    /* --- NUEVOS PRODUCTOS DIGITALES / PLANNERS --- */
     { id:"todo-hk", categoria:"Planners / To-Do", nombre:"To do list — Hello Kitty", precio:1990, img:"assets/img/to-do-list-hello-kitty.jpg", desc:"To do list temático Hello Kitty, ideal para notas rápidas y organización diaria." },
 
     { id:"todo-kuromi", categoria:"Planners / To-Do", nombre:"To do list — Kuromi", precio:1990, img:"assets/img/to-do-list-kuromi.jpg", desc:"To do list con diseño de Kuromi, papel suave para tu día a día." },
@@ -250,8 +250,30 @@
     { id:"plan-kuromi", categoria:"Planners / To-Do", nombre:"Planner semanal — Kuromi", precio:2990, img:"assets/img/planner-kuromi.jpg", desc:"Planner semanal Kuromi en tonos lilas, organiza tu semana con estilo." },
 
     { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal de Sailor Moon, perfecto para fans y organización diaria." }
+  ];  
 
-  ];
+  /* 🔁 Merge con lo que se guardó desde el admin (localStorage) */
+  (function(){
+    const STORAGE_KEY = 'nf_catalog_custom_v1';
+    function loadCustom(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+    if (Array.isArray(productos)) {
+      const mapa = new Map(productos.map(p => [p.id, p]));
+      loadCustom().forEach(p => {
+        const cp = { ...p };
+        // si desde admin quedó con '../', lo convertimos a ruta del sitio
+        if (typeof cp.img === 'string' && cp.img.startsWith('../')) {
+          cp.img = cp.img.slice(3);
+        }
+        mapa.set(cp.id, cp); // lo del admin pisa por id
+      });
+      productos = Array.from(mapa.values());
+    }
+  })();
+
+  /* ====================== RESTO DE TU JS ====================== */
 
   const $ = s => document.querySelector(s);
   const grid = $('#productos-grid');
@@ -320,7 +342,7 @@
     const it=c.find(i=>i.id===id && (i.opt||"")===opt);
     if(it) it.qty+=qty; else c.push({id,qty,opt});
     saveCart(c);
-    alert('Producto añadido al carrito' + (opt?` (${opt})`:''));
+    alert('Producto añadido al carrito' + (opt?` (${opt})`:'')); // simple feedback
   }
   function updateCartCount(){ const el=document.getElementById('contador'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); }
 
@@ -372,6 +394,7 @@
     if(p && p.opciones){ onCardElegir(prodId); return; }
     addToCart(prodId,1,'');
   }
+
   /* Menu desplegable */
   document.addEventListener("DOMContentLoaded", function () {
       const btnAcceder = document.querySelector(".btn-acceder");
@@ -391,10 +414,10 @@
       });
   });
 
-  /* Menu desplegable */
+  /* (Tu helper que no usa carrito directo) */
   function actualizarContador() {
       const contador = document.getElementById("contador");
-      const total = productos.reduce((acc, p) => acc + p.cantidad, 0);
+      const total = productos.reduce((acc, p) => acc + (p.cantidad||0), 0);
       contador.textContent = total;
   }
 

@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Productos</title>
+
+  <link rel="icon" href="../assets/img/icono_pag.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg:#0f0321;
+      --card:#111025;
+      --ink:#e9e6ff;
+      --muted:#bdb9d8;
+      --line:#2b2550;
+      --primary:#7c3aed;
+      --primary-2:#a78bfa;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
+    a{color:inherit}
+
+    .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .brand img{height:28px}
+    .brand span{font-weight:800;letter-spacing:.4px}
+    .top .right a{padding:8px 10px;border:1px solid var(--line);border-radius:10px;text-decoration:none;margin-left:8px}
+
+    .container{width:min(1200px,94%);margin:20px auto}
+
+    .bc{color:var(--muted);font-size:14px}
+    .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
+    .title h1{margin:.2rem 0 0;font-size:clamp(22px,2.5vw,28px)}
+    .title .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;border:0;border-radius:10px;
+      padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(124,58,237,.28);text-decoration:none;display:inline-flex;gap:8px;align-items:center
+    }
+    .btn-ghost{background:#1a1633;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
+    .btn.sm{padding:6px 10px;border-radius:8px;font-weight:700}
+    .btn[disabled], .btn-ghost[disabled]{opacity:.6;pointer-events:none}
+    .tab-active{box-shadow:0 0 0 2px rgba(167,139,250,.35) inset}
+
+    .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+    @media (max-width:860px){.actions{grid-template-columns:1fr}}
+    .qcard{
+      background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;
+      display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center
+    }
+    .qicon{
+      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;font-size:18px
+    }
+    .qcard a{color:#fff;text-decoration:none}
+    .qcard h3{margin:0 0 4px}
+    .qcard p{margin:0;color:var(--muted);font-size:14px}
+
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}
+    .input, select, textarea{
+      background:#130f2b;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px
+    }
+    .input::placeholder{color:#8f89b6}
+    .input.err{border-color:var(--danger); box-shadow:0 0 0 1px var(--danger) inset}
+    textarea{resize:vertical}
+
+    .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+    th{position:sticky;top:0;background:#151237}
+    tr:hover td{background:#120f2c}
+    .thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid var(--line)}
+    .badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid}
+    .b-ok{border-color:#064e3b;color:#34d399;background:rgba(52,211,153,.1)}
+    .b-off{border-color:#92400e;color:#fbbf24;background:rgba(251,191,36,.08)}
+    .tag{display:inline-block;margin:.1rem .25rem 0 0;padding:2px 8px;border:1px solid var(--line);
+      border-radius:999px;font-size:12px;color:#cfcbe6;background:#1a1633}
+    .pill{display:inline-block;margin:.15rem .25rem 0 0;padding:3px 8px;border:1px solid var(--line);
+      border-radius:999px;font-size:12px;color:#d7d2ff;background:#1a1633}
+    .actions-col{display:flex;gap:6px;flex-wrap:wrap}
+    .btn-danger{background:#2b0e14;border:1px solid #4b1017;color:#ffb4b4}
+    .empty{color:#bfbad9;padding:16px}
+
+    .view{display:none}
+    .view.active{display:block}
+
+    .form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    @media (max-width:860px){.grid2{grid-template-columns:1fr}}
+    label{font-size:14px;color:#d7d2ff}
+    .help{color:#9c96bf;font-size:12px;margin-top:4px}
+    .section-title{grid-column:1/-1;margin:6px 0 2px;font-size:15px;color:#c9c3ee;font-weight:700}
+    .divider{grid-column:1/-1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:6px 0}
+
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.45);padding:16px}
+    .modal.open{display:grid}
+    .modal .box{width:min(720px,96vw);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+    .modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+
+    .preview{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#130f2b}
+  </style>
+</head>
+<body>
+  <!-- Topbar -->
+  <div class="top">
+    <div class="brand">
+      <img src="../assets/img/logo.png" alt="Nuit Fantôme" />
+      <span>Panel admin</span>
+    </div>
+    <div class="right">
+      <a href="../index.html">Ver tienda</a>
+      <a href="./index.html">Inicio admin</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="bc">Inicio / <strong>Productos</strong></div>
+
+    <div class="title">
+      <h1>Gestión de productos</h1>
+      <div class="tools">
+        <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-plus"></i> Nuevo producto</a>
+        <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
+        <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+      </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <section class="actions">
+      <article class="qcard">
+        <div class="qicon"><i class="fa-solid fa-plus"></i></div>
+        <div>
+          <h3>Nuevo producto</h3>
+          <p>Crea un producto con fotos, precio, stock y variantes.</p>
+        </div>
+        <a class="btn sm" href="#nuevo">Ir</a>
+      </article>
+
+      <article class="qcard">
+        <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
+        <div>
+          <h3>Editar producto</h3>
+          <p>Actualiza precios, estado y descripciones.</p>
+        </div>
+        <a class="btn sm" href="#editar">Ir</a>
+      </article>
+
+      <article class="qcard">
+        <div class="qicon"><i class="fa-regular fa-eye"></i></div>
+        <div>
+          <h3>Mostrar productos</h3>
+          <p>Listado con filtros y acciones rápidas.</p>
+        </div>
+        <a class="btn sm" href="#mostrar">Ir</a>
+      </article>
+    </section>
+
+    <!-- ======= VISTA MOSTRAR ======= -->
+    <section class="view active" id="vistaMostrar">
+      <section class="filters">
+        <input id="q" class="input" type="search" placeholder="Buscar por nombre, categoría o etiqueta…">
+        <select id="cat">
+          <option value="todas">Todas las categorías</option>
+        </select>
+        <select id="orden">
+          <option value="recientes">Ordenar: Recientes</option>
+          <option value="az">Nombre A → Z</option>
+          <option value="za">Nombre Z → A</option>
+          <option value="mayor">Precio mayor</option>
+          <option value="menor">Precio menor</option>
+        </select>
+        <button class="btn-ghost" id="clear">Limpiar</button>
+      </section>
+
+      <section class="table-wrap">
+        <table id="tabla">
+          <thead>
+            <tr>
+              <th style="width:54px">Img</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Etiquetas</th>
+              <th>Estado</th>
+              <th style="width:210px">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="7" class="empty">Cargando productos…</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- ======= VISTA NUEVO ======= -->
+    <section class="view" id="vistaNuevo">
+      <div class="form">
+        <h2 style="margin-top:0">Nuevo producto</h2>
+        <form id="formNuevo" class="grid2">
+          <div class="section-title">Datos básicos</div><div class="divider"></div>
+
+          <div>
+            <label>Nombre</label>
+            <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
+            <div class="help">No se permiten nombres repetidos.</div>
+          </div>
+
+          <!-- CATEGORÍA con SELECT (para concordar con tienda) -->
+          <div>
+            <label>Categoría</label>
+            <select class="input" id="catNuevo" name="categoria" required>
+              <option value="">Selecciona una categoría</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Precio (CLP)</label>
+            <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
+          </div>
+
+          <div class="section-title">Imagen</div><div class="divider"></div>
+
+          <div>
+            <label>Imagen</label>
+            <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+            <div class="help">Pega una ruta del proyecto o una URL. Si subes archivo, tendrá prioridad.</div>
+            <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
+              <img id="prevNuevo" class="preview" alt="">
+            </div>
+            <input type="hidden" id="imgNuevoData">
+          </div>
+
+          <div class="section-title">Variantes</div><div class="divider"></div>
+
+          <div>
+            <label>Unidades por set</label>
+            <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+            <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
+          </div>
+          <div>
+            <label>Opciones (una por línea)</label>
+            <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+            <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
+          </div>
+
+          <div class="section-title">Metadatos</div><div class="divider"></div>
+
+          <div>
+            <label>Etiquetas (coma separadas)</label>
+            <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
+            <div class="help">Máx 3; si lo dejas vacío se generan automáticamente.</div>
+          </div>
+          <div>
+            <label>Activo</label><br>
+            <label><input type="checkbox" name="activo" checked> Visible en la tienda</label>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Descripción</label>
+            <textarea class="input" name="desc" rows="3" placeholder="Descripción breve del producto"></textarea>
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
+            <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ======= VISTA EDITAR ======= -->
+    <section class="view" id="vistaEditar">
+      <div class="form">
+        <h2 style="margin-top:0">Editar producto</h2>
+        <form id="formEditar" class="grid2">
+          <input type="hidden" name="id">
+
+          <div class="section-title">Identificación</div><div class="divider"></div>
+          <div>
+            <label>ID</label>
+            <input class="input" name="idShown" disabled>
+            <div class="help">Se rellena al tocar “Editar” en el listado.</div>
+          </div>
+
+          <div class="section-title">Datos</div><div class="divider"></div>
+          <div>
+            <label>Nombre</label>
+            <input class="input" name="nombre" required>
+            <div class="help">Debe ser único.</div>
+          </div>
+
+          <!-- CATEGORÍA con SELECT -->
+          <div>
+            <label>Categoría</label>
+            <select class="input" id="catEditar" name="categoria" required>
+              <option value="">Selecciona una categoría</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Precio (CLP)</label>
+            <input class="input" name="precio" type="number" min="0" step="10" required>
+          </div>
+
+          <div class="section-title">Imagen</div><div class="divider"></div>
+          <div>
+            <label>Imagen</label>
+            <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+            <div class="help">Mantén la ruta/URL actual o sube un archivo para reemplazarla.</div>
+            <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
+              <img id="prevEditar" class="preview" alt="">
+            </div>
+            <input type="hidden" id="imgEditarData">
+          </div>
+
+          <div class="section-title">Variantes</div><div class="divider"></div>
+          <div>
+            <label>Unidades por set</label>
+            <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+          </div>
+          <div>
+            <label>Opciones (una por línea)</label>
+            <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+          </div>
+
+          <div class="section-title">Metadatos</div><div class="divider"></div>
+          <div>
+            <label>Etiquetas (coma separadas)</label>
+            <input class="input" name="tags">
+          </div>
+          <div>
+            <label>Activo</label><br>
+            <label><input type="checkbox" name="activo"> Visible en la tienda</label>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Descripción</label>
+            <textarea class="input" name="desc" rows="3"></textarea>
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+            <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- ======= MODAL VER ======= -->
+  <div class="modal" id="modalVer" aria-hidden="true">
+    <div class="box">
+      <header>
+        <h3 style="margin:0">Detalle del producto</h3>
+        <button class="close" id="cerrarModal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+      </header>
+      <div id="contenidoModal"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ========= PERSISTENCIA PARA LA TIENDA ========= */
+    const STORAGE_KEY = 'nf_catalog_custom_v1';
+    function loadCustom(){
+      try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch{ return []; }
+    }
+    function saveCustom(customArr){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(customArr));
+    }
+
+    /* ========= CATALOGO REAL COPIADO DE LA TIENDA ========= */
+    const productosFuente = [
+      { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
+        desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
+      { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg",
+        desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, 15 mm x 5 m c/u." },
+      { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg",
+        desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos.",
+        opciones:[{t:"Rosa"},{t:"Lila"},{t:"Celeste"},{t:"Verde"}] },
+      { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg",
+        desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m.",
+        opciones:[{t:"Amarillo"},{t:"Rosa"},{t:"Verde"},{t:"Morado"}] },
+      { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg",
+        desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos, perfecto para bullet journal.",
+        opciones:[{t:"Pastel 1"},{t:"Pastel 2"},{t:"Pastel 3"},{t:"Pastel 4"}] },
+      { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg",
+        desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura para papelería y paquetes.",
+        opciones:[{t:"Rosa"},{t:"Blanco"},{t:"Amarillo"},{t:"Celeste"}] },
+      { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg",
+        desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura.",
+        opciones:[{t:"Lila"},{t:"Rosa"},{t:"Lavanda"}] },
+      { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg",
+        desc:"Estuche Kuromi con compartimentos y cierre resistente; capacidad para 40–60 útiles.",
+        opciones:[{t:"Cinnamoroll"},{t:"My Melody"},{t:"Kuromi"},{t:"Pompompurin"}] },
+      { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg",
+        desc:"Estuche My Melody con elásticos y bolsillo interno; materiales lavables y durables.",
+        opciones:[{t:"My Melody"},{t:"Cinnamoroll"},{t:"Pompompurin"},{t:"Hello Kitty"},{t:"Gudetama"},{t:"Keroppi"}] },
+      { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg",
+        desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
+      { id:"gom02", categoria:"Borradores", nombre:"Borrador eléctrico recargable", precio:11990, img:"assets/img/goma-electrica.jpg",
+        desc:"Borrador eléctrico recargable por USB; elimina trazos finos sin dañar el papel." },
+      { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg",
+        desc:"Pack de 3 gomas degradé libres de látex; borra limpio y sin manchas.",
+        opciones:[{t:"Verde/Azul"},{t:"Rosa/Celeste"},{t:"Mix pastel"}] },
+      { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg",
+        desc:"Set de 10 lápices de color de mina suave; trazo cremoso y colores vibrantes." },
+      { id:"lap25", categoria:"Lápices de colores", nombre:"Set lápices de colores – 25 unidades", precio:7990, img:"assets/img/lapices-25.jpg",
+        desc:"Set de 25 lápices de color; minas resistentes y mezclables, ideal para ilustración." },
+      { id:"lap30", categoria:"Lápices de colores", nombre:"Set lápices de colores – 30 unidades", precio:20000, img:"assets/img/lapices-30.jpg",
+        desc:"Set de 30 lápices de color; incluye tonos piel y pasteles, estuche rígido." },
+      { id:"pinc01", categoria:"Pinceles / Acuarela", nombre:"Pinceles para acuarela (pack)", precio:8990, img:"assets/img/pinceles-acuarelas.jpg",
+        desc:"Pack de pinceles para acuarela con cerdas sintéticas finas y mangos ergonómicos." },
+      { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg",
+        desc:"Notas adhesivas oficiales Sanrio; papel suave que pega y despega sin residuos.",
+        opciones:[{t:"Cinnamoroll"},{t:"Pompompurin"}] },
+      { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg",
+        desc:"Notas adhesivas con 3 diseños; perfectas para recordatorios y journaling.",
+        opciones:[{t:"Kuromi"},{t:"My Melody"}] },
+      { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg",
+        desc:"Notas adhesivas de colores suaves; aprox. 100 hojas por bloc.",
+        opciones:[{t:"Pochacco"},{t:"Hello Kitty"}] },
+      { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg",
+        desc:"Sacapuntas con depósito y borrador integrado; formato compacto para estuche.",
+        opciones:[{t:"Celeste"},{t:"Rosa"},{t:"Lila"},{t:"Verde"}] },
+      { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg",
+        desc:"Bolígrafos Sakura de tinta gel pigmentada; secado rápido y punta 0.5 mm." },
+      { id:"set02", categoria:"Sets", nombre:"Set papelería “Gato Azul”", precio:10990, img:"assets/img/set-gato-azul.jpg",
+        desc:"Set temático gato azul: stickers, papeles, notas y accesorios combinados." },
+      { id:"set01", categoria:"Sets", nombre:"Set papelería “Gato Rosado”", precio:10990, img:"assets/img/set-gato-rosado.jpg",
+        desc:"Set temático gato rosado; selección coordinada para journaling y scrap." },
+      { id:"washi60", categoria:"Cintas / Washi", nombre:"Set 60 washi tapes", precio:16990, img:"assets/img/set60-cintas.jpg",
+        desc:"Mega set de 60 washi tapes variados; anchos y patrones mixtos para proyectos creativos." },
+      { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg",
+        desc:"Pack de clips decorativos tipo botón; plástico resistente, colores surtidos.",
+        opciones:[{t:"Lila"},{t:"Menta"},{t:"Celeste"}] },
+      { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg",
+        desc:"Tijeras con funda, filo inoxidable y agarre cómodo; corte suave.",
+        opciones:[{t:"Lila"},{t:"Rosa"},{t:"Celeste"}] },
+      { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg",
+        desc:"Washi tape de flores estilo vintage; ideal para cartas, invitaciones y scrapbooking.",
+        opciones:[{t:"Morado"},{t:"Rosa"},{t:"Dorado"}] },
+      { id:"todo-hk", categoria:"Papelería digital", nombre:"To do list — Hello Kitty", precio:1990,  img:"assets/img/to-do-list-hello-kitty.jpg",
+        desc:"To do list imprimible (A4/Letter). Incluye prioridades, tareas, notas, estado de ánimo y consumo de agua." },
+      { id:"todo-kuromi", categoria:"Papelería digital", nombre:"To do list — Kuromi", precio:1990,  img:"assets/img/to-do-list-kuromi.jpg",
+        desc:"To do list imprimible (A4/Letter). Incluye prioridades, tareas, notas, estado de ánimo y consumo de agua." },
+      { id:"todo-sailor", categoria:"Papelería digital", nombre:"To do list — Sailor Moon", precio:1990, img:"assets/img/to-do-list-sailor-moon.jpg",
+        desc:"To do list imprimible (A4/Letter). Incluye prioridades, tareas, notas, estado de ánimo y consumo de agua." },
+      { id:"plan-hk", categoria:"Papelería digital", nombre:"Planner semanal — Hello Kitty", precio:2990, img:"assets/img/planner-semanal-hello-kitty.jpg",
+        desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." },
+      { id:"plan-kuromi", categoria:"Papelería digital", nombre:"Planner semanal — Kuromi", precio:2990, img:"assets/img/planner-kuromi.jpg",
+        desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." },
+      { id:"plan-sailor", categoria:"Papelería digital", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg",
+        desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." }
+    ];
+
+    /* ===== NORMALIZACIÓN Y MERGE CON LOCALSTORAGE ===== */
+    const ban = new Set(['set','de','del','la','el','los','las','—','-','y','para','con']);
+    const genTags = p => {
+      const base = (p.nombre + ' ' + p.categoria).toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu,'')
+        .split(/\s+/).filter(w=>w && !ban.has(w));
+      return [...new Set(base)].slice(0,3);
+    };
+
+    const baseIds = new Set(productosFuente.map(p=>p.id));
+    const customRaw = loadCustom();
+
+    // Normaliza un producto (rutas + tags + activo)
+    const norm = p => ({
+      ...p,
+      img: p.img?.startsWith('../') ? p.img : ('../' + p.img),
+      tags: p.tags ?? genTags(p),
+      activo: p.activo ?? true
+    });
+
+    // Merge: base + custom (custom sobreescribe por id)
+    const mapa = new Map(productosFuente.map(p=>[p.id, norm(p)]));
+    customRaw.forEach(p => mapa.set(p.id, norm(p)));
+    const productos = Array.from(mapa.values());
+
+    /* ===== UTILIDADES ===== */
+    const $  = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
+
+    /* === Helpers de imagen === */
+    function leerArchivoComoDataURL(file){
+      return new Promise((resolve,reject)=>{
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = reject;
+        fr.readAsDataURL(file);
+      });
+    }
+    function prepararUploader(idFile, idPreview, idHidden){
+      const file = document.getElementById(idFile);
+      const img  = document.getElementById(idPreview);
+      const hid  = document.getElementById(idHidden);
+      if(!file || !img || !hid) return;
+      file.addEventListener('change', async ()=>{
+        const f = file.files?.[0];
+        if(!f) return;
+        if(!f.type.startsWith('image/')) { alert('El archivo debe ser una imagen'); return; }
+        if(f.size > 3 * 1024 * 1024){ alert('Imagen muy pesada (>3MB)'); return; }
+        const dataUrl = await leerArchivoComoDataURL(f);
+        hid.value = dataUrl;
+        img.src = dataUrl;
+      });
+    }
+
+    /* ======= IDs únicos y nombre único ======= */
+    const normalize = s => (s||'').toString().trim().toLowerCase().replace(/\s+/g,' ');
+    const slug = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-+|-+$/g,'');
+    function randomPart(n=6){ return Math.random().toString(36).slice(2,2+n); }
+    function crearIdUnico(nombre){
+      const base = slug(nombre).slice(0,10) || 'prod';
+      let id;
+      do { id = `${base}-${randomPart(6)}`; } while(productos.some(p=>p.id===id));
+      return id;
+    }
+    function nombreExiste(nombre, exceptId=null){
+      const target = normalize(nombre);
+      return productos.some(p => normalize(p.nombre) === target && (!exceptId || p.id !== exceptId));
+    }
+
+    /* ======= VISTAS ======= */
+    const views = { mostrar: $('#vistaMostrar'), nuevo: $('#vistaNuevo'), editar: $('#vistaEditar') };
+    const topBtns = { mostrar: $('#btnTopMostrar'), nuevo: $('#btnTopNuevo'), editar: $('#btnTopEditar') };
+
+    function go(view, extra){
+      Object.values(views).forEach(v=>v.classList.remove('active'));
+      (views[view]||views.mostrar).classList.add('active');
+      Object.values(topBtns).forEach(b=>b.classList.remove('tab-active'));
+      (topBtns[view]||topBtns.mostrar).classList.add('tab-active');
+
+      if(view==='mostrar'){ render(); }
+      if(view==='editar' && extra){ cargarEdicion(extra); }
+      if(view==='nuevo'){ $('#formNuevo').reset(); $('#imgNuevoData').value=''; $('#prevNuevo').src=''; }
+      if(location.hash.replace('#','')!==view) location.hash = '#' + view + (extra?(':'+extra):'');
+    }
+    function syncFromHash(){
+      const h = (location.hash || '#mostrar').slice(1);
+      const [view, param] = h.split(':');
+      go(view || 'mostrar', param);
+    }
+    window.addEventListener('hashchange', syncFromHash);
+
+    /* ======= RENDER LISTADO + CATEGORÍAS ======= */
+    const tbody   = $('#tbody'), catSel = $('#cat'), qInput = $('#q'), ordSel = $('#orden');
+    const catNuevo = $('#catNuevo'), catEditar = $('#catEditar');
+
+    function categoriasUnicas(){
+      return Array.from(new Set(productos.map(p=>p.categoria))).sort((a,b)=>a.localeCompare(b));
+    }
+    function poblarSelectCategorias(select){
+      if(!select) return;
+      const cats = categoriasUnicas();
+      select.innerHTML = '<option value="">Selecciona una categoría</option>' +
+        cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    }
+
+    function render(){
+      if(catSel){
+        const cats = ['todas', ...categoriasUnicas()];
+        catSel.innerHTML = cats.map(c=>`<option value="${c}">${c[0].toUpperCase()+c.slice(1)}</option>`).join('');
+        catSel.value = state.cat;
+      }
+      poblarSelectCategorias(catNuevo);
+      poblarSelectCategorias(catEditar);
+
+      if(!tbody) return;
+      let list = productos.filter(p=>{
+        const okCat = state.cat==='todas' || p.categoria===state.cat;
+        const q = state.q.trim().toLowerCase();
+        const okQ = !q || p.nombre.toLowerCase().includes(q) ||
+                    p.categoria.toLowerCase().includes(q) ||
+                    (p.tags||[]).some(t=>t.toLowerCase().includes(q));
+        return okCat && okQ;
+      });
+
+      switch(state.orden){
+        case 'az': list.sort((a,b)=>a.nombre.localeCompare(b.nombre)); break;
+        case 'za': list.sort((a,b)=>b.nombre.localeCompare(a.nombre)); break;
+        case 'mayor': list.sort((a,b)=>b.precio-a.precio); break;
+        case 'menor': list.sort((a,b)=>a.precio-b.precio); break;
+        default: break;
+      }
+
+      if(!list.length){
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">No hay resultados con esos filtros.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p=>`
+        <tr>
+          <td><img class="thumb" src="${p.img}" alt=""></td>
+          <td>
+            <strong>${p.nombre}</strong>
+            <br><small style="color:#bdb9d8">ID: ${p.id}</small>
+            ${p.pack ? `<span class="pill">Set x${p.pack}</span>` : ''}
+            ${Array.isArray(p.opciones)&&p.opciones.length ? `<span class="pill">${p.opciones.length} opción(es)</span>` : ''}
+          </td>
+          <td>${p.categoria}</td>
+          <td>${toCLP(p.precio)}</td>
+          <td>${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</td>
+          <td>${p.activo ? `<span class="badge b-ok">Activo</span>` : `<span class="badge b-off">Oculto</span>`}</td>
+          <td class="actions-col">
+            <button class="btn-ghost sm" onclick="ver('${p.id}')"><i class="fa-regular fa-eye"></i> Ver</button>
+            <a class="btn-ghost sm" href="#editar:${p.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+            <button class="btn-danger sm" onclick="eliminar('${p.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    const state = { q:'', cat:'todas', orden:'recientes' };
+    qInput?.addEventListener('input', ()=>{ state.q=qInput.value; render(); });
+    catSel?.addEventListener('change', ()=>{ state.cat=catSel.value; render(); });
+    ordSel?.addEventListener('change', ()=>{ state.orden=ordSel.value; render(); });
+    $('#clear')?.addEventListener('click', ()=>{
+      qInput.value=''; catSel.value='todas'; ordSel.value='recientes';
+      state.q=''; state.cat='todas'; state.orden='recientes'; render();
+    });
+
+    function guardarEnLocalStorage(){
+      // Guardamos SOLO los productos que no pertenecen al catálogo base o que sobreescriben uno base
+      const custom = productos.filter(p => !baseIds.has(p.id) || customRaw.some(c=>c.id===p.id));
+      // Limpieza mínima: quitamos thumbs normalizadas (../) para la tienda si quieres, pero así funciona
+      saveCustom(custom);
+    }
+
+    function eliminar(id){
+      if(!confirm('¿Eliminar este producto?')) return;
+      const i = productos.findIndex(p=>p.id===id);
+      if(i>-1){
+        productos.splice(i,1);
+        // Si también existía en custom, lo quitamos del custom guardado
+        const idxc = customRaw.findIndex(c=>c.id===id);
+        if(idxc>-1){ customRaw.splice(idxc,1); }
+        guardarEnLocalStorage();
+        render();
+      }
+    }
+
+    /* ======= MODAL VER ======= */
+    const modal = $('#modalVer');
+    const modalContent = $('#contenidoModal');
+    $('#cerrarModal').addEventListener('click', ()=> modal.classList.remove('open'));
+    modal.addEventListener('click', e=>{ if(e.target===modal) modal.classList.remove('open'); });
+
+    function ver(id){
+      const p = productos.find(x=>x.id===id);
+      if(!p) return;
+      modalContent.innerHTML = `
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
+          <img src="${p.img}" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
+          <div style="flex:1">
+            <h3 style="margin:.2rem 0">${p.nombre}</h3>
+            <div style="color:#bdb9d8;margin-bottom:6px">ID: ${p.id}</div>
+            <div><strong>${toCLP(p.precio)}</strong> · <span class="tag">${p.categoria}</span></div>
+            ${p.pack ? `<div style="margin-top:6px"><span class="pill">Set x${p.pack}</span></div>` : ``}
+            ${Array.isArray(p.opciones)&&p.opciones.length ? `
+              <div style="margin-top:6px">${p.opciones.map(o=>`<span class="pill">${o.t}</span>`).join('')}</div>
+            ` : ``}
+            <div style="margin:8px 0">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <p style="margin:8px 0 0">${p.desc||''}</p>
+            <div style="margin-top:10px">
+              ${p.activo ? `<span class="badge b-ok">Activo</span>` : `<span class="badge b-off">Oculto</span>`}
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <a class="btn-ghost" href="#editar:${p.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+              <button class="btn-danger" onclick="eliminar('${p.id}')" ><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+            </div>
+          </div>
+        </div>`;
+      modal.classList.add('open');
+    }
+
+    /* ======= NUEVO ======= */
+    $('#formNuevo')?.addEventListener('submit', e=>{
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+
+      const nombre = (fd.get('nombre')||'').toString().trim();
+      const categoria = (fd.get('categoria')||'').toString().trim();
+      const precio = Number(fd.get('precio')||0);
+      let img = (fd.get('img')||'').toString().trim();
+      const desc = (fd.get('desc')||'').toString().trim();
+      const activo = !!fd.get('activo');
+      const tagsRaw = (fd.get('tags')||'').toString().trim();
+      const pack = Number(fd.get('pack')||0);
+      const opcionesRaw = (fd.get('opciones')||'').toString();
+      const opciones = opcionesRaw
+        ? opcionesRaw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(t=>({t}))
+        : [];
+
+      form.querySelector('[name="nombre"]').classList.remove('err');
+      if(nombreExiste(nombre)){
+        alert('Ya existe un producto con ese nombre. Cambia el nombre.');
+        form.querySelector('[name="nombre"]').classList.add('err');
+        form.querySelector('[name="nombre"]').focus();
+        return;
+      }
+
+      const imgSubida = document.getElementById('imgNuevoData')?.value || '';
+      if(imgSubida){
+        img = imgSubida;
+      }else{
+        if(!img) img = '../assets/img/placeholder.jpg';
+        if(!img.startsWith('../') && !img.startsWith('http') && !img.startsWith('data:')){
+          img = '../' + img;
+        }
+      }
+
+      const id = crearIdUnico(nombre);
+      const tags = tagsRaw ? tagsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,3) : null;
+
+      const nuevo = { id, nombre, categoria, precio, img, desc, activo, pack: pack||undefined, opciones: opciones.length?opciones:undefined, tags: tags ?? genTags({nombre, categoria}) };
+
+      productos.unshift(nuevo);
+      // también en la lista "custom" que persistimos
+      customRaw.unshift(nuevo);
+      guardarEnLocalStorage();
+
+      alert('Producto creado: ' + nombre + '\nID: ' + id);
+      location.hash = '#mostrar';
+      render();
+
+      document.getElementById('imgNuevoData').value='';
+      document.getElementById('prevNuevo').src='';
+      document.getElementById('fileNuevo').value='';
+    });
+
+    /* ======= EDITAR ======= */
+    function cargarEdicion(id){
+      const p = productos.find(x=>x.id===id);
+      const f = $('#formEditar');
+      if(!p || !f) return;
+
+      poblarSelectCategorias($('#catEditar'));
+
+      f.id.value = p.id;
+      f.idShown.value = p.id;
+      f.nombre.value = p.nombre;
+      f.categoria.value = p.categoria;
+      f.precio.value = p.precio;
+      f.img.value = p.img.startsWith('../') || p.img.startsWith('http') || p.img.startsWith('data:')
+                    ? (p.img.startsWith('../') ? p.img.slice(3) : (p.img.startsWith('http') ? p.img : ''))
+                    : p.img;
+      f.tags.value = (p.tags||[]).join(', ');
+      f.activo.checked = !!p.activo;
+      f.desc.value = p.desc || '';
+      f.pack.value = p.pack || '';
+      f.opciones.value = (Array.isArray(p.opciones)?p.opciones:[]).map(o=>o.t).join('\n');
+
+      const prev = document.getElementById('prevEditar');
+      if(prev) prev.src = p.img;
+      document.getElementById('imgEditarData').value = '';
+      document.getElementById('fileEditar').value = '';
+    }
+
+    $('#formEditar')?.addEventListener('submit', e=>{
+      e.preventDefault();
+      const f = e.target;
+      const fd = new FormData(f);
+      const id = fd.get('id');
+      const p = productos.find(x=>x.id===id);
+      if(!p) return;
+
+      const nuevoNombre = (fd.get('nombre')||'').toString().trim();
+      f.querySelector('[name="nombre"]').classList.remove('err');
+      if(nombreExiste(nuevoNombre, id)){
+        alert('Ya existe otro producto con ese nombre.');
+        f.querySelector('[name="nombre"]').classList.add('err');
+        f.querySelector('[name="nombre"]').focus();
+        return;
+      }
+
+      p.nombre = nuevoNombre;
+      p.categoria = (fd.get('categoria')||'').toString().trim();
+      p.precio = Number(fd.get('precio')||0);
+
+      let imgCampo = (fd.get('img')||'').toString().trim();
+      const imgSubidaEdit = document.getElementById('imgEditarData')?.value || '';
+      if(imgSubidaEdit){
+        p.img = imgSubidaEdit;
+      }else if(imgCampo){
+        if(!imgCampo.startsWith('../') && !imgCampo.startsWith('http') && !imgCampo.startsWith('data:')){
+          imgCampo = '../' + imgCampo;
+        }
+        p.img = imgCampo;
+      }
+
+      const tagsRaw = (fd.get('tags')||'').toString().trim();
+      p.tags = tagsRaw ? tagsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,3) : p.tags;
+      p.activo = !!fd.get('activo');
+      p.desc = (fd.get('desc')||'').toString().trim();
+
+      const pack = Number(fd.get('pack')||0);
+      p.pack = pack || undefined;
+
+      const opcionesRaw = (fd.get('opciones')||'').toString();
+      const opciones = opcionesRaw
+        ? opcionesRaw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(t=>({t}))
+        : [];
+      p.opciones = opciones.length ? opciones : undefined;
+
+      // refleja también en customRaw (si el producto es base, creamos override; si ya es custom, actualizamos)
+      const iCustom = customRaw.findIndex(x=>x.id===id);
+      if(iCustom>-1){ customRaw[iCustom] = p; }
+      else { customRaw.push(p); } // override de un base
+
+      guardarEnLocalStorage();
+
+      alert('Cambios guardados');
+      location.hash = '#mostrar';
+      render();
+    });
+
+    /* ======= INICIO ======= */
+    prepararUploader('fileNuevo','prevNuevo','imgNuevoData');
+    prepararUploader('fileEditar','prevEditar','imgEditarData');
+    render();
+    syncFromHash();
+  </script>
+</body>
+</html>
