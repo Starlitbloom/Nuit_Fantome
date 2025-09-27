@@ -33,6 +33,48 @@
 
   /* Topbar */
   .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:30px;font-weight: 700;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+
+  /* Sidebar */
+  /* Sidebar con diseño */
+  .sidebar{
+    width:240px;
+    background:
+      radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+      radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
+      var(--card);
+    color:var(--ink);
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+  .sidebar .logo{
+    text-align:center;padding:20px 0;
+  }
+  .sidebar .logo img{width:220px;height:auto;}
+  .sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
+  .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+  .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+  .sidebar ul li i{width:20px;text-align:center;}
+
+  /* Estrellitas flotantes */
+  .spark{
+    position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(#fff,rgba(255,255,255,.1));
+    filter:drop-shadow(0 0 10px #fff);
+    animation:float 8s linear infinite;
+  }
+  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+  .spark.s2{left:82%; top:22%;}
+  .spark.s3{left:18%; top:70%; animation-duration:9s;}
+  .spark.s4{left:72%; top:68%; animation-duration:10s;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* Main */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
   .topbar .left h1{font-size:20px;}
   .topbar .right{display:flex;align-items:center;gap:15px;}
   .topbar .right i{cursor:pointer;font-size:18px;}
@@ -80,27 +122,34 @@
 <div class="wrapper">
   <!-- Sidebar -->
   <div class="sidebar">
+    <div class="logo">
+      <img src="../assets/img/logo.png" alt="Logo Empresa">
+    </div>
     <h2>Admin</h2>
     <ul>
-      <li class="active"><i class="fa fa-chart-line"></i>Dashboard</li>
+      <li class="active"><a href="./index.html"><i class="fa fa-chart-line"></i>Dashboard</a></li>
       <li><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
-      <li><i class="fa fa-shopping-cart"></i>Pedidos</li>
+      <li><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
       <li><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
-      <li><i class="fa fa-cog"></i>Ajustes</li>
+      <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
+      <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
     </ul>
+    <!-- Estrellitas -->
+    <div class="spark s1"></div>
+    <div class="spark s2"></div>
+    <div class="spark s3"></div>
+    <div class="spark s4"></div>
   </div>
 
   <!-- Main -->
   <div class="main">
     <!-- Topbar -->
     <div class="topbar">
-      <div class="left"><h1>Dashboard</h1></div>
+      <div class="left">
+        <h1 id="tituloBienvenida">Bienvenido!</h1>
+      </div>
       <div class="right">
         <i class="fa fa-bell"></i>
-        <div class="user">
-          <img src="https://via.placeholder.com/35" alt="Usuario">
-          <span id="username">Usuario</span>
-        </div>
       </div>
     </div>
 
@@ -216,10 +265,15 @@
   // Datos usuario
   const nombreUsuario = localStorage.getItem('nombreUsuario') || 'Usuario';
   const emailUsuario = localStorage.getItem('emailUsuario') || 'usuario@email.com';
-  document.getElementById('username').textContent = nombreUsuario;
+
+  // Perfil
   document.getElementById('perfilNombre').textContent = nombreUsuario;
   document.getElementById('perfilEmail').textContent = emailUsuario;
+
+  // Título bienvenida
+  document.getElementById('tituloBienvenida').textContent = `Bienvenido, ${nombreUsuario}!`;
 </script>
+
 
 </body>
 </html>
