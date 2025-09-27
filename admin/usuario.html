@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Usuarios</title>
+<link rel="icon" href="../assets/img/logo.png" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root{
+    --bg:#0f0321; --card:#111025; --ink:#e9e6ff; --muted:#bdb9d8;
+    --line:#2b2550; --primary:#7c3aed; --primary-2:#a78bfa;
+    --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
+  a{color:inherit;text-decoration:none}
+
+  /* Topbar */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;gap:10px;align-items:center}
+  .brand img{height:28px}
+  .brand span{font-weight:800;letter-spacing:.4px}
+  .top .right a{padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-left:8px}
+
+  .container{width:min(1200px,94%);margin:20px auto}
+  .bc{color:var(--muted);font-size:14px}
+  .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
+  .title h1{margin:.2rem 0 0;font-size:clamp(22px,2.5vw,28px)}
+  .title .tools{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;border:0;border-radius:10px;
+    padding:10px 14px;font-weight:800;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .btn-ghost{background:#1a1633;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:800;display:inline-flex;gap:8px;align-items:center}
+  .btn.sm{padding:6px 10px;border-radius:8px;font-weight:700}
+  .btn[disabled], .btn-ghost[disabled]{opacity:.6;pointer-events:none}
+  .tab-active{box-shadow:0 0 0 2px rgba(167,139,250,.35) inset}
+
+  /* Accesos rápidos */
+  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  @media (max-width:860px){.actions{grid-template-columns:1fr}}
+  .qcard{background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;
+    display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+  .qicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;font-size:18px}
+
+  /* Table */
+  .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}
+  .input, select, textarea{background:#130f2b;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px}
+  .input::placeholder{color:#8f89b6}
+  .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+  th{position:sticky;top:0;background:#151237}
+  tr:hover td{background:#120f2c}
+  .badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid}
+  .b-ok{border-color:#064e3b;color:#34d399;background:rgba(52,211,153,.1)}
+  .b-off{border-color:#92400e;color:#fbbf24;background:rgba(251,191,36,.08)}
+
+  /* Form */
+  .form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media (max-width:860px){.grid2{grid-template-columns:1fr}}
+  label{font-size:14px;color:#d7d2ff}
+  .help{color:#9c96bf;font-size:12px;margin-top:4px}
+  .section-title{grid-column:1/-1;margin:6px 0 2px;font-size:15px;color:#c9c3ee;font-weight:700}
+  .divider{grid-column:1/-1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:6px 0}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.45);padding:16px}
+  .modal.open{display:grid}
+  .modal .box{width:min(720px,96vw);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+
+  .view{display:none}
+  .view.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <img src="../assets/img/logo.png" alt="Logo">
+    <span>Panel admin</span>
+  </div>
+  <div class="right">
+    <a href="../index.html">Ver sitio</a>
+    <a href="./index.html">Inicio admin</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="bc">Inicio / <strong>Usuarios</strong></div>
+
+  <div class="title">
+    <h1>Gestión de usuarios</h1>
+    <div class="tools">
+      <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-user-plus"></i> Nuevo usuario</a>
+      <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
+      <a class="btn-ghost" href="#editar" id="btnTopEditar" style="display:none"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+    </div>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <section class="actions">
+    <article class="qcard">
+      <div class="qicon"><i class="fa-solid fa-user-plus"></i></div>
+      <div>
+        <h3>Nuevo usuario</h3>
+        <p>Agregar un usuario con nombre, email y rol.</p>
+      </div>
+      <a class="btn sm" href="#nuevo">Ir</a>
+    </article>
+
+    <article class="qcard">
+      <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
+      <div>
+        <h3>Editar usuario</h3>
+        <p>Modificar datos o rol de usuario existente.</p>
+      </div>
+      <a class="btn sm" href="#editar" onclick="event.preventDefault(); alert('Usa la acción Editar desde la fila del usuario.')">Ir</a>
+    </article>
+
+    <article class="qcard">
+      <div class="qicon"><i class="fa-regular fa-eye"></i></div>
+      <div>
+        <h3>Mostrar usuarios</h3>
+        <p>Lista con filtros y acciones rápidas.</p>
+      </div>
+      <a class="btn sm" href="#mostrar">Ir</a>
+    </article>
+  </section>
+
+  <!-- VISTA MOSTRAR -->
+  <section class="view active" id="vistaMostrar">
+    <section class="filters">
+      <input id="q" class="input" type="search" placeholder="Buscar por nombre, email o rol…">
+      <select id="rol" class="input">
+        <option value="todos">Todos los roles</option>
+        <option value="admin">Admin</option>
+        <option value="usuario">Usuario</option>
+      </select>
+      <button class="btn-ghost" id="clear">Limpiar</button>
+    </section>
+
+    <section class="table-wrap">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th style="width:180px">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="6" class="empty">Cargando usuarios…</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <!-- VISTA NUEVO -->
+  <section class="view" id="vistaNuevo">
+    <div class="form">
+      <h2 style="margin-top:0">Nuevo usuario</h2>
+      <form id="formNuevo" class="grid2" autocomplete="off">
+        <div class="section-title">Datos básicos</div><div class="divider"></div>
+        <div>
+          <label>Nombre</label>
+          <input class="input" name="nombre" required placeholder="Ej: Juan Pérez">
+        </div>
+
+        <div>
+          <label>Email</label>
+          <input class="input" name="email" type="email" required placeholder="ejemplo@email.com">
+        </div>
+
+        <div>
+          <label>Rol</label>
+          <select class="input" name="rol" required>
+            <option value="">Selecciona un rol</option>
+            <option value="admin">Admin</option>
+            <option value="usuario">Usuario</option>
+          </select>
+        </div>
+
+        <div class="section-title">Estado</div><div class="divider"></div>
+
+        <div>
+          <label>Activo</label><br>
+          <label><input type="checkbox" name="activo" checked> Usuario activo</label>
+        </div>
+        <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
+          <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- VISTA EDITAR -->
+  <section class="view" id="vistaEditar">
+    <div class="form">
+      <h2 style="margin-top:0">Editar usuario</h2>
+      <form id="formEditar" class="grid2" autocomplete="off">
+        <input type="hidden" name="id">
+
+        <div class="section-title">Datos</div><div class="divider"></div>
+        <div>
+          <label>ID</label>
+          <input class="input" name="idShown" disabled>
+          <div class="help">Se rellena al tocar “Editar” en el listado.</div>
+        </div>
+
+        <div class="section-title">Datos</div><div class="divider"></div>
+        <div>
+          <label>Nombre</label>
+          <input class="input" name="nombre" required>
+        </div>
+
+        <div>
+          <label>Email</label>
+          <input class="input" name="email" type="email" required>
+        </div>
+
+        <div>
+          <label>Rol</label>
+          <select class="input" name="rol" required>
+            <option value="admin">Admin</option>
+            <option value="usuario">Usuario</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Activo</label><br>
+          <label><input type="checkbox" name="activo"> Usuario activo</label>
+        </div>
+        <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+          <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</div>
+
+<!-- Modal ver usuario -->
+<div class="modal" id="modalVer" aria-hidden="true">
+  <div class="box">
+    <header>
+      <h3 style="margin:0">Detalle del usuario</h3>
+      <button class="close" id="cerrarModal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+    </header>
+    <div id="contenidoModal"></div>
+  </div>
+</div>
+
+<script>
+/* ========== Administración de usuarios (limpia y autónoma) ========== */
+
+// Helpers DOM
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+// LocalStorage key
+const STORAGE_KEY = 'admin_users_v1';
+
+// Datos iniciales por defecto
+const defaultUsers = [
+  { id: 'u1', nombre: 'María López', email: 'maria@example.com', rol: 'usuario', activo: true },
+  { id: 'u2', nombre: 'Carlos Díaz', email: 'carlos@example.com', rol: 'usuario', activo: true },
+  { id: 'u3', nombre: 'Rocío Pérez', email: 'rocio@example.com', rol: 'admin', activo: true },
+  { id: 'u4', nombre: 'Admin Demo', email: 'admin@example.com', rol: 'admin', activo: true }
+];
+
+function loadUsers(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return [...defaultUsers];
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed)) return [...defaultUsers];
+    return parsed;
+  }catch(e){ return [...defaultUsers]; }
+}
+function saveUsers(arr){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+let users = loadUsers();
+
+/* ====== Utilidades ====== */
+function crearIdUnico(){
+  return 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+}
+function emailExiste(email, exceptId = null){
+  const e = (email||'').toString().trim().toLowerCase();
+  return users.some(u => u.email.toLowerCase() === e && u.id !== exceptId);
+}
+
+/* ====== RENDER TABLA ====== */
+const tbody = $('#tbody');
+const qInput = $('#q');
+const rolSel = $('#rol');
+const clearBtn = $('#clear');
+
+const state = { q:'', rol:'todos' };
+
+function render(){
+  state.q = qInput?.value || '';
+  state.rol = rolSel?.value || 'todos';
+
+  const q = state.q.trim().toLowerCase();
+
+  let list = users.filter(u => {
+    const okRol = state.rol === 'todos' || u.rol === state.rol;
+    const okQ = !q || u.nombre.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.rol.toLowerCase().includes(q);
+    return okRol && okQ;
+  });
+
+  if(!list.length){
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">No hay usuarios que coincidan.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(u => `
+    <tr>
+      <td><small style="color:#bdb9d8">${u.id}</small></td>
+      <td><strong>${escapeHtml(u.nombre)}</strong></td>
+      <td>${escapeHtml(u.email)}</td>
+      <td>${u.rol}</td>
+      <td>${u.activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-off">Inactivo</span>'}</td>
+      <td class="actions-col" style="display:flex;gap:8px;align-items:center">
+        <button class="btn-ghost sm" onclick="verUsuario('${u.id}')"><i class="fa-regular fa-eye"></i> Ver</button>
+        <button class="btn-ghost sm" onclick="location.hash = '#editar:${u.id}'"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
+        <button class="btn-danger sm" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// pequeño helper para evitar inyección cuando se insertan nombres/emails
+function escapeHtml(s){
+  if(!s) return '';
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ====== CRUD usuarios ====== */
+function agregarUsuario(data){
+  const id = crearIdUnico();
+  const user = { id, nombre: data.nombre, email: data.email, rol: data.rol, activo: !!data.activo };
+  users.unshift(user);
+  saveUsers(users);
+  render();
+  return user;
+}
+
+function actualizarUsuario(id, data){
+  const idx = users.findIndex(u => u.id === id);
+  if(idx === -1) return false;
+  users[idx] = { ...users[idx], nombre: data.nombre, email: data.email, rol: data.rol, activo: !!data.activo };
+  saveUsers(users);
+  render();
+  return true;
+}
+
+function eliminarUsuario(id){
+  if(!confirm('¿Eliminar este usuario?')) return;
+  const idx = users.findIndex(u => u.id === id);
+  if(idx > -1){
+    users.splice(idx,1);
+    saveUsers(users);
+    render();
+  }
+}
+
+/* ====== Modal ver ====== */
+const modal = $('#modalVer');
+const modalContent = $('#contenidoModal');
+$('#cerrarModal').addEventListener('click', ()=> modal.classList.remove('open'));
+modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('open'); });
+
+window.verUsuario = function(id){
+  const u = users.find(x => x.id === id);
+  if(!u) return;
+  modalContent.innerHTML = `
+    <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+      <div style="min-width:160px">
+        <div style="width:160px;height:160px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:#130f2b">
+          <i class="fa fa-user" style="font-size:48px;color:var(--muted)"></i>
+        </div>
+      </div>
+      <div style="flex:1">
+        <h3 style="margin:.2rem 0">${escapeHtml(u.nombre)}</h3>
+        <div style="color:#bdb9d8;margin-bottom:6px">ID: ${u.id}</div>
+        <div><strong>${escapeHtml(u.email)}</strong> · <span class="tag">${u.rol}</span></div>
+        <div style="margin-top:8px">${u.activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-off">Inactivo</span>'}</div>
+        <p style="margin-top:12px;color:var(--muted)">Detalle: usuario creado en el panel.</p>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-ghost" onclick="location.hash = '#editar:${u.id}'"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
+          <button class="btn-danger" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  modal.classList.add('open');
+};
+
+/* ====== Formularios ====== */
+$('#formNuevo')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const nombre = (fd.get('nombre')||'').toString().trim();
+  const email = (fd.get('email')||'').toString().trim().toLowerCase();
+  const rol = (fd.get('rol')||'').toString();
+  const activo = !!fd.get('activo');
+
+  if(!nombre || !email || !rol){
+    alert('Completa los campos requeridos.');
+    return;
+  }
+  if(emailExiste(email)){
+    alert('Ese email ya está en uso.');
+    return;
+  }
+
+  agregarUsuario({ nombre, email, rol, activo });
+  // reset y volver al listado
+  e.target.reset();
+  location.hash = '#mostrar';
+});
+
+$('#formEditar')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const id = fd.get('id');
+  const nombre = (fd.get('nombre')||'').toString().trim();
+  const email = (fd.get('email')||'').toString().trim().toLowerCase();
+  const rol = (fd.get('rol')||'').toString();
+  const activo = !!fd.get('activo');
+
+  if(!id || !nombre || !email || !rol){
+    alert('Completa los campos requeridos.');
+    return;
+  }
+  if(emailExiste(email, id)){
+    alert('Ese email ya está en uso por otro usuario.');
+    return;
+  }
+
+  actualizarUsuario(id, { nombre, email, rol, activo });
+  location.hash = '#mostrar';
+});
+
+/* ====== Hash routing (vistas) ====== */
+const views = { mostrar: $('#vistaMostrar'), nuevo: $('#vistaNuevo'), editar: $('#vistaEditar') };
+const topBtns = { mostrar: $('#btnTopMostrar'), nuevo: $('#btnTopNuevo'), editar: $('#btnTopEditar') };
+
+function go(view, extra){
+  Object.values(views).forEach(v => v && v.classList.remove('active'));
+  const target = views[view] || views.mostrar;
+  target.classList.add('active');
+
+  Object.values(topBtns).forEach(b => b && b.classList.remove('tab-active'));
+  (topBtns[view] || topBtns.mostrar)?.classList.add('tab-active');
+
+  if(view === 'mostrar') {
+    render();
+  } else if(view === 'nuevo') {
+    $('#formNuevo')?.reset();
+  } else if(view === 'editar' && extra) {
+    cargarEdicion(extra);
+  }
+
+  // sincronizar hash (si no coincide)
+  const desiredHash = view + (extra?(':'+extra):'');
+  if(location.hash.replace('#','') !== desiredHash){
+    location.hash = '#' + desiredHash;
+  }
+}
+
+function syncFromHash(){
+  const h = (location.hash || '#mostrar').slice(1);
+  const [view, param] = h.split(':');
+  go(view || 'mostrar', param);
+}
+window.addEventListener('hashchange', syncFromHash);
+
+/* Cargar datos en formulario editar */
+function cargarEdicion(id){
+  const u = users.find(x => x.id === id);
+  const f = $('#formEditar');
+  if(!u || !f) return;
+  f.id.value = u.id;
+  f.idShown.value = u.id;
+  f.nombre.value = u.nombre;
+  f.email.value = u.email;
+  f.rol.value = u.rol;
+  f.activo.checked = !!u.activo;
+}
+
+/* ====== Listeners filtros y botones ====== */
+qInput?.addEventListener('input', render);
+rolSel?.addEventListener('change', render);
+clearBtn?.addEventListener('click', () => {
+  qInput.value = '';
+  rolSel.value = 'todos';
+  render();
+});
+
+// Inicializa
+render();
+syncFromHash();
+
+</script>
+</body>
+</html>
