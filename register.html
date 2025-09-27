@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap">
-  <!-- Iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
   <!-- Barra superior -->
@@ -85,9 +84,30 @@
             <p>¡Regístrate para disfrutar de nuestros productos y promociones!</p>
 
             <form id="registerForm" novalidate>
+                <!-- RUT -->
+                <div class="input-container">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <input type="text" id="rut" name="rut" placeholder="RUT (sin puntos ni guion)">
+                    <span class="error-message" id="rut-error"></span>
+                </div>
+
+                <!-- Nombre -->
+                <div class="input-container">
+                    <i class="bi bi-person-fill"></i>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+                    <span class="error-message" id="nombre-error"></span>
+                </div>
+
+                <!-- Apellido -->
+                <div class="input-container">
+                    <i class="bi bi-person-fill"></i>
+                    <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+                    <span class="error-message" id="apellido-error"></span>
+                </div>
+
                 <!-- Correo -->
                 <div class="input-container">
-                    <i class="bi bi-envelope-fill"></i>
+                    <i class="bi bi-envelope-at-fill"></i>
                     <input type="text" id="email" name="email" placeholder="Correo electrónico">
                     <span class="error-message" id="email-error"></span>
                 </div>
@@ -106,6 +126,31 @@
                     <span class="error-message" id="cumpleanos-error"></span>
                 </div>
 
+                <!-- Región -->
+                <div class="input-container select-container">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <select id="region" name="region">
+                        <option value="">Selecciona tu región</option>
+                    </select>
+                    <span class="error-message" id="region-error"></span>
+                </div>
+
+                <!-- Comuna -->
+                <div class="input-container select-container">
+                    <i class="bi bi-geo-fill"></i>
+                    <select id="comuna" name="comuna">
+                        <option value="">Selecciona tu comuna</option>
+                    </select>
+                    <span class="error-message" id="comuna-error"></span>
+                </div>
+
+                <!-- Dirección -->
+                <div class="input-container">
+                    <i class="bi bi-house-fill"></i>
+                    <input type="text" id="direccion" name="direccion" placeholder="Dirección">
+                    <span class="error-message" id="direccion-error"></span>
+                </div>
+                
                 <!-- Contraseña -->
                 <div class="input-container">
                     <i class="bi bi-lock-fill"></i>
