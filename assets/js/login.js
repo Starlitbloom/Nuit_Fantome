@@ -63,6 +63,9 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
+    // Guardar usuario actual en localStorage
+    localStorage.setItem("usuarioActual", JSON.stringify(usuario));
+
     passwordError.textContent = "¡Inicio de sesión exitoso!";
     passwordError.style.color = "purple";
 

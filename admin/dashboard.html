@@ -131,7 +131,6 @@
       <li><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
       <li><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
       <li><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
-      <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
       <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
     </ul>
     <!-- Estrellitas -->
@@ -184,11 +183,11 @@
           <img src="https://via.placeholder.com/120" alt="Usuario">
           <div class="perfil-info">
             <h2 id="perfilNombre">Usuario</h2>
-            <p><b>Fecha Registro:</b> 01/01/2024</p>
-            <p><b>Email:</b> <span id="perfilEmail">usuario@email.com</span></p>
-            <p><b>Teléfono:</b> +56 9 1234 5678</p>
+            <p><b>Fecha Registro:  </b><span id="perfilFechaRegistro"> 01/01/2024</span></p>
+            <p><b>Email:  </b> <span id="perfilEmail">usuario@email.com</span></p>
+            <p><b>Teléfono:  </b><span id="perfilTelefono"> +56 9 1234 5678</span></p>
           </div>
-          <i class="fa fa-edit editar"></i>
+          <a href="./usuario.html"><i class="fa fa-edit editar"></i></a>
         </div>
         <div class="ingresos-card">
           <p>Ingresos</p>
@@ -263,15 +262,24 @@
   });
 
   // Datos usuario
-  const nombreUsuario = localStorage.getItem('nombreUsuario') || 'Usuario';
-  const emailUsuario = localStorage.getItem('emailUsuario') || 'usuario@email.com';
+  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual") || "{}");
 
-  // Perfil
-  document.getElementById('perfilNombre').textContent = nombreUsuario;
-  document.getElementById('perfilEmail').textContent = emailUsuario;
+// Perfil básico
+  document.getElementById("perfilNombre").textContent = usuarioActual.nombre || "Usuario";
+  document.getElementById("perfilEmail").textContent = usuarioActual.email || "usuario@email.com";
+  document.getElementById("tituloBienvenida").textContent = `Bienvenido, ${usuarioActual.nombre || "Usuario"}!`;
 
-  // Título bienvenida
-  document.getElementById('tituloBienvenida').textContent = `Bienvenido, ${nombreUsuario}!`;
+  // Imagen
+  const imgPerfil = document.querySelector(".perfil-card img");
+  imgPerfil.src = usuarioActual.img || "../assets/img/avatar-placeholder.png";
+
+  // Teléfono y fecha de registro
+  document.getElementById("perfilTelefono").textContent = usuarioActual.telefono || "-";
+  document.getElementById("perfilFechaRegistro").textContent = usuarioActual.createdAt
+    ? new Date(usuarioActual.createdAt).toLocaleDateString('es-CL')
+    : "-";
+
+
 </script>
 
 
