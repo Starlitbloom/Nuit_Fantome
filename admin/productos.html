@@ -7,23 +7,81 @@
 
   <link rel="icon" href="../assets/img/icono_pag.png" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
 
   <style>
     :root{
       --bg:#0f0321; --card:#111025; --ink:#e9e6ff; --muted:#bdb9d8; --line:#2b2550;
       --primary:#7c3aed; --primary-2:#a78bfa; --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
-    a{color:inherit}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Merriweather', serif;background:var(--bg);color:var(--ink);}
+    a{color:inherit;text-decoration:none;}
+    ul{list-style:none;}
 
-    .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
-    .brand{display:flex;gap:10px;align-items:center}
-    .brand img{height:28px}
-    .brand span{font-weight:800;letter-spacing:.4px}
-    .top .right a{padding:8px 10px;border:1px solid var(--line);border-radius:10px;text-decoration:none;margin-left:8px}
+    /* Layout */
+    .wrapper{display:flex;height:100vh;overflow:hidden;}
+    .sidebar{
+      width:220px;background:var(--card);display:flex;flex-direction:column;
+    }
+    .sidebar h2{color:var(--primary);text-align:center;padding:20px 0;font-size:22px;}
+    .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+    .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+    .sidebar ul li i{width:20px;text-align:center;}
 
-    .container{width:min(1200px,94%);margin:20px auto}
+    .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+
+    /* Topbar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+    .topbar .left h1{font-size:30px;font-weight: 700;}
+    .topbar .right{display:flex;align-items:center;gap:15px;}
+    .topbar .right i{cursor:pointer;font-size:18px;}
+
+    /* Sidebar */
+    /* Sidebar con diseño */
+    .sidebar{
+      width:240px;
+      background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
+        var(--card);
+      color:var(--ink);
+      display:flex;flex-direction:column;
+      position:relative;
+    }
+    .sidebar .logo{
+      text-align:center;padding:20px 0;
+    }
+    .sidebar .logo img{width:220px;height:auto;}
+    .sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
+    .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+    .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+    .sidebar ul li i{width:20px;text-align:center;}
+
+    /* Estrellitas flotantes */
+  .spark{
+    position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(#fff,rgba(255,255,255,.1));
+    filter:drop-shadow(0 0 10px #fff);
+    animation:float 8s linear infinite;
+  }
+  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+  .spark.s2{left:82%; top:22%;}
+  .spark.s3{left:18%; top:70%; animation-duration:9s;}
+  .spark.s4{left:72%; top:68%; animation-duration:10s;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* Main */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:20px;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+  .topbar .right .user{display:flex;align-items:center;gap:10px;}
+  .topbar .right .user img{width:35px;height:35px;border-radius:50%;object-fit:cover;}
+
+  .container{width:min(1200px,94%);margin:20px auto}
 
     .bc{color:var(--muted);font-size:14px}
     .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
@@ -103,77 +161,83 @@
   </style>
 </head>
 <body>
-  <!-- Topbar -->
-  <div class="top">
-    <div class="brand">
-      <img src="../assets/img/logo.png" alt="Nuit Fantôme" />
-      <span>Panel admin</span>
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="../assets/img/logo.png" alt="Logo Empresa">
+      </div>
+      <h2>Admin</h2>
+      <ul>
+        <li><a href="./dashboard.html"><i class="fa fa-chart-line"></i>Dashboard</a></li>
+        <li class="active"><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
+        <li><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
+        <li><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
+        <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
+        <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
+      </ul>
+      <!-- Estrellitas -->
+      <div class="spark s1"></div>
+      <div class="spark s2"></div>
+      <div class="spark s3"></div>
+      <div class="spark s4"></div>
     </div>
-    <div class="right">
-      <a href="../index.html">Ver tienda</a>
-      <a href="./index.html">Inicio admin</a>
-    </div>
-  </div>
 
-  <div class="container">
-    <div class="bc">Inicio / <strong>Productos</strong></div>
+    <div class="main">
 
-    <div class="title">
-      <h1>Gestión de productos</h1>
-      <div class="tools">
-        <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-plus"></i> Nuevo producto</a>
-        <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
-        <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="left">
+        <h1 id="tituloBienvenida">Bienvenido!</h1>
+      </div>
+      <div class="right">
+        <i class="fa fa-bell"></i>
       </div>
     </div>
 
-    <!-- Accesos rápidos -->
-    <section class="actions">
-      <article class="qcard">
-        <div class="qicon"><i class="fa-solid fa-plus"></i></div>
-        <div>
-          <h3>Nuevo producto</h3>
-          <p>Crea un producto con fotos, precio, stock y variantes.</p>
-        </div>
-        <a class="btn sm" href="#nuevo">Ir</a>
-      </article>
+    <div class="container">
+      <div class="bc">Inicio / <strong>Productos</strong></div>
 
-      <article class="qcard">
-        <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
-        <div>
-          <h3>Editar producto</h3>
-          <p>Actualiza precios, estado y descripciones.</p>
+      <div class="title">
+        <h1>Gestión de productos</h1>
+        <div class="tools">
+          <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-plus"></i> Nuevo producto</a>
+          <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
+          <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
         </div>
-        <a class="btn sm" href="#editar">Ir</a>
-      </article>
+      </div>
 
-      <article class="qcard">
-        <div class="qicon"><i class="fa-regular fa-eye"></i></div>
-        <div>
-          <h3>Mostrar productos</h3>
-          <p>Listado con filtros y acciones rápidas.</p>
-        </div>
-        <a class="btn sm" href="#mostrar">Ir</a>
-      </article>
-    </section>
+      <!-- Accesos rápidos -->
+      <section class="actions">
+        <article class="qcard">
+          <div class="qicon"><i class="fa-solid fa-plus"></i></div>
+          <div>
+            <h3>Nuevo producto</h3>
+            <p>Crea un producto con fotos, precio, stock y variantes.</p>
+          </div>
+          <a class="btn sm" href="#nuevo">Ir</a>
+        </article>
 
-    <!-- ======= VISTA MOSTRAR ======= -->
-    <section class="view active" id="vistaMostrar">
-      <section class="filters">
-        <input id="q" class="input" type="search" placeholder="Buscar por nombre, categoría o etiqueta…">
-        <select id="cat">
-          <option value="todas">Todas las categorías</option>
-        </select>
-        <select id="orden">
-          <option value="recientes">Ordenar: Recientes</option>
-          <option value="az">Nombre A → Z</option>
-          <option value="za">Nombre Z → A</option>
-          <option value="mayor">Precio mayor</option>
-          <option value="menor">Precio menor</option>
-        </select>
-        <button class="btn-ghost" id="clear">Limpiar</button>
+        <article class="qcard">
+          <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
+          <div>
+            <h3>Editar producto</h3>
+            <p>Actualiza precios, estado y descripciones.</p>
+          </div>
+          <a class="btn sm" href="#editar">Ir</a>
+        </article>
+
+        <article class="qcard">
+          <div class="qicon"><i class="fa-regular fa-eye"></i></div>
+          <div>
+            <h3>Mostrar productos</h3>
+            <p>Listado con filtros y acciones rápidas.</p>
+          </div>
+          <a class="btn sm" href="#mostrar">Ir</a>
+        </article>
       </section>
 
+<<<<<<< Updated upstream
       <section class="table-wrap">
         <table id="tabla">
           <thead>
@@ -192,16 +256,53 @@
             <tr><td colspan="8" class="empty">Cargando productos…</td></tr>
           </tbody>
         </table>
+=======
+      <!-- ======= VISTA MOSTRAR ======= -->
+      <section class="view active" id="vistaMostrar">
+        <section class="filters">
+          <input id="q" class="input" type="search" placeholder="Buscar por nombre, categoría o etiqueta…">
+          <select id="cat">
+            <option value="todas">Todas las categorías</option>
+          </select>
+          <select id="orden">
+            <option value="recientes">Ordenar: Recientes</option>
+            <option value="az">Nombre A → Z</option>
+            <option value="za">Nombre Z → A</option>
+            <option value="mayor">Precio mayor</option>
+            <option value="menor">Precio menor</option>
+          </select>
+          <button class="btn-ghost" id="clear">Limpiar</button>
+        </section>
+
+        <section class="table-wrap">
+          <table id="tabla">
+            <thead>
+              <tr>
+                <th style="width:54px">Img</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Etiquetas</th>
+                <th>Estado</th>
+                <th style="width:210px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="7" class="empty">Cargando productos…</td></tr>
+            </tbody>
+          </table>
+        </section>
+>>>>>>> Stashed changes
       </section>
-    </section>
 
-    <!-- ======= VISTA NUEVO ======= -->
-    <section class="view" id="vistaNuevo">
-      <div class="form">
-        <h2 style="margin-top:0">Nuevo producto</h2>
-        <form id="formNuevo" class="grid2">
-          <div class="section-title">Datos básicos</div><div class="divider"></div>
+      <!-- ======= VISTA NUEVO ======= -->
+      <section class="view" id="vistaNuevo">
+        <div class="form">
+          <h2 style="margin-top:0">Nuevo producto</h2>
+          <form id="formNuevo" class="grid2">
+            <div class="section-title">Datos básicos</div><div class="divider"></div>
 
+<<<<<<< Updated upstream
           <div>
             <label>Nombre</label>
             <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
@@ -234,10 +335,15 @@
             <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
               <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
               <img id="prevNuevo" class="preview" alt="">
+=======
+            <div>
+              <label>Nombre</label>
+              <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
+              <div class="help">No se permiten nombres repetidos.</div>
+>>>>>>> Stashed changes
             </div>
-            <input type="hidden" id="imgNuevoData">
-          </div>
 
+<<<<<<< Updated upstream
           <div class="section-title">Variantes</div><div class="divider"></div>
           <div>
             <label>Opciones (una por línea)</label>
@@ -323,10 +429,17 @@
             <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
               <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
               <img id="prevEditar" class="preview" alt="">
+=======
+            <!-- CATEGORÍA con SELECT (para concordar con tienda) -->
+            <div>
+              <label>Categoría</label>
+              <select class="input" id="catNuevo" name="categoria" required>
+                <option value="">Selecciona una categoría</option>
+              </select>
+>>>>>>> Stashed changes
             </div>
-            <input type="hidden" id="imgEditarData">
-          </div>
 
+<<<<<<< Updated upstream
           <div class="section-title">Variantes</div><div class="divider"></div>
           <div style="grid-column:1/-1">
             <label>Opciones (una por línea)</label>
@@ -341,39 +454,152 @@
             <label>Unidades por set</label>
             <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
           </div>
+=======
+            <div>
+              <label>Precio (CLP)</label>
+              <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
+            </div>
+>>>>>>> Stashed changes
 
-          <div class="section-title">Metadatos</div><div class="divider"></div>
-          <div>
-            <label>Etiquetas (coma separadas)</label>
-            <input class="input" name="tags">
-          </div>
-          <div>
-            <label>Activo</label><br>
-            <label><input type="checkbox" name="activo"> Visible en la tienda</label>
-          </div>
-          <div style="grid-column:1/-1">
-            <label>Descripción</label>
-            <textarea class="input" name="desc" rows="3"></textarea>
-          </div>
-          <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
-            <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-          </div>
-        </form>
+            <div class="section-title">Imagen</div><div class="divider"></div>
+
+            <div>
+              <label>Imagen</label>
+              <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+              <div class="help">Pega una ruta del proyecto o una URL. Si subes archivo, tendrá prioridad.</div>
+              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
+                <img id="prevNuevo" class="preview" alt="">
+              </div>
+              <input type="hidden" id="imgNuevoData">
+            </div>
+
+            <div class="section-title">Variantes</div><div class="divider"></div>
+
+            <div>
+              <label>Unidades por set</label>
+              <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+              <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
+            </div>
+            <div>
+              <label>Opciones (una por línea)</label>
+              <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+              <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
+            </div>
+
+            <div class="section-title">Metadatos</div><div class="divider"></div>
+
+            <div>
+              <label>Etiquetas (coma separadas)</label>
+              <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
+              <div class="help">Máx 3; si lo dejas vacío se generan automáticamente.</div>
+            </div>
+            <div>
+              <label>Activo</label><br>
+              <label><input type="checkbox" name="activo" checked> Visible en la tienda</label>
+            </div>
+            <div style="grid-column:1/-1">
+              <label>Descripción</label>
+              <textarea class="input" name="desc" rows="3" placeholder="Descripción breve del producto"></textarea>
+            </div>
+            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
+              <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ======= VISTA EDITAR ======= -->
+      <section class="view" id="vistaEditar">
+        <div class="form">
+          <h2 style="margin-top:0">Editar producto</h2>
+          <form id="formEditar" class="grid2">
+            <input type="hidden" name="id">
+
+            <div class="section-title">Identificación</div><div class="divider"></div>
+            <div>
+              <label>ID</label>
+              <input class="input" name="idShown" disabled>
+              <div class="help">Se rellena al tocar “Editar” en el listado.</div>
+            </div>
+
+            <div class="section-title">Datos</div><div class="divider"></div>
+            <div>
+              <label>Nombre</label>
+              <input class="input" name="nombre" required>
+              <div class="help">Debe ser único.</div>
+            </div>
+
+            <!-- CATEGORÍA con SELECT -->
+            <div>
+              <label>Categoría</label>
+              <select class="input" id="catEditar" name="categoria" required>
+                <option value="">Selecciona una categoría</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Precio (CLP)</label>
+              <input class="input" name="precio" type="number" min="0" step="10" required>
+            </div>
+
+            <div class="section-title">Imagen</div><div class="divider"></div>
+            <div>
+              <label>Imagen</label>
+              <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+              <div class="help">Mantén la ruta/URL actual o sube un archivo para reemplazarla.</div>
+              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
+                <img id="prevEditar" class="preview" alt="">
+              </div>
+              <input type="hidden" id="imgEditarData">
+            </div>
+
+            <div class="section-title">Variantes</div><div class="divider"></div>
+            <div>
+              <label>Unidades por set</label>
+              <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+            </div>
+            <div>
+              <label>Opciones (una por línea)</label>
+              <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+            </div>
+
+            <div class="section-title">Metadatos</div><div class="divider"></div>
+            <div>
+              <label>Etiquetas (coma separadas)</label>
+              <input class="input" name="tags">
+            </div>
+            <div>
+              <label>Activo</label><br>
+              <label><input type="checkbox" name="activo"> Visible en la tienda</label>
+            </div>
+            <div style="grid-column:1/-1">
+              <label>Descripción</label>
+              <textarea class="input" name="desc" rows="3"></textarea>
+            </div>
+            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+              <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======= MODAL VER ======= -->
+    <div class="modal" id="modalVer" aria-hidden="true">
+      <div class="box">
+        <header>
+          <h3 style="margin:0">Detalle del producto</h3>
+          <button class="close" id="cerrarModal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+        </header>
+        <div id="contenidoModal"></div>
       </div>
-    </section>
-  </div>
-
-  <!-- ======= MODAL VER ======= -->
-  <div class="modal" id="modalVer" aria-hidden="true">
-    <div class="box">
-      <header>
-        <h3 style="margin:0">Detalle del producto</h3>
-        <button class="close" id="cerrarModal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
-      </header>
-      <div id="contenidoModal"></div>
     </div>
   </div>
+  
 
   <script>
     /* ========= PERSISTENCIAS (unificadas) ========= */
