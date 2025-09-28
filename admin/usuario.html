@@ -170,7 +170,6 @@ label{color:#d7d2ff;font-size:14px}
         <li><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
         <li><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
         <li class="active"><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
-        <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
         <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
       </ul>
       <!-- Estrellitas -->
@@ -245,12 +244,14 @@ label{color:#d7d2ff;font-size:14px}
             <option value="rut-desc">RUT ↓</option>
           </select>
           <button class="btn-ghost" id="clear">Limpiar</button>
+          <button class="btn-ghost" id="exportarSeleccionados"><i class="fa-solid fa-file-export"></i> Exportar seleccionados</button>
         </section>
 
         <section class="table-wrap" aria-live="polite">
           <table id="tabla">
             <thead>
               <tr>
+                <th><input type="checkbox" id="seleccionarTodos"></th> <!-- nuevo: seleccionar todos -->
                 <th>RUT</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
@@ -461,6 +462,20 @@ label{color:#d7d2ff;font-size:14px}
   </div>
 </div>
 
+<!-- Modal ingresar contraseña para exportar -->
+<div class="modal" id="modalClave" aria-hidden="true">
+  <div class="box">
+    <header>
+      <h3 style="margin:0">Confirmar contraseña</h3>
+      <button class="close" id="cerrarModalClave"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+    </header>
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+      <input type="password" id="inputClave" placeholder="Ingresa tu contraseña" class="input">
+      <button class="btn-ghost" id="confirmarClave">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ===================== Administración de USUARIOS ===================== */
 
@@ -586,6 +601,7 @@ function render(){
 
   tbody.innerHTML = list.map(u=>`
     <tr>
+      <td><input type="checkbox" class="usuarioCheck" data-id="${u.id}"></td>
       <td>${escapeHtml(u.rut||'')}</td>
       <td>${escapeHtml(u.nombre||'')}</td>
       <td>${escapeHtml(u.apellido||'')}</td>
@@ -600,6 +616,11 @@ function render(){
     </tr>
   `).join('');
 }
+
+// Seleccionar todos
+$('#seleccionarTodos').addEventListener('change', e => {
+  document.querySelectorAll('.usuarioCheck').forEach(cb => cb.checked = e.target.checked);
+});
 
 /* escape simple */
 function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -639,9 +660,12 @@ function normalizeImgField(val){ val=(val||'').toString().trim(); if(!val) retur
 const modal = $('#modalVer'), modalContent = $('#contenidoModal');
 $('#cerrarModal')?.addEventListener('click',()=>modal.classList.remove('open'));
 modal?.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open');});
-function ver(id){
-  const u=usuarios.find(x=>x.id===id); if(!u) return;
-  modalContent.innerHTML=`<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
+function ver(id) {
+  const u = usuarios.find(x => x.id === id);
+  if (!u) return;
+
+  modalContent.innerHTML = `
+  <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
     <img src="${escapeHtml(u.img||'../assets/img/avatar-placeholder.png')}" alt="" style="width:140px;height:140px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
     <div style="flex:1">
       <h3 style="margin:.2rem 0">${escapeHtml(u.nombre)} ${escapeHtml(u.apellido)}</h3>
@@ -651,13 +675,142 @@ function ver(id){
       <div style="margin-top:10px">Tel: ${escapeHtml(u.telefono||'-')} · ${escapeHtml(u.region||'')} / ${escapeHtml(u.comuna||'')}</div>
       <div style="margin-top:10px">${u.activo?'<span class="badge b-ok">Activo</span>':'<span class="badge b-off">Inactivo</span>'}</div>
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <a class="btn-ghost" href="#editar:${u.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-        <button class="btn-danger" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+        <a class="btn-ghost" href="#editar:${u.id}" onclick="modal.classList.remove('open')">
+          <i class="fa-regular fa-pen-to-square"></i> Editar
+        </a>
+        <button class="btn-danger" onclick="eliminarUsuario('${u.id}'); modal.classList.remove('open')">
+          <i class="fa-regular fa-trash-can"></i> Eliminar
+        </button>
+        <button class="btn-sm btn-ghost" onclick="exportarUsuarioConClave('${u.id}'); modal.classList.remove('open')">
+          <i class="fa-solid fa-file-export"></i> Exportar
+        </button>
       </div>
     </div>
   </div>`;
+
   modal.classList.add('open');
 }
+
+let exportUsuarioId = null; // Para exportar un solo usuario
+const modalClave = $('#modalClave');
+const inputClave = $('#inputClave');
+const confirmarClaveBtn = $('#confirmarClave');
+
+// Función para abrir el modal
+function abrirModalClave(id = null) {
+  exportUsuarioId = id; // null si es exportación múltiple
+  modalClave.classList.add('open');
+  inputClave.value = '';
+  inputClave.focus();
+}
+
+// Cerrar modal
+$('#cerrarModalClave')?.addEventListener('click', () => modalClave.classList.remove('open'));
+
+// Exportar un solo usuario
+function exportUsuario(u) {
+  const htmlTable = `
+    <table border="1" style="border-collapse:collapse; text-align:left; width:100%;">
+      <thead>
+        <tr style="background-color: rgb(22,1,43); color: white;">
+          <th>Nombre</th><th>Apellido</th><th>RUT</th><th>Correo</th><th>Rol</th>
+          <th>Teléfono</th><th>Cumpleaños</th><th>Región</th><th>Comuna</th><th>Dirección</th>
+          <th>Activo</th><th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background-color: #c8d6f8; color: black;">
+          <td>${u.nombre}</td><td>${u.apellido}</td><td>${u.rut}</td><td>${u.email}</td><td>${u.rol}</td>
+          <td>${u.telefono || '-'}</td><td>${u.birthday || '-'}</td><td>${u.region || '-'}</td><td>${u.comuna || '-'}</td>
+          <td>${u.direccion || '-'}</td><td>${u.activo ? 'Sí' : 'No'}</td><td>${u.desc || '-'}</td>
+        </tr>
+      </tbody>
+    </table>`;
+  
+  const blob = new Blob(["\uFEFF" + htmlTable], { type: 'application/vnd.ms-excel' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${u.nombre}_${u.apellido}.xls`;
+  link.click();
+}
+
+// Exportar múltiples usuarios
+function exportUsuarios(ids) {
+  let htmlTable = `
+    <table border="1">
+      <tr style="background-color: rgb(22,1,43); color:white;">
+        <th>Nombre</th><th>Apellido</th><th>RUT</th><th>Correo</th><th>Rol</th>
+        <th>Teléfono</th><th>Birthday</th><th>Región</th><th>Comuna</th><th>Dirección</th>
+        <th>Activo</th><th>Descripción</th>
+      </tr>`;
+  
+  ids.forEach(id => {
+    const u = usuarios.find(x => x.id == id);
+    if (!u) return;
+    htmlTable += `
+      <tr style="background-color:#c8d6f8; color:black;">
+        <td>${u.nombre}</td><td>${u.apellido}</td><td>${u.rut}</td><td>${u.email}</td><td>${u.rol}</td>
+        <td>${u.telefono || '-'}</td><td>${u.birthday || '-'}</td><td>${u.region || '-'}</td><td>${u.comuna || '-'}</td>
+        <td>${u.direccion || '-'}</td><td>${u.activo ? 'Sí' : 'No'}</td><td>${u.desc || '-'}</td>
+      </tr>`;
+  });
+
+  htmlTable += '</table>';
+
+  const blob = new Blob(["\uFEFF" + htmlTable], { type: 'application/vnd.ms-excel' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `Usuarios_seleccionados.xls`;
+  link.click();
+
+  // Limpiar selección
+  ids.forEach(id => {
+    const cb = document.querySelector(`.usuarioCheck[data-id="${id}"]`);
+    if (cb) cb.checked = false;
+  });
+
+  // Desmarcar checkbox "Seleccionar todo"
+  const seleccionarTodos = document.getElementById('seleccionarTodos');
+  if (seleccionarTodos) seleccionarTodos.checked = false;
+}
+
+// Confirmar contraseña y exportar
+confirmarClaveBtn.addEventListener('click', () => {
+  const clave = inputClave.value.trim();
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActual"));
+  if (!usuarioActivo) return alert("No hay usuario activo.");
+
+  if (clave !== usuarioActivo.password) {
+    alert("Contraseña incorrecta. No se puede exportar.");
+    inputClave.value = '';
+    inputClave.focus();
+    return;
+  }
+
+  modalClave.classList.remove('open');
+
+  if (exportUsuarioId) {
+    const u = usuarios.find(x => x.id == exportUsuarioId);
+    if (u) exportUsuario(u);
+  } else {
+    const ids = Array.from(document.querySelectorAll('.usuarioCheck:checked')).map(cb => cb.dataset.id);
+    if (ids.length === 0) return alert('No hay usuarios seleccionados.');
+    exportUsuarios(ids);
+  }
+});
+
+// Abrir modal para exportar un solo usuario
+function exportarUsuarioConClave(id) {
+  abrirModalClave(id);
+}
+
+// Abrir modal para exportar usuarios seleccionados
+$('#exportarSeleccionados').addEventListener('click', () => {
+  const seleccionados = Array.from(document.querySelectorAll('.usuarioCheck:checked'));
+  if (seleccionados.length === 0) return alert('No hay usuarios seleccionados.');
+  abrirModalClave(); // Sin id para exportación múltiple
+});
+
 
 /* ---------- formularios ---------- */
 $('#formNuevo')?.addEventListener('submit',e=>{
@@ -699,5 +852,9 @@ poblarRegiones($('#regionNuevo')); poblarRegiones($('#regionEditar')); render();
 
 
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
 </body>
 </html>
