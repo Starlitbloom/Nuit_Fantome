@@ -21,67 +21,31 @@
 
     /* Layout */
     .wrapper{display:flex;height:100vh;overflow:hidden;}
-    .sidebar{
-      width:220px;background:var(--card);display:flex;flex-direction:column;
-    }
-    .sidebar h2{color:var(--primary);text-align:center;padding:20px 0;font-size:22px;}
-    .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
-    .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
-    .sidebar ul li i{width:20px;text-align:center;}
-
-    .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
-
-    /* Topbar */
-    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
-    .topbar .left h1{font-size:30px;font-weight: 700;}
-    .topbar .right{display:flex;align-items:center;gap:15px;}
-    .topbar .right i{cursor:pointer;font-size:18px;}
-
-    /* Sidebar */
-    /* Sidebar con diseño */
-    .sidebar{
-      width:240px;
-      background:
+    .sidebar{width:240px;background:
         radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
         radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
         linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
-        var(--card);
-      color:var(--ink);
-      display:flex;flex-direction:column;
-      position:relative;
-    }
-    .sidebar .logo{
-      text-align:center;padding:20px 0;
-    }
+        var(--card);color:var(--ink);display:flex;flex-direction:column;position:relative;}
+    .sidebar .logo{text-align:center;padding:20px 0;}
     .sidebar .logo img{width:220px;height:auto;}
     .sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
     .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
     .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
     .sidebar ul li i{width:20px;text-align:center;}
+    .spark{position:absolute;width:14px;height:14px;border-radius:50%;
+      background:radial-gradient(#fff,rgba(255,255,255,.1));filter:drop-shadow(0 0 10px #fff);animation:float 8s linear infinite;}
+    .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+    .spark.s2{left:82%; top:22%;}
+    .spark.s3{left:18%; top:70%; animation-duration:9s;}
+    .spark.s4{left:72%; top:68%; animation-duration:10s;}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 
-    /* Estrellitas flotantes */
-  .spark{
-    position:absolute;width:14px;height:14px;border-radius:50%;
-    background:radial-gradient(#fff,rgba(255,255,255,.1));
-    filter:drop-shadow(0 0 10px #fff);
-    animation:float 8s linear infinite;
-  }
-  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
-  .spark.s2{left:82%; top:22%;}
-  .spark.s3{left:18%; top:70%; animation-duration:9s;}
-  .spark.s4{left:72%; top:68%; animation-duration:10s;}
-  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
-
-  /* Main */
-  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
-  .topbar .left h1{font-size:20px;}
-  .topbar .right{display:flex;align-items:center;gap:15px;}
-  .topbar .right i{cursor:pointer;font-size:18px;}
-  .topbar .right .user{display:flex;align-items:center;gap:10px;}
-  .topbar .right .user img{width:35px;height:35px;border-radius:50%;object-fit:cover;}
-
-  .container{width:min(1200px,94%);margin:20px auto}
+    .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+    .topbar .left h1{font-size:20px;}
+    .topbar .right{display:flex;align-items:center;gap:15px;}
+    .topbar .right i{cursor:pointer;font-size:18px;}
+    .container{width:min(1200px,94%);margin:20px auto}
 
     .bc{color:var(--muted);font-size:14px}
     .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
@@ -102,10 +66,8 @@
       background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;
       display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center
     }
-    .qicon{
-      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;font-size:18px
-    }
+    .qicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;font-size:18px}
     .qcard a{color:#fff;text-decoration:none}
     .qcard h3{margin:0 0 4px}
     .qcard p{margin:0;color:var(--muted);font-size:14px}
@@ -154,7 +116,7 @@
 
     .preview{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#130f2b}
 
-    /* Bloque stock por opción */
+    /* Stock por opción */
     .opt-stock{background:#130f2b;border:1px dashed var(--line);border-radius:12px;padding:10px}
     .opt-row{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:center;margin-top:6px}
     .mut{color:#9c96bf;font-size:12px}
@@ -164,9 +126,7 @@
   <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar">
-      <div class="logo">
-        <img src="../assets/img/logo.png" alt="Logo Empresa">
-      </div>
+      <div class="logo"><img src="../assets/img/logo.png" alt="Logo Empresa"></div>
       <h2>Admin</h2>
       <ul>
         <li><a href="./dashboard.html"><i class="fa fa-chart-line"></i>Dashboard</a></li>
@@ -176,416 +136,262 @@
         <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
         <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
       </ul>
-      <!-- Estrellitas -->
-      <div class="spark s1"></div>
-      <div class="spark s2"></div>
-      <div class="spark s3"></div>
-      <div class="spark s4"></div>
+      <div class="spark s1"></div><div class="spark s2"></div><div class="spark s3"></div><div class="spark s4"></div>
     </div>
 
     <div class="main">
-
-    <!-- Topbar -->
-    <div class="topbar">
-      <div class="left">
-        <h1 id="tituloBienvenida">Bienvenido!</h1>
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="left"><h1 id="tituloBienvenida">Bienvenido!</h1></div>
+        <div class="right"><i class="fa fa-bell"></i></div>
       </div>
-      <div class="right">
-        <i class="fa fa-bell"></i>
-      </div>
-    </div>
 
-    <div class="container">
-      <div class="bc">Inicio / <strong>Productos</strong></div>
+      <div class="container">
+        <div class="bc">Inicio / <strong>Productos</strong></div>
 
-      <div class="title">
-        <h1>Gestión de productos</h1>
-        <div class="tools">
-          <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-plus"></i> Nuevo producto</a>
-          <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
-          <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+        <div class="title">
+          <h1>Gestión de productos</h1>
+          <div class="tools">
+            <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-plus"></i> Nuevo producto</a>
+            <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
+            <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+          </div>
         </div>
-      </div>
 
-      <!-- Accesos rápidos -->
-      <section class="actions">
-        <article class="qcard">
-          <div class="qicon"><i class="fa-solid fa-plus"></i></div>
-          <div>
-            <h3>Nuevo producto</h3>
-            <p>Crea un producto con fotos, precio, stock y variantes.</p>
-          </div>
-          <a class="btn sm" href="#nuevo">Ir</a>
-        </article>
+        <!-- Accesos rápidos -->
+        <section class="actions">
+          <article class="qcard">
+            <div class="qicon"><i class="fa-solid fa-plus"></i></div>
+            <div>
+              <h3>Nuevo producto</h3>
+              <p>Crea un producto con fotos, precio, stock y variantes.</p>
+            </div>
+            <a class="btn sm" href="#nuevo">Ir</a>
+          </article>
 
-        <article class="qcard">
-          <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
-          <div>
-            <h3>Editar producto</h3>
-            <p>Actualiza precios, estado y descripciones.</p>
-          </div>
-          <a class="btn sm" href="#editar">Ir</a>
-        </article>
+          <article class="qcard">
+            <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
+            <div>
+              <h3>Editar producto</h3>
+              <p>Actualiza precios, estado y descripciones.</p>
+            </div>
+            <a class="btn sm" href="#editar">Ir</a>
+          </article>
 
-        <article class="qcard">
-          <div class="qicon"><i class="fa-regular fa-eye"></i></div>
-          <div>
-            <h3>Mostrar productos</h3>
-            <p>Listado con filtros y acciones rápidas.</p>
-          </div>
-          <a class="btn sm" href="#mostrar">Ir</a>
-        </article>
-      </section>
-
-<<<<<<< Updated upstream
-      <section class="table-wrap">
-        <table id="tabla">
-          <thead>
-            <tr>
-              <th style="width:54px">Img</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Etiquetas</th>
-              <th>Estado</th>
-              <th style="width:240px">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <tr><td colspan="8" class="empty">Cargando productos…</td></tr>
-          </tbody>
-        </table>
-=======
-      <!-- ======= VISTA MOSTRAR ======= -->
-      <section class="view active" id="vistaMostrar">
-        <section class="filters">
-          <input id="q" class="input" type="search" placeholder="Buscar por nombre, categoría o etiqueta…">
-          <select id="cat">
-            <option value="todas">Todas las categorías</option>
-          </select>
-          <select id="orden">
-            <option value="recientes">Ordenar: Recientes</option>
-            <option value="az">Nombre A → Z</option>
-            <option value="za">Nombre Z → A</option>
-            <option value="mayor">Precio mayor</option>
-            <option value="menor">Precio menor</option>
-          </select>
-          <button class="btn-ghost" id="clear">Limpiar</button>
+          <article class="qcard">
+            <div class="qicon"><i class="fa-regular fa-eye"></i></div>
+            <div>
+              <h3>Mostrar productos</h3>
+              <p>Listado con filtros y acciones rápidas.</p>
+            </div>
+            <a class="btn sm" href="#mostrar">Ir</a>
+          </article>
         </section>
 
-        <section class="table-wrap">
-          <table id="tabla">
-            <thead>
-              <tr>
-                <th style="width:54px">Img</th>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Etiquetas</th>
-                <th>Estado</th>
-                <th style="width:210px">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr><td colspan="7" class="empty">Cargando productos…</td></tr>
-            </tbody>
-          </table>
+        <!-- ======= VISTA MOSTRAR ======= -->
+        <section class="view active" id="vistaMostrar">
+          <section class="filters">
+            <input id="q" class="input" type="search" placeholder="Buscar por nombre, categoría o etiqueta…">
+            <select id="cat"><option value="todas">Todas las categorías</option></select>
+            <select id="orden">
+              <option value="recientes">Ordenar: Recientes</option>
+              <option value="az">Nombre A → Z</option>
+              <option value="za">Nombre Z → A</option>
+              <option value="mayor">Precio mayor</option>
+              <option value="menor">Precio menor</option>
+            </select>
+            <button class="btn-ghost" id="clear">Limpiar</button>
+          </section>
+
+          <section class="table-wrap">
+            <table id="tabla">
+              <thead>
+                <tr>
+                  <th style="width:54px">Img</th>
+                  <th>Nombre</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Etiquetas</th>
+                  <th>Estado</th>
+                  <th style="width:240px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="8" class="empty">Cargando productos…</td></tr>
+              </tbody>
+            </table>
+          </section>
         </section>
->>>>>>> Stashed changes
-      </section>
 
-      <!-- ======= VISTA NUEVO ======= -->
-      <section class="view" id="vistaNuevo">
-        <div class="form">
-          <h2 style="margin-top:0">Nuevo producto</h2>
-          <form id="formNuevo" class="grid2">
-            <div class="section-title">Datos básicos</div><div class="divider"></div>
+        <!-- ======= VISTA NUEVO ======= -->
+        <section class="view" id="vistaNuevo">
+          <div class="form">
+            <h2 style="margin-top:0">Nuevo producto</h2>
+            <form id="formNuevo" class="grid2">
+              <div class="section-title">Datos básicos</div><div class="divider"></div>
 
-<<<<<<< Updated upstream
-          <div>
-            <label>Nombre</label>
-            <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
-            <div class="help">No se permiten nombres repetidos.</div>
-          </div>
+              <div>
+                <label>Nombre</label>
+                <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
+                <div class="help">No se permiten nombres repetidos.</div>
+              </div>
 
-          <div>
-            <label>Categoría</label>
-            <select class="input" id="catNuevo" name="categoria" required>
-              <option value="">Selecciona una categoría</option>
-            </select>
-          </div>
+              <div>
+                <label>Categoría</label>
+                <select class="input" id="catNuevo" name="categoria" required>
+                  <option value="">Selecciona una categoría</option>
+                </select>
+              </div>
 
-          <div>
-            <label>Precio (CLP)</label>
-            <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
-          </div>
+              <div>
+                <label>Precio (CLP)</label>
+                <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
+              </div>
 
-          <div>
-            <label>Stock total (opcional)</label>
-            <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Ej: 15">
-            <div class="help">Si llenas “stock por opción”, este valor será ignorado.</div>
-          </div>
+              <div>
+                <label>Stock total (opcional)</label>
+                <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Ej: 15">
+                <div class="help">Si llenas “stock por opción”, este valor será ignorado.</div>
+              </div>
 
-          <div class="section-title">Imagen</div><div class="divider"></div>
-          <div>
-            <label>Imagen</label>
-            <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
-            <div class="help">Pega una ruta del proyecto o una URL. Si subes archivo, tendrá prioridad.</div>
-            <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
-              <img id="prevNuevo" class="preview" alt="">
-=======
-            <div>
-              <label>Nombre</label>
-              <input class="input" name="nombre" required placeholder="Ej: Cuaderno A5 Pastel">
-              <div class="help">No se permiten nombres repetidos.</div>
->>>>>>> Stashed changes
-            </div>
+              <div class="section-title">Imagen</div><div class="divider"></div>
+              <div>
+                <label>Imagen</label>
+                <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+                <div class="help">Pega una ruta del proyecto o una URL. Si subes archivo, tendrá prioridad.</div>
+                <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                  <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
+                  <img id="prevNuevo" class="preview" alt="">
+                </div>
+                <input type="hidden" id="imgNuevoData">
+              </div>
 
-<<<<<<< Updated upstream
-          <div class="section-title">Variantes</div><div class="divider"></div>
-          <div>
-            <label>Opciones (una por línea)</label>
-            <textarea class="input" name="opciones" id="opcionesNuevo" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
-            <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
-          </div>
-          <div style="grid-column:1/-1" id="wrapStockOptsNuevo" class="opt-stock" hidden>
-            <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
-            <div id="stockOptsNuevo"></div>
-          </div>
+              <div class="section-title">Variantes</div><div class="divider"></div>
+              <div>
+                <label>Opciones (una por línea)</label>
+                <textarea class="input" name="opciones" id="opcionesNuevo" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+                <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
+              </div>
+              <div style="grid-column:1/-1" id="wrapStockOptsNuevo" class="opt-stock" hidden>
+                <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
+                <div id="stockOptsNuevo"></div>
+              </div>
 
-          <div>
-            <label>Unidades por set</label>
-            <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
-            <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
-          </div>
+              <div>
+                <label>Unidades por set</label>
+                <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+                <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
+              </div>
 
-          <div class="section-title">Metadatos</div><div class="divider"></div>
-          <div>
-            <label>Etiquetas (coma separadas)</label>
-            <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
-            <div class="help">Máx 3; si lo dejas vacío se generan automáticamente.</div>
+              <div class="section-title">Metadatos</div><div class="divider"></div>
+              <div>
+                <label>Etiquetas (coma separadas)</label>
+                <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
+                <div class="help">Máx 3; si lo dejas vacío se generan automáticamente.</div>
+              </div>
+              <div>
+                <label>Activo</label><br>
+                <label><input type="checkbox" name="activo" checked> Visible en la tienda</label>
+              </div>
+              <div style="grid-column:1/-1">
+                <label>Descripción</label>
+                <textarea class="input" name="desc" rows="3" placeholder="Descripción breve del producto"></textarea>
+              </div>
+              <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
+                <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+              </div>
+            </form>
           </div>
-          <div>
-            <label>Activo</label><br>
-            <label><input type="checkbox" name="activo" checked> Visible en la tienda</label>
+        </section>
+
+        <!-- ======= VISTA EDITAR ======= -->
+        <section class="view" id="vistaEditar">
+          <div class="form">
+            <h2 style="margin-top:0">Editar producto</h2>
+            <form id="formEditar" class="grid2">
+              <input type="hidden" name="id">
+
+              <div class="section-title">Identificación</div><div class="divider"></div>
+              <div>
+                <label>ID</label>
+                <input class="input" name="idShown" disabled>
+                <div class="help">Se rellena al tocar “Editar” en el listado.</div>
+              </div>
+
+              <div class="section-title">Datos</div><div class="divider"></div>
+              <div>
+                <label>Nombre</label>
+                <input class="input" name="nombre" required>
+                <div class="help">Debe ser único.</div>
+              </div>
+
+              <div>
+                <label>Categoría</label>
+                <select class="input" id="catEditar" name="categoria" required>
+                  <option value="">Selecciona una categoría</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Precio (CLP)</label>
+                <input class="input" name="precio" type="number" min="0" step="10" required>
+              </div>
+
+              <div>
+                <label>Stock total (opcional)</label>
+                <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Deja vacío si usas por opción">
+              </div>
+
+              <div class="section-title">Imagen</div><div class="divider"></div>
+              <div>
+                <label>Imagen</label>
+                <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
+                <div class="help">Mantén la ruta/URL actual o sube un archivo para reemplazarla.</div>
+                <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                  <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
+                  <img id="prevEditar" class="preview" alt="">
+                </div>
+                <input type="hidden" id="imgEditarData">
+              </div>
+
+              <div class="section-title">Variantes</div><div class="divider"></div>
+              <div style="grid-column:1/-1">
+                <label>Opciones (una por línea)</label>
+                <textarea class="input" name="opciones" id="opcionesEditar" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+              </div>
+              <div style="grid-column:1/-1" id="wrapStockOptsEditar" class="opt-stock" hidden>
+                <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
+                <div id="stockOptsEditar"></div>
+              </div>
+
+              <div>
+                <label>Unidades por set</label>
+                <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
+              </div>
+
+              <div class="section-title">Metadatos</div><div class="divider"></div>
+              <div>
+                <label>Etiquetas (coma separadas)</label>
+                <input class="input" name="tags">
+              </div>
+              <div>
+                <label>Activo</label><br>
+                <label><input type="checkbox" name="activo"> Visible en la tienda</label>
+              </div>
+              <div style="grid-column:1/-1">
+                <label>Descripción</label>
+                <textarea class="input" name="desc" rows="3"></textarea>
+              </div>
+              <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
+              </div>
+            </form>
           </div>
-          <div style="grid-column:1/-1">
-            <label>Descripción</label>
-            <textarea class="input" name="desc" rows="3" placeholder="Descripción breve del producto"></textarea>
-          </div>
-          <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
-            <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-          </div>
-        </form>
+        </section>
       </div>
-    </section>
-
-    <!-- ======= VISTA EDITAR ======= -->
-    <section class="view" id="vistaEditar">
-      <div class="form">
-        <h2 style="margin-top:0">Editar producto</h2>
-        <form id="formEditar" class="grid2">
-          <input type="hidden" name="id">
-
-          <div class="section-title">Identificación</div><div class="divider"></div>
-          <div>
-            <label>ID</label>
-            <input class="input" name="idShown" disabled>
-            <div class="help">Se rellena al tocar “Editar” en el listado.</div>
-          </div>
-
-          <div class="section-title">Datos</div><div class="divider"></div>
-          <div>
-            <label>Nombre</label>
-            <input class="input" name="nombre" required>
-            <div class="help">Debe ser único.</div>
-          </div>
-
-          <div>
-            <label>Categoría</label>
-            <select class="input" id="catEditar" name="categoria" required>
-              <option value="">Selecciona una categoría</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Precio (CLP)</label>
-            <input class="input" name="precio" type="number" min="0" step="10" required>
-          </div>
-
-          <div>
-            <label>Stock total (opcional)</label>
-            <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Deja vacío si usas por opción">
-          </div>
-
-          <div class="section-title">Imagen</div><div class="divider"></div>
-          <div>
-            <label>Imagen</label>
-            <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
-            <div class="help">Mantén la ruta/URL actual o sube un archivo para reemplazarla.</div>
-            <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
-              <img id="prevEditar" class="preview" alt="">
-=======
-            <!-- CATEGORÍA con SELECT (para concordar con tienda) -->
-            <div>
-              <label>Categoría</label>
-              <select class="input" id="catNuevo" name="categoria" required>
-                <option value="">Selecciona una categoría</option>
-              </select>
->>>>>>> Stashed changes
-            </div>
-
-<<<<<<< Updated upstream
-          <div class="section-title">Variantes</div><div class="divider"></div>
-          <div style="grid-column:1/-1">
-            <label>Opciones (una por línea)</label>
-            <textarea class="input" name="opciones" id="opcionesEditar" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
-          </div>
-          <div style="grid-column:1/-1" id="wrapStockOptsEditar" class="opt-stock" hidden>
-            <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
-            <div id="stockOptsEditar"></div>
-          </div>
-
-          <div>
-            <label>Unidades por set</label>
-            <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
-          </div>
-=======
-            <div>
-              <label>Precio (CLP)</label>
-              <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
-            </div>
->>>>>>> Stashed changes
-
-            <div class="section-title">Imagen</div><div class="divider"></div>
-
-            <div>
-              <label>Imagen</label>
-              <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
-              <div class="help">Pega una ruta del proyecto o una URL. Si subes archivo, tendrá prioridad.</div>
-              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
-                <img id="prevNuevo" class="preview" alt="">
-              </div>
-              <input type="hidden" id="imgNuevoData">
-            </div>
-
-            <div class="section-title">Variantes</div><div class="divider"></div>
-
-            <div>
-              <label>Unidades por set</label>
-              <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
-              <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
-            </div>
-            <div>
-              <label>Opciones (una por línea)</label>
-              <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
-              <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
-            </div>
-
-            <div class="section-title">Metadatos</div><div class="divider"></div>
-
-            <div>
-              <label>Etiquetas (coma separadas)</label>
-              <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
-              <div class="help">Máx 3; si lo dejas vacío se generan automáticamente.</div>
-            </div>
-            <div>
-              <label>Activo</label><br>
-              <label><input type="checkbox" name="activo" checked> Visible en la tienda</label>
-            </div>
-            <div style="grid-column:1/-1">
-              <label>Descripción</label>
-              <textarea class="input" name="desc" rows="3" placeholder="Descripción breve del producto"></textarea>
-            </div>
-            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
-              <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- ======= VISTA EDITAR ======= -->
-      <section class="view" id="vistaEditar">
-        <div class="form">
-          <h2 style="margin-top:0">Editar producto</h2>
-          <form id="formEditar" class="grid2">
-            <input type="hidden" name="id">
-
-            <div class="section-title">Identificación</div><div class="divider"></div>
-            <div>
-              <label>ID</label>
-              <input class="input" name="idShown" disabled>
-              <div class="help">Se rellena al tocar “Editar” en el listado.</div>
-            </div>
-
-            <div class="section-title">Datos</div><div class="divider"></div>
-            <div>
-              <label>Nombre</label>
-              <input class="input" name="nombre" required>
-              <div class="help">Debe ser único.</div>
-            </div>
-
-            <!-- CATEGORÍA con SELECT -->
-            <div>
-              <label>Categoría</label>
-              <select class="input" id="catEditar" name="categoria" required>
-                <option value="">Selecciona una categoría</option>
-              </select>
-            </div>
-
-            <div>
-              <label>Precio (CLP)</label>
-              <input class="input" name="precio" type="number" min="0" step="10" required>
-            </div>
-
-            <div class="section-title">Imagen</div><div class="divider"></div>
-            <div>
-              <label>Imagen</label>
-              <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
-              <div class="help">Mantén la ruta/URL actual o sube un archivo para reemplazarla.</div>
-              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
-                <img id="prevEditar" class="preview" alt="">
-              </div>
-              <input type="hidden" id="imgEditarData">
-            </div>
-
-            <div class="section-title">Variantes</div><div class="divider"></div>
-            <div>
-              <label>Unidades por set</label>
-              <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
-            </div>
-            <div>
-              <label>Opciones (una por línea)</label>
-              <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
-            </div>
-
-            <div class="section-title">Metadatos</div><div class="divider"></div>
-            <div>
-              <label>Etiquetas (coma separadas)</label>
-              <input class="input" name="tags">
-            </div>
-            <div>
-              <label>Activo</label><br>
-              <label><input type="checkbox" name="activo"> Visible en la tienda</label>
-            </div>
-            <div style="grid-column:1/-1">
-              <label>Descripción</label>
-              <textarea class="input" name="desc" rows="3"></textarea>
-            </div>
-            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
-              <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-            </div>
-          </form>
-        </div>
-      </section>
     </div>
 
     <!-- ======= MODAL VER ======= -->
@@ -599,12 +405,11 @@
       </div>
     </div>
   </div>
-  
 
   <script>
     /* ========= PERSISTENCIAS (unificadas) ========= */
-    const STORAGE_KEY = 'nf_catalog_custom_v1'; // catálogo override (lo usa la tienda para o.s / p.stock)
-    const STOCK_KEY   = 'nf_stock_v1';         // stock “oficial” del admin (total o por opción)
+    const STORAGE_KEY = 'nf_catalog_custom_v1';
+    const STOCK_KEY   = 'nf_stock_v1';
 
     const loadCustom = () => { try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch{ return []; } };
     const saveCustom = arr => localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
@@ -634,19 +439,17 @@
 
     function getUnifiedStock(id){
       const sAdmin = ( () => { const o=loadStockObj(); return (id in o) ? o[id] : null; } )();
-      if(sAdmin !== null) return sAdmin;     // 1) prioridad stock del admin
-      const sCat = getStockFromCatalog(id);  // 2) caída al espejo que descuenta la tienda
+      if(sAdmin !== null) return sAdmin;
+      const sCat = getStockFromCatalog(id);
       return sCat;
     }
 
-    function setStock(id, val){ // val: number | {opt: number} | '' => sin control
-      // Admin
+    function setStock(id, val){
       const o = loadStockObj();
       if(val === '' || val === null || typeof val === 'undefined'){ delete o[id]; }
       else { o[id] = val; }
       saveStockObj(o);
 
-      // Espejo (catálogo override)
       const arr = loadCustom();
       let p = arr.find(x=>x.id===id);
       if(!p){ p = { id }; arr.push(p); }
@@ -901,7 +704,7 @@
       }
 
       tbody.innerHTML = list.map(p=>{
-        const stk = getUnifiedStock(p.id); /* <- unificado */
+        const stk = getUnifiedStock(p.id);
         return `
         <tr>
           <td><img class="thumb" src="${p.img}" alt=""></td>
@@ -947,7 +750,7 @@
         const idxc = customRaw.findIndex(c=>c.id===id);
         if(idxc>-1){ customRaw.splice(idxc,1); }
         guardarEnLocalStorage();
-        deleteStock(id); // limpia en ambos lados
+        deleteStock(id);
         render();
       }
     }
@@ -961,7 +764,7 @@
     function ver(id){
       const p = productos.find(x=>x.id===id);
       if(!p) return;
-      const stk = getUnifiedStock(p.id); /* <- unificado */
+      const stk = getUnifiedStock(p.id);
       const stkHtml = (stk===null) ? '— (sin control)'
                        : (isObj(stk) ? `<ul style="margin:6px 0 0;padding-left:18px">${Object.entries(stk).map(([k,v])=>`<li>${k}: ${v}</li>`).join('')}</ul>`
                                      : String(stk));
@@ -997,7 +800,7 @@
     function parseOpts(text){
       return text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
     }
-    function regenerateStockInputs(ctx){ // ctx: 'Nuevo' | 'Editar'
+    function regenerateStockInputs(ctx){
       const ta = document.getElementById('opciones'+ctx);
       const wrap = document.getElementById('wrapStockOpts'+ctx);
       const cont = document.getElementById('stockOpts'+ctx);
@@ -1013,7 +816,7 @@
       if(!lines.length){ wrap.hidden = true; return; }
       wrap.hidden = false;
 
-      lines.forEach((name,i)=>{
+      lines.forEach((name)=>{
         const row = document.createElement('div'); row.className='opt-row';
         row.innerHTML = `
           <input class="input" value="${name}" disabled>
@@ -1076,12 +879,11 @@
       customRaw.unshift(nuevo);
       guardarEnLocalStorage();
 
-      // STOCK: por opción tiene prioridad sobre total
       const perOpt = readStockPerOption('stockOptsNuevo');
       const totalRaw = (fd.get('stock_total')||'').toString().trim();
       if(perOpt){ setStock(id, perOpt); }
       else if(totalRaw!==''){ setStock(id, Math.max(0, Number(totalRaw)||0)); }
-      else { setStock(id, ''); } // sin control
+      else { setStock(id, ''); }
 
       alert('Producto creado: ' + nombre + '\nID: ' + id);
       location.hash = '#mostrar';
@@ -1106,9 +908,9 @@
       f.pack.value = p.pack || '';
       f.opciones.value = (Array.isArray(p.opciones)?p.opciones:[]).map(o=>o.t).join('\n');
 
-      const st = getUnifiedStock(p.id); /* <- unificado */
+      const st = getUnifiedStock(p.id);
       if(isObj(st)){
-        regenerateStockInputs('Editar'); // genera inputs
+        regenerateStockInputs('Editar');
         const cont = document.getElementById('stockOptsEditar');
         Object.entries(st).forEach(([k,v])=>{
           const inp = cont.querySelector(`input[type="number"][data-opt="${CSS.escape(k)}"]`);
@@ -1116,7 +918,7 @@
         });
         f.stock_total.value = '';
       } else {
-        regenerateStockInputs('Editar'); // genera según opciones actuales (vacíos)
+        regenerateStockInputs('Editar');
         f.stock_total.value = (st===null ? '' : st);
       }
 
@@ -1164,7 +966,7 @@
       const totalRaw = (fd.get('stock_total')||'').toString().trim();
       if(perOpt){ setStock(id, perOpt); }
       else if(totalRaw!==''){ setStock(id, Math.max(0, Number(totalRaw)||0)); }
-      else { setStock(id, ''); } // sin control
+      else { setStock(id, ''); }
 
       const iCustom = customRaw.findIndex(x=>x.id===id);
       if(iCustom>-1){ customRaw[iCustom] = p; } else { customRaw.push(p); }
@@ -1175,7 +977,7 @@
       render();
     });
 
-    /* ==== Refresco en vivo cuando cambian stocks desde la tienda u otra pestaña ==== */
+    /* ==== Refresco en vivo por cambios en otra pestaña ==== */
     window.addEventListener('storage', (e) => {
       if (e.key === 'nf_catalog_custom_v1' || e.key === 'nf_stock_v1') {
         try { render(); } catch {}
