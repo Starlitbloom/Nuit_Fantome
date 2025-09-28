@@ -68,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Redirigir a index.html después de 1 segundo
     setTimeout(() => {
-      window.location.href = "index.html";
+      if (usuario.rol.trim().toLowerCase() === "administrador") {
+        window.location.href = "./admin/dashboard.html";
+      } else {
+        window.location.href = "./index.html";
+      }
     }, 1000);
   });
 

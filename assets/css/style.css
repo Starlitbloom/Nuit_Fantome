@@ -64,8 +64,26 @@ html, body {
     justify-content: space-between; /* logo a la izquierda, usuario/carrito a la derecha */
     align-items: center;
     padding: 10px 40px;
-    background-color: rgb(22, 1, 43);
+    background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
 }
+.spark{
+      position:absolute; width:14px; height:14px; border-radius:50%;
+      background: radial-gradient(#fff,rgba(255,255,255,.1));
+      filter:drop-shadow(0 0 10px #fff);
+      animation: float 8s linear infinite;
+    }
+    .spark.s1{left:8%; top:28%; animation-duration:7.5s}
+    .spark.s2{left:82%; top:22%}
+    .spark.s3{left:18%; top:70%; animation-duration:9s}
+    .spark.s4{left:72%; top:68%; animation-duration:10s}
+    @keyframes float{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+      100%{transform:translateY(0)}
+    }
 
 /* Logo */
 .logo img {
