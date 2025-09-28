@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Pedidos</title>
+
+  <link rel="icon" href="../assets/img/icono_pag.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
+
+  <style>
+    :root{
+      --bg:#0f0321; --card:#111025; --ink:#e9e6ff; --muted:#bdb9d8; --line:#2b2550;
+      --primary:#7c3aed; --primary-2:#a78bfa; --success:#22c55e; --warning:#f59e0b;
+      --info:#38bdf8; --danger:#ef4444; --shadow:0 10px 30px rgba(124,58,237,.18);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 600px at 20% 0%,#1a0b37 0%,#0f0321 60%);color:var(--ink);font-family:"Merriweather",serif}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* Layout */
+    .wrapper{display:flex;min-height:100dvh;overflow:hidden}
+    .sidebar{width:240px;background:linear-gradient(180deg,#1b1036,#0b0720);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+    .brand{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px}
+    .brand .title{font-size:24px;color:#cbb5ff;text-shadow:0 2px 8px rgba(167,139,250,.4)}
+    .menu{padding:8px}
+    .menu a{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:6px 10px;border-radius:12px;color:#ddd;border:1px solid transparent;transition:.25s}
+    .menu a:hover{background:#1a1336;border-color:#2e2361}
+    .menu a.active{background:#6d39e4;color:#fff;border-color:#7c3aed;box-shadow:var(--shadow)}
+    .dot{width:8px;height:8px;border-radius:50%;background:#9f84ff;box-shadow:0 0 10px #9f84ff}
+
+    .main{flex:1;display:flex;flex-direction:column;gap:18px;padding:22px 26px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .h1{font-size:28px;margin:0}
+    .tools{display:flex;gap:10px;flex-wrap:wrap}
+    .input, .select, .btn{background:var(--card);color:var(--ink);border:1px solid var(--line);padding:10px 12px;border-radius:12px;outline:none;transition:.2s}
+    .input:focus, .select:focus{border-color:#6140e9;box-shadow:0 0 0 3px rgba(124,58,237,.25)}
+    .btn{cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#7c3aed,#5b2bd4);border-color:#6e36ea}
+    .btn.ghost{background:transparent}
+    .btn.danger{background:#3a0f23;border-color:#6b1436;color:#ffb4c4}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{background:radial-gradient(400px 180px at 30% -10%,rgba(124,58,237,.25),transparent 60%), var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+    .metric{font-size:26px;font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+    .trend{font-size:13px;margin-top:6px}
+    .up{color:var(--success)} .down{color:var(--danger)}
+
+    /* Table */
+    .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    thead{background:#1a1336}
+    th,td{padding:14px;border-bottom:1px solid var(--line);font-size:14px}
+    th{font-weight:700;text-align:left;color:#d9d4ff;user-select:none}
+    thead th{position:sticky;top:0;z-index:1}
+    tbody tr:hover{background:#15122a}
+    .empty{padding:26px;text-align:center;color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid transparent}
+    .b-pendiente{background:#2f264e;border-color:#4b3c86}
+    .b-proceso{background:#153046;border-color:#2b5b7a;color:#cdeaff}
+    .b-completado{background:#0d2f1b;border-color:#1b5c35;color:#d3ffe6}
+    .b-cancelado{background:#3a1013;border-color:#6b1b21;color:#ffd7db}
+    .actions{display:flex;gap:8px}
+    .icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#181433;color:#e9e6ff;display:grid;place-items:center;cursor:pointer;transition:.2s}
+    .icon-btn:hover{transform:translateY(-1px);border-color:#5b4aa8}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,6,20,.6);backdrop-filter:blur(2px);z-index:30}
+    .modal.open{display:flex}
+    .modal .box{width:min(560px,94%);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 18px 12px}
+    .modal .box h3{margin:0 0 8px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:12px;color:var(--muted)}
+    .field input, .field select, .field textarea{background:#0f0c25;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px}
+    .box .actions{justify-content:flex-end;margin-top:12px}
+    .footnote{font-size:12px;color:var(--muted);margin-top:6px}
+
+    /* Pager */
+    #pager{justify-content:flex-end;margin-top:10px}
+
+    /* Responsive */
+    @media (max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)} .sidebar{width:220px}}
+    @media (max-width:760px){
+      .wrapper{flex-direction:column}
+      .sidebar{width:100%;border-right:0;border-bottom:1px solid var(--line)}
+      .cards{grid-template-columns:1fr}
+      .tools{flex-direction:column;align-items:stretch}
+      .main{padding:16px}
+      .topbar{align-items:flex-start;gap:8px}
+      .icon-btn{width:40px;height:40px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../assets/img/icono_pag.png" alt="Nuit Fantôme" style="width:96px;height:96px;object-fit:contain;">
+      <div class="title">Admin</div>
+    </div>
+    <nav class="menu">
+      <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+      <a href="productos.html"><i class="fa-solid fa-boxes-stacked"></i> Productos</a>
+      <a class="active" href="pedidos.html"><i class="fa-solid fa-cart-shopping"></i> Pedidos <span class="dot" style="margin-left:auto"></span></a>
+      <a href="usuario.html"><i class="fa-solid fa-user-group"></i> Usuarios</a>
+      <a href="#"><i class="fa-solid fa-gear"></i> Ajustes</a>
+      <a href="../index.html" target="_blank"><i class="fa-solid fa-globe"></i> Ver sitio</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <h1 class="h1">Pedidos</h1>
+      <div class="tools">
+        <input id="q" class="input" type="search" placeholder="Buscar por cliente, email, ID, producto…">
+        <select id="f-estado" class="select">
+          <option value="">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="En proceso">En proceso</option>
+          <option value="Completado">Completado</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+        <input id="f-desde" class="input" type="date" title="Desde">
+        <input id="f-hasta" class="input" type="date" title="Hasta">
+        <button id="btn-limpiar" class="btn ghost"><i class="fa-solid fa-rotate"></i> Limpiar</button>
+        <button class="btn ghost" id="btn-export"><i class="fa-regular fa-file-lines"></i> Exportar CSV</button>
+        <button class="btn primary" id="btn-nuevo"><i class="fa-solid fa-plus"></i> Nuevo pedido</button>
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <section class="cards" id="cards">
+      <div class="card">
+        <div class="muted">Total pedidos</div>
+        <div class="metric" id="m-total">0</div>
+        <div class="trend up" id="m-total-note">Resumen del período</div>
+      </div>
+      <div class="card">
+        <div class="muted">Pendientes</div>
+        <div class="metric" id="m-pendiente">0</div>
+        <div class="trend" style="color:var(--warning)">A la espera de pago/envío</div>
+      </div>
+      <div class="card">
+        <div class="muted">En proceso</div>
+        <div class="metric" id="m-proceso">0</div>
+        <div class="trend" style="color:var(--info)">En preparación</div>
+      </div>
+      <div class="card">
+        <div class="muted">Completados</div>
+        <div class="metric" id="m-completado">0</div>
+        <div class="trend up">Entregados</div>
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="table-wrap">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th data-sort="id">ID</th>
+            <th data-sort="fecha">Fecha</th>
+            <th data-sort="cliente">Cliente</th>
+            <th data-sort="email">Email</th>
+            <th>Artículos</th>
+            <th data-sort="total">Total</th>
+            <th data-sort="estado">Estado</th>
+            <th style="width:160px">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"><!-- filas por JS --></tbody>
+      </table>
+    </section>
+
+    <!-- Pager -->
+    <div id="pager" class="tools">
+      <label class="muted">Por página</label>
+      <select id="page-size" class="select"><option>5</option><option selected>10</option><option>20</option><option>50</option></select>
+      <button id="prev" class="btn ghost" title="Anterior">◀</button>
+      <span id="page-info" class="muted"></span>
+      <button id="next" class="btn ghost" title="Siguiente">▶</button>
+    </div>
+
+    <div class="footnote">Usa el buscador para encontrar por <em>cliente, email, ID o producto</em>. Cambia el estado desde “Ver/Editar”.</div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" aria-modal="true" role="dialog">
+  <div class="box">
+    <h3>Pedido <span id="m-id" style="color:#cbb5ff"></span></h3>
+    <div class="grid">
+      <div class="field"><label>Cliente</label><input id="m-cliente" type="text"></div>
+      <div class="field"><label>Email</label><input id="m-email" type="email"></div>
+      <div class="field"><label>Fecha</label><input id="m-fecha" type="date"></div>
+      <div class="field"><label>Total</label><input id="m-total-input" type="number" min="0" step="100"></div>
+      <div class="field">
+        <label>Estado</label>
+        <select id="m-estado"><option>Pendiente</option><option>En proceso</option><option>Completado</option><option>Cancelado</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Artículos</label><textarea id="m-items" rows="3" placeholder="Ej: Agenda 2025 x1, Planner Digital x1"></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="m-cerrar"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+      <button class="btn primary" id="m-guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;right:16px;bottom:16px;background:#1b1536;border:1px solid var(--line);color:var(--ink);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);display:none;z-index:50"></div>
+
+<script>
+/* ===== Datos + LocalStorage ===== */
+const LS_KEY = "nf_pedidos";
+let pedidos = JSON.parse(localStorage.getItem(LS_KEY) || "null") || [
+  {id:"NF-001", fecha:"2025-09-20", cliente:"María López", email:"maria@example.com", items:["Agenda 2025 x1","Planner Digital x1"], total:35990, estado:"Pendiente"},
+  {id:"NF-002", fecha:"2025-09-21", cliente:"Carlos Díaz", email:"carlos@example.com", items:["Set Stickers Fantôme x2"], total:11980, estado:"Completado"},
+  {id:"NF-003", fecha:"2025-09-22", cliente:"Ana Rivas", email:"ana.rivas@example.com", items:["Cuaderno Dot Grid x1","Marcadores Pastel x1"], total:18990, estado:"En proceso"},
+  {id:"NF-004", fecha:"2025-09-23", cliente:"Tomás P.", email:"tomasp@example.com", items:["Planner Digital x1"], total:7990, estado:"Cancelado"},
+  {id:"NF-005", fecha:"2025-09-24", cliente:"Daniela Soto", email:"daniela@example.com", items:["Agenda 2025 x1"], total:14990, estado:"Pendiente"}
+];
+const save = ()=>localStorage.setItem(LS_KEY, JSON.stringify(pedidos));
+
+/* ===== Utils DOM ===== */
+const $ = (q)=>document.querySelector(q);
+const $$ = (q)=>document.querySelectorAll(q);
+const tbody = $("#tbody");
+const q = $("#q"), fEstado=$("#f-estado"), fDesde=$("#f-desde"), fHasta=$("#f-hasta");
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.style.display="block"; setTimeout(()=>t.style.display="none",2000); }
+
+/* ===== Badges ===== */
+function badge(estado){
+  const map = {
+    "Pendiente":"b-pendiente fa-regular fa-clock",
+    "En proceso":"b-proceso fa-solid fa-gear",
+    "Completado":"b-completado fa-solid fa-circle-check",
+    "Cancelado":"b-cancelado fa-solid fa-ban"
+  };
+  const [cls, ...iconParts] = map[estado].split(" ");
+  return `<span class="badge ${cls}"><i class="${iconParts.join(" ")}"></i>${estado}</span>`;
+}
+
+/* ===== Filas ===== */
+function fila(p){
+  return `<tr data-id="${p.id}">
+    <td>${p.id}</td>
+    <td>${p.fecha}</td>
+    <td>${p.cliente}</td>
+    <td>${p.email}</td>
+    <td>${p.items.join(", ")}</td>
+    <td>$${p.total.toLocaleString("es-CL")}</td>
+    <td class="estado">${badge(p.estado)}</td>
+    <td>
+      <div class="actions">
+        <button class="icon-btn ver" title="Ver/Editar" aria-label="Ver o editar pedido"><i class="fa-regular fa-pen-to-square"></i></button>
+        <button class="icon-btn danger eliminar" title="Eliminar" aria-label="Eliminar pedido"><i class="fa-regular fa-trash-can"></i></button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+/* ===== Pintar + métricas ===== */
+function pintar(lista){
+  if(lista.length===0){ tbody.innerHTML = `<tr><td colspan="8" class="empty">No hay resultados con los filtros actuales.</td></tr>`; actualizarMetricas(lista); return; }
+  tbody.innerHTML = lista.map(fila).join("");
+  enlazarAcciones();
+  actualizarMetricas(lista);
+}
+function actualizarMetricas(lista){
+  const total = lista.length;
+  const by = s => lista.filter(p=>p.estado===s).length;
+  $("#m-total").textContent = total;
+  $("#m-pendiente").textContent = by("Pendiente");
+  $("#m-proceso").textContent = by("En proceso");
+  $("#m-completado").textContent = by("Completado");
+}
+
+/* ===== Ordenar ===== */
+let sortField = null, sortDir = 1;
+function sortList(list){
+  if(!sortField) return list;
+  return [...list].sort((a,b)=>{
+    let A=a[sortField], B=b[sortField];
+    if(sortField==="total") return (A-B)*sortDir;
+    if(sortField==="fecha") return (new Date(A)-new Date(B))*sortDir;
+    return String(A).localeCompare(String(B),"es",{numeric:true})*sortDir;
+  });
+}
+document.querySelectorAll("th[data-sort]").forEach(th=>{
+  th.style.cursor="pointer";
+  th.addEventListener("click", ()=>{
+    const f = th.dataset.sort;
+    sortDir = (sortField===f)? -sortDir : 1;
+    sortField = f;
+    filtrar();
+  });
+});
+
+/* ===== Paginación ===== */
+let page=1, pageSize=10, ultimaLista=[];
+const pageInfo = $("#page-info");
+$("#page-size").onchange = ()=>{ pageSize= +$("#page-size").value; page=1; filtrar(); };
+$("#prev").onclick = ()=>{ if(page>1){ page--; filtrar(); } };
+$("#next").onclick = ()=>{ page++; filtrar(); };
+function paginar(lista){
+  ultimaLista = lista;
+  const total = lista.length;
+  const maxPage = Math.max(1, Math.ceil(total/pageSize));
+  page = Math.min(page, maxPage);
+  const start = (page-1)*pageSize;
+  const slice = lista.slice(start, start+pageSize);
+  pageInfo.textContent = `${page} / ${maxPage}`;
+  return slice;
+}
+
+/* ===== Filtros ===== */
+function filtrar(){
+  const term = q.value.trim().toLowerCase();
+  const est = fEstado.value;
+  const d = fDesde.value ? new Date(fDesde.value) : null;
+  const h = fHasta.value ? new Date(fHasta.value) : null;
+
+  let res = pedidos.filter(p=>{
+    const texto = (p.id+" "+p.cliente+" "+p.email+" "+p.items.join(" ")).toLowerCase();
+    if(term && !texto.includes(term)) return false;
+    if(est && p.estado !== est) return false;
+    const f = new Date(p.fecha);
+    if(d && f<d) return false;
+    if(h && f>h) return false;
+    return true;
+  });
+  res = sortList(res);
+  pintar(paginar(res));
+}
+
+/* ===== Acciones fila ===== */
+function enlazarAcciones(){
+  $$(".ver").forEach(b=>b.onclick = (e)=>{ const id = e.currentTarget.closest("tr").dataset.id; abrirModal(id); });
+  $$(".eliminar").forEach(b=>b.onclick = (e)=>{
+    const id = e.currentTarget.closest("tr").dataset.id;
+    if(confirm("¿Eliminar el pedido "+id+"?")){
+      const i = pedidos.findIndex(x=>x.id===id);
+      if(i>-1){ pedidos.splice(i,1); save(); filtrar(); toast("Pedido eliminado"); }
+    }
+  });
+}
+
+/* ===== Modal ===== */
+const modal = $("#modal");
+const mId=$("#m-id"), mCliente=$("#m-cliente"), mEmail=$("#m-email"),
+      mFecha=$("#m-fecha"), mTotalInput=$("#m-total-input"), mEstado=$("#m-estado"),
+      mItems=$("#m-items");
+let actualId = null;
+
+function abrirModal(id){
+  const p = pedidos.find(x=>x.id===id);
+  if(!p) return;
+  actualId = id;
+  mId.textContent = p.id;
+  mCliente.value = p.cliente;
+  mEmail.value = p.email;
+  mFecha.value = p.fecha;
+  mTotalInput.value = p.total;
+  mEstado.value = p.estado;
+  mItems.value = p.items.join(", ");
+  modal.classList.add("open");
+}
+$("#m-cerrar").onclick = ()=> modal.classList.remove("open");
+modal.addEventListener("click", (e)=>{ if(e.target===modal) modal.classList.remove("open"); });
+
+$("#m-guardar").onclick = ()=>{
+  const i = pedidos.findIndex(x=>x.id===actualId);
+  if(i>-1){
+    pedidos[i] = {
+      ...pedidos[i],
+      cliente: mCliente.value.trim(),
+      email: mEmail.value.trim(),
+      fecha: mFecha.value,
+      total: Number(mTotalInput.value||0),
+      estado: mEstado.value,
+      items: mItems.value.split(",").map(s=>s.trim()).filter(Boolean)
+    };
+    save(); filtrar(); modal.classList.remove("open"); toast("Pedido guardado");
+  }
+};
+
+/* ===== Nuevo pedido (demo) ===== */
+$("#btn-nuevo").onclick = ()=>{
+  const nuevo = {
+    id: "NF-" + String(Math.floor(Math.random()*900)+1000),
+    fecha: new Date().toISOString().slice(0,10),
+    cliente: "Cliente Demo",
+    email: "demo@example.com",
+    items: ["Producto demo x1"],
+    total: 9990,
+    estado: "Pendiente"
+  };
+  pedidos.unshift(nuevo); save(); filtrar(); abrirModal(nuevo.id); toast("Pedido creado");
+};
+
+/* ===== Exportar CSV ===== */
+$("#btn-export").onclick = ()=>{
+  const rows = [["ID","Fecha","Cliente","Email","Artículos","Total","Estado"]];
+  (ultimaLista.length? ultimaLista : pedidos).forEach(p=>{
+    rows.push([p.id,p.fecha,p.cliente,p.email,p.items.join(" | "),p.total,p.estado]);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv;charset=utf-8;"}); const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "pedidos.csv"; a.click();
+};
+
+/* ===== Init ===== */
+pintar(pedidos);
+</script>
+</body>
+</html>

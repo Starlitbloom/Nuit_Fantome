@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -235,12 +235,16 @@
             <input id="ship-rut" class="input" placeholder="12.345.678-9">
           </div>
           <div>
-            <label for="ship-comuna">Comuna</label>
-            <select id="ship-comuna"></select>
+            <label for="ship-email">Correo</label>
+            <input id="ship-email" class="input" type="email" placeholder="correo@ejemplo.cl">
           </div>
           <div>
             <label for="ship-phone">Teléfono</label>
             <input id="ship-phone" class="input" placeholder="+56 9 xxxx xxxx">
+          </div>
+          <div>
+            <label for="ship-comuna">Comuna</label>
+            <select id="ship-comuna"></select>
           </div>
           <div style="grid-column:1 / -1">
             <label for="ship-address">Dirección</label>
@@ -340,7 +344,7 @@
   <!-- ======= /Pie ======= -->
 
   <script>
-  /* ===== Catálogo (mismo que productos/producto.html) ===== */
+  /* ===== Catálogo ===== */
   let productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
     { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
@@ -393,7 +397,7 @@
     { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal Sailor Moon." }
   ];
 
-  /* 🔁 Merge con lo que se guardó desde el admin (normaliza ../ a rutas del sitio) */
+  /* 🔁 Merge con lo que se guardó desde el admin */
   (function(){
     const STORAGE_KEY = 'nf_catalog_custom_v1';
     function loadCustom(){
@@ -413,13 +417,11 @@
     }
   })();
 
-  /* ======== ESPEJO DE STOCK COMPARTIDO (igual que productos/producto) ======== */
+  /* ======== ESPEJO DE STOCK COMPARTIDO ======== */
   const CATALOG_KEY = 'nf_catalog_custom_v1';
   const deepClone = o => JSON.parse(JSON.stringify(o||{}));
   function loadCustomArr(){ try{ return JSON.parse(localStorage.getItem(CATALOG_KEY)||'[]'); }catch{ return []; } }
   function saveCustomArr(arr){ localStorage.setItem(CATALOG_KEY, JSON.stringify(arr)); }
-
-  // Stock disponible unificado (prioriza por opción: o.s u o.stock; si no, stock total). null = sin control
   function getUnifiedStockFor(id, optName){
     const p = loadCustomArr().find(x=>x.id===id);
     if(!p) return null;
@@ -434,7 +436,6 @@
     if(typeof p.stock === 'number') return p.stock;
     return null;
   }
-  // Aplica delta al stock y persiste en el espejo (negativo descuenta; positivo devuelve)
   function persistStockChange(id, opt, delta){
     const arr = loadCustomArr();
     let p = arr.find(x=>x.id===id);
@@ -466,27 +467,23 @@
     if(elTop) elTop.textContent = count;
   }
 
-  // Cambiar cantidad con control de stock y devolver/retirar del espejo
   function setQty(id, qty=1, opt=""){
     qty = Math.max(1, qty|0);
     const cart = loadCart();
     const it = cart.find(i=>i.id===id && (i.opt||"")===opt);
     if(!it) return;
 
-    const diff = qty - it.qty; // >0 subir, <0 bajar
+    const diff = qty - it.qty;
     if(diff>0){
-      // ¿hay stock suficiente?
       const disp = getUnifiedStockFor(id, opt||"");
       if(disp!==null && disp < diff){
         alert('No hay stock suficiente para aumentar esa cantidad.');
         render();
         return;
       }
-      // descontamos del espejo
       persistStockChange(id, opt||null, -diff);
       it.qty = qty;
     }else if(diff<0){
-      // devolvemos al espejo
       persistStockChange(id, opt||null, +(-diff));
       it.qty = qty;
     }
@@ -498,7 +495,6 @@
     const cart = loadCart();
     const it = cart.find(i=>i.id===id && (i.opt||"")===opt);
     if(it && Number.isFinite(it.qty)){
-      // devolvemos todo el stock de ese ítem
       persistStockChange(id, opt||null, +it.qty);
     }
     const next = cart.filter(i => !(i.id===id && (i.opt||"")===opt));
@@ -515,7 +511,7 @@
     render();
   }
 
-  /* === SINCRONIZACIÓN CON STOCK DISPONIBLE (ajusta cantidades / elimina sin stock) === */
+  // ✅ CORREGIDA (disp en vez de dip)
   function reconcileCartWithStock(){
     const cart = loadCart();
     if(!Array.isArray(cart) || cart.length===0) return;
@@ -528,13 +524,13 @@
       const optName = it.opt || "";
       const disp = getUnifiedStockFor(it.id, optName);
 
-      if(disp === null) return it;          // no control de stock -> se deja igual
-      if(disp <= 0){                         // sin stock -> eliminar
+      if(disp === null) return it;        // sin control de stock
+      if(disp <= 0){
         removed.push({ id: it.id, opt: optName, was: it.qty });
         changed = true;
         return null;
       }
-      if(it.qty > disp){                     // ajustar a disponible
+      if(it.qty > disp){
         adjusted.push({ id: it.id, opt: optName, from: it.qty, to: disp });
         changed = true;
         return { ...it, qty: disp };
@@ -545,8 +541,6 @@
     if(changed){
       saveCart(next);
       updateCartCount();
-
-      // Mensaje único
       let msg = 'Actualizamos tu carrito según el stock disponible:\n';
       if(adjusted.length){
         msg += '\n• Cantidad ajustada:';
@@ -594,8 +588,9 @@
   const expressHelp = document.getElementById('expressHelp');
   const selComuna  = document.getElementById('ship-comuna');
   const etaText    = document.getElementById('etaText');
+  const emailInput = document.getElementById('ship-email');
 
-  const COMUNAS = {
+  const COMUNAS = { 
     'Arica y Parinacota':['Arica','Camarones','Putre','General Lagos'],
     'Tarapacá':['Iquique','Alto Hospicio','Pozo Almonte','Camiña','Colchane','Huara','Pica'],
     'Antofagasta':['Antofagasta','Mejillones','Sierra Gorda','Taltal','Calama','Ollagüe','San Pedro de Atacama','Tocopilla','María Elena'],
@@ -603,14 +598,6 @@
     'Coquimbo':['La Serena','Coquimbo','Andacollo','La Higuera','Paihuano','Vicuña','Illapel','Canela','Los Vilos','Salamanca','Ovalle','Combarbalá','Monte Patria','Punitaqui','Río Hurtado'],
     'Valparaíso':['Valparaíso','Viña del Mar','Concón','Quintero','Puchuncaví','Quillota','La Calera','Hijuelas','La Cruz','Nogales','San Antonio','Cartagena','El Tabo','El Quisco','Algarrobo','Santo Domingo','San Felipe','Llaillay','Catemu','Panquehue','Putaendo','Santa María','Los Andes','Calle Larga','Rinconada','San Esteban','Petorca','Cabildo','La Ligua','Papudo','Zapallar','Isla de Pascua','Juan Fernández'],
     'Metropolitana de Santiago':['Santiago','Cerrillos','Cerro Navia','Conchalí','El Bosque','Estación Central','Huechuraba','Independencia','La Cisterna','La Florida','La Granja','La Pintana','La Reina','Las Condes','Lo Barnechea','Lo Espejo','Lo Prado','Macul','Maipú','Ñuñoa','Pedro Aguirre Cerda','Peñalolén','Providencia','Pudahuel','Quilicura','Quinta Normal','Recoleta','Renca','San Joaquín','San Miguel','San Ramón','Vitacura','Puente Alto','Pirque','San José de Maipo','San Bernardo','Buin','Calera de Tango','Paine','Melipilla','Alhué','Curacaví','María Pinto','San Pedro','Talagante','El Monte','Isla de Maipo','Padre Hurtado','Peñaflor','Colina','Lampa','Tiltil'],
-    'O’Higgins':['Rancagua','Machalí','Graneros','Codegua','Mostazal','Requínoa','Rengo','Malloa','Quinta de Tilcoco','San Vicente','Pichidegua','Peumo','Las Cabras','Coltauco','Doñihue','Coinco','Olivar','Pichilemu','La Estrella','Marchihue','Navidad','Litueche','San Fernando','Chimbarongo','Nancagua','Placilla','Santa Cruz','Lolol','Pumanque','Peralillo'],
-    'Maule':['Talca','Curepto','Empedrado','Maule','Pencahue','Pelarco','Río Claro','San Clemente','San Rafael','Constitución','Curicó','Hualañé','Licantén','Vichuquén','Rauco','Romeral','Sagrada Familia','Teno','Molina','Linares','Colbún','Longaví','Parral','Retiro','San Javier','Villa Alegre','Yerbas Buenas','Cauquenes','Chanco','Pelluhue'],
-    'Ñuble':['Chillán','Chillán Viejo','Bulnes','Cobquecura','Coelemu','Coihueco','El Carmen','Ninhue','Ñiquén','Pemuco','Pinto','Portezuelo','Quillón','Quirihue','Ránquil','San Carlos','San Fabián','San Ignacio','San Nicolás','Trehuaco','Yungay'],
-    'Biobío':['Concepción','Talcahuano','Hualpén','Chiguayante','San Pedro de la Paz','Penco','Tomé','Hualqui','Florida','Santa Juana','Arauco','Cañete','Contulmo','Curanilahue','Lebu','Los Álamos','Tirúa','Coronel','Lota','Los Ángeles','Mulchén','Nacimiento','Negrete','Quilaco','Santa Bárbara','Alto Biobío','Antuco','Cabrero','Laja','San Rosendo','Tucapel','Yumbel'],
-    'La Araucanía':['Temuco','Padre Las Casas','Cunco','Curarrehue','Freire','Gorbea','Lautaro','Loncoche','Melipeuco','Nueva Imperial','Perquenco','Pitrufquén','Pucón','Saavedra','Teodoro Schmidt','Toltén','Vilcún','Villarrica','Cholchol','Carahue','Galvarino','Angol','Collipulli','Curacautín','Ercilla','Lonquimay','Los Sauces','Lumaco','Purén','Renaico','Traiguén','Victoria'],
-    'Los Ríos':['Valdivia','Corral','Lanco','Los Lagos','Máfil','Mariquina','Paillaco','Panguipulli','La Unión','Futrono','Lago Ranco','Río Bueno'],
-    'Los Lagos':['Puerto Montt','Puerto Varas','Llanquihue','Frutillar','Fresia','Los Muermos','Maullín','Calbuco','Osorno','San Pablo','Purranque','Río Negro','Puyehue','San Juan de la Costa','Puerto Octay','Castro','Ancud','Quellón','Dalcahue','Chonchi','Queilén','Puqueldón','Quinchao','Curaco de Vélez','Chaitén','Futaleufú','Hualaihué','Palena'],
-    'Aysén':['Coyhaique','Aysén','Cisnes','Guaitecas','Chile Chico','Río Ibáñez','Cochrane',"O'Higgins",'Tortel','Lago Verde'],
     'Magallanes y Antártica':['Punta Arenas','Río Verde','Laguna Blanca','San Gregorio','Puerto Natales','Torres del Paine','Porvenir','Primavera','Timaukel','Cabo de Hornos','Antártica']
   };
 
@@ -669,7 +656,7 @@
     let remaining = days;
     while(remaining>0){
       d.setDate(d.getDate()+1);
-      const dow = d.getDay(); // 0 dom, 6 sáb
+      const dow = d.getDay();
       if(dow!==0 && dow!==6) remaining--;
     }
     return d;
@@ -711,6 +698,7 @@
   const shipInputs = {
     name   : document.getElementById('ship-name'),
     rut    : document.getElementById('ship-rut'),
+    email  : document.getElementById('ship-email'),
     comuna : document.getElementById('ship-comuna'),
     phone  : document.getElementById('ship-phone'),
     address: document.getElementById('ship-address'),
@@ -724,6 +712,7 @@
       method : selMethod.value,
       name   : shipInputs.name.value.trim(),
       rut    : shipInputs.rut.value.trim(),
+      email  : shipInputs.email.value.trim(),
       comuna : shipInputs.comuna.value.trim(),
       phone  : shipInputs.phone.value.trim(),
       address: shipInputs.address.value.trim(),
@@ -759,7 +748,7 @@
   function validateShip(){
     if(selMethod.value==='retiro') return true;
     let ok = true;
-    ['name','rut','address'].forEach(k=>{
+    ['name','rut','address','email'].forEach(k=>{
       const el = shipInputs[k];
       if(!el.value.trim()){ el.classList.add('error'); ok=false; }
     });
@@ -793,7 +782,6 @@
       const p = productos.find(x=>x.id===it.id); if(!p) return;
       const sub = p.precio * it.qty; subtotal += sub;
 
-      // disponibilidad actual (para mostrar helper)
       const disp = getUnifiedStockFor(it.id, it.opt||"");
       const helper = (disp===null) ? '' : `<div class="muted" style="margin-top:4px">Disponible: ${disp}</div>`;
 
@@ -822,7 +810,6 @@
       list.appendChild(row);
     });
 
-    // Botón limpiar carrito
     const clearWrap = document.createElement('div');
     clearWrap.style="text-align:right;margin-top:6px";
     clearWrap.innerHTML = `<button class="btn" onclick="clearCart()">Vaciar carrito</button>`;
@@ -833,20 +820,58 @@
     updateCartCount();
   }
 
+  /* ======= CONEXIÓN CON ADMIN: crear pedido en nf_pedidos ======= */
+  const LS_PEDIDOS = "nf_pedidos";
+  function genId(){ return "NF-" + (Math.floor(Math.random()*9000)+1000); }
+  function savePedidoToAdmin(pedido){
+    const arr = JSON.parse(localStorage.getItem(LS_PEDIDOS) || '[]');
+    arr.unshift(pedido);
+    localStorage.setItem(LS_PEDIDOS, JSON.stringify(arr));
+  }
+  function buildItemsStrings(){
+    const cart = loadCart();
+    return cart.map(it=>{
+      const p = productos.find(x=>x.id===it.id) || {nombre:'Producto'};
+      const name = it.opt ? `${p.nombre} — ${it.opt}` : p.nombre;
+      return `${name} x${it.qty}`;
+    });
+  }
+  function calcTotalOrder(){
+    const ship = shippingCost();
+    return currentSubtotal + ship;
+  }
+  function paymentEstado(){
+    const v = document.querySelector('input[name=pay]:checked').value;
+    if(v==='transfer') return 'Pendiente';
+    return 'En proceso';
+  }
+
   document.getElementById('checkout').addEventListener('click', ()=>{
+    const cart = loadCart();
+    if(cart.length===0){ alert('Tu carrito está vacío.'); return; }
+
     if(!validateShip()){
-      alert('Completa los datos de envío: nombre, RUT, comuna y dirección.');
+      alert('Completa los datos de envío: nombre, RUT, correo, comuna y dirección.');
       return;
     }
     saveShip();
-    const method = document.querySelector('input[name=pay]:checked').value;
-    if(method==='webpay'){
-      alert('Te redirigiremos a Webpay para completar el pago.');
-    }else if(method==='mp'){
-      alert('Te redirigiremos a Mercado Pago para completar el pago.');
-    }else{
-      alert('Has elegido Transferencia. Verifica los datos bancarios y adjunta el comprobante.');
-    }
+
+    const pedido = {
+      id    : genId(),
+      fecha : new Date().toISOString().slice(0,10),
+      cliente: shipInputs.name.value.trim() || 'Cliente',
+      email : shipInputs.email.value.trim() || 'cliente@example.com',
+      items : buildItemsStrings(),
+      total : calcTotalOrder(),
+      estado: paymentEstado()
+    };
+
+    // Guardar en admin y limpiar carrito
+    savePedidoToAdmin(pedido);
+    clearCart();
+
+    alert('✅ Pedido registrado en Admin: ' + pedido.id);
+    // window.location.href = 'admin/pedidos.html';
   });
 
   /* Menu desplegable */
@@ -874,10 +899,7 @@
   toggleExpressAvailability();
   updateETA();
   updateCartCount();
-
-  // 👇 NUEVO: sincroniza carrito con stock antes de pintar
   reconcileCartWithStock();
-
   render();
   </script>
 </body>
