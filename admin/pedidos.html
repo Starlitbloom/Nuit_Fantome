@@ -15,26 +15,30 @@
       --primary:#7c3aed; --primary-2:#a78bfa; --success:#22c55e; --warning:#f59e0b;
       --info:#38bdf8; --danger:#ef4444; --shadow:0 10px 30px rgba(124,58,237,.18);
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(1200px 600px at 20% 0%,#1a0b37 0%,#0f0321 60%);color:var(--ink);font-family:"Merriweather",serif}
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Merriweather', serif;background:var(--bg);color:var(--ink);}
+    a{color:inherit;text-decoration:none;}
+    ul{list-style:none;}
 
     /* Layout */
-    .wrapper{display:flex;min-height:100dvh;overflow:hidden}
-    .sidebar{width:240px;background:linear-gradient(180deg,#1b1036,#0b0720);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
-    .brand{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px}
-    .brand .title{font-size:24px;color:#cbb5ff;text-shadow:0 2px 8px rgba(167,139,250,.4)}
-    .menu{padding:8px}
-    .menu a{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:6px 10px;border-radius:12px;color:#ddd;border:1px solid transparent;transition:.25s}
-    .menu a:hover{background:#1a1336;border-color:#2e2361}
-    .menu a.active{background:#6d39e4;color:#fff;border-color:#7c3aed;box-shadow:var(--shadow)}
-    .dot{width:8px;height:8px;border-radius:50%;background:#9f84ff;box-shadow:0 0 10px #9f84ff}
+    .wrapper{display:flex;height:100vh;overflow:hidden;}
+    .sidebar{
+      width:220px;background:var(--card);display:flex;flex-direction:column;
+    }
+    .sidebar h2{color:var(--primary);text-align:center;padding:20px 0;font-size:22px;}
+    .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+    .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+    .sidebar ul li i{width:20px;text-align:center;}
 
-    .main{flex:1;display:flex;flex-direction:column;gap:18px;padding:22px 26px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-    .h1{font-size:28px;margin:0}
-    .tools{display:flex;gap:10px;flex-wrap:wrap}
+    .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+    
+    /* Topbar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+    .topbar .left h1{font-size:30px;font-weight: 700;}
+    .topbar .right{display:flex;align-items:center;gap:15px;}
+    .topbar .right i{cursor:pointer;font-size:18px;}
+
+    .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom: 16px;}
     .input, .select, .btn{background:var(--card);color:var(--ink);border:1px solid var(--line);padding:10px 12px;border-radius:12px;outline:none;transition:.2s}
     .input:focus, .select:focus{border-color:#6140e9;box-shadow:0 0 0 3px rgba(124,58,237,.25)}
     .btn{cursor:pointer}
@@ -42,8 +46,55 @@
     .btn.ghost{background:transparent}
     .btn.danger{background:#3a0f23;border-color:#6b1436;color:#ffb4c4}
 
+    /* Sidebar */
+  /* Sidebar con diseño */
+  .sidebar{
+    width:240px;
+    background:
+      radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+      radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
+      var(--card);
+    color:var(--ink);
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+  .sidebar .logo{
+    text-align:center;padding:20px 0;
+  }
+  .sidebar .logo img{width:220px;height:auto;}
+  .sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
+  .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+  .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+  .sidebar ul li i{width:20px;text-align:center;}
+
+  /* Estrellitas flotantes */
+  .spark{
+    position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(#fff,rgba(255,255,255,.1));
+    filter:drop-shadow(0 0 10px #fff);
+    animation:float 8s linear infinite;
+  }
+  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+  .spark.s2{left:82%; top:22%;}
+  .spark.s3{left:18%; top:70%; animation-duration:9s;}
+  .spark.s4{left:72%; top:68%; animation-duration:10s;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* Main */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:20px;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+  .topbar .right .user{display:flex;align-items:center;gap:10px;}
+  .topbar .right .user img{width:35px;height:35px;border-radius:50%;object-fit:cover;}
+
+  /* Container */
+  .container{width:min(1200px,94%);margin:20px auto}
+
     /* Cards */
-    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom: 16px;}
     .card{background:radial-gradient(400px 180px at 30% -10%,rgba(124,58,237,.25),transparent 60%), var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
     .metric{font-size:26px;font-weight:700}
     .muted{color:var(--muted);font-size:13px}
@@ -51,7 +102,7 @@
     .up{color:var(--success)} .down{color:var(--danger)}
 
     /* Table */
-    .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom: 16px;}
     table{width:100%;border-collapse:collapse}
     thead{background:#1a1336}
     th,td{padding:14px;border-bottom:1px solid var(--line);font-size:14px}
@@ -78,10 +129,10 @@
     .field label{font-size:12px;color:var(--muted)}
     .field input, .field select, .field textarea{background:#0f0c25;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px}
     .box .actions{justify-content:flex-end;margin-top:12px}
-    .footnote{font-size:12px;color:var(--muted);margin-top:6px}
+    .footnote{font-size:12px;color:var(--muted);margin-top:-40px;margin-bottom: 16px;}
 
     /* Pager */
-    #pager{justify-content:flex-end;margin-top:10px}
+    #pager{justify-content:flex-end;margin-top:20px;margin-bottom: 16px;}
 
     /* Responsive */
     @media (max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)} .sidebar{width:220px}}
@@ -98,41 +149,56 @@
 </head>
 <body>
 <div class="wrapper">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="../assets/img/icono_pag.png" alt="Nuit Fantôme" style="width:96px;height:96px;object-fit:contain;">
-      <div class="title">Admin</div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="../assets/img/logo.png" alt="Logo Empresa">
     </div>
-    <nav class="menu">
-      <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-      <a href="productos.html"><i class="fa-solid fa-boxes-stacked"></i> Productos</a>
-      <a class="active" href="pedidos.html"><i class="fa-solid fa-cart-shopping"></i> Pedidos <span class="dot" style="margin-left:auto"></span></a>
-      <a href="usuario.html"><i class="fa-solid fa-user-group"></i> Usuarios</a>
-      <a href="#"><i class="fa-solid fa-gear"></i> Ajustes</a>
-      <a href="../index.html" target="_blank"><i class="fa-solid fa-globe"></i> Ver sitio</a>
-    </nav>
-  </aside>
+    <h2>Admin</h2>
+    <ul>
+      <li><a href="./dashboard.html"><i class="fa fa-chart-line"></i>Dashboard</a></li>
+      <li><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
+      <li class="active"><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
+      <li><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
+      <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
+    </ul>
+    <!-- Estrellitas -->
+    <div class="spark s1"></div>
+    <div class="spark s2"></div>
+    <div class="spark s3"></div>
+    <div class="spark s4"></div>
+  </div>
 
   <!-- MAIN -->
   <main class="main">
-    <div class="topbar">
-      <h1 class="h1">Pedidos</h1>
-      <div class="tools">
-        <input id="q" class="input" type="search" placeholder="Buscar por cliente, email, ID, producto…">
-        <select id="f-estado" class="select">
-          <option value="">Todos los estados</option>
-          <option value="Pendiente">Pendiente</option>
-          <option value="En proceso">En proceso</option>
-          <option value="Completado">Completado</option>
-          <option value="Cancelado">Cancelado</option>
-        </select>
-        <input id="f-desde" class="input" type="date" title="Desde">
-        <input id="f-hasta" class="input" type="date" title="Hasta">
-        <button id="btn-limpiar" class="btn ghost"><i class="fa-solid fa-rotate"></i> Limpiar</button>
-        <button class="btn ghost" id="btn-export"><i class="fa-regular fa-file-lines"></i> Exportar CSV</button>
-        <button class="btn primary" id="btn-nuevo"><i class="fa-solid fa-plus"></i> Nuevo pedido</button>
+    <!-- Topbar -->
+      <div class="topbar">
+        <div class="left">
+          <h1 id="tituloBienvenida">Bienvenido!</h1>
+        </div>
+        <div class="right">
+          <i class="fa fa-bell"></i>
+        </div>
       </div>
+
+    <div class="container">
+        <div class="title">
+          <h1>Pedidos</h1>
+        <div class="tools">
+          <input id="q" class="input" type="search" placeholder="Buscar por cliente, email, ID, producto…">
+          <select id="f-estado" class="select">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Completado">Completado</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+          <input id="f-desde" class="input" type="date" title="Desde">
+          <input id="f-hasta" class="input" type="date" title="Hasta">
+          <button id="btn-limpiar" class="btn ghost"><i class="fa-solid fa-rotate"></i> Limpiar</button>
+          <button class="btn ghost" id="btn-export"><i class="fa-regular fa-file-lines"></i> Exportar CSV</button>
+          <button class="btn primary" id="btn-nuevo"><i class="fa-solid fa-plus"></i> Nuevo pedido</button>
+        </div>
     </div>
 
     <!-- CARDS -->
