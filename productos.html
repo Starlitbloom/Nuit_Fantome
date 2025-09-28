@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -25,8 +25,6 @@
     .card .ph{width:100%;height:180px;object-fit:cover;border-radius:10px}
     .card .title{font-weight:700;color:#2b254a;text-decoration:none;display:block;margin-top:6px}
     .card .price{color:#7c3aed;font-weight:800}
-
-    /* Botones en tarjeta */
     .card-actions{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
     .btn-card{
       background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
@@ -37,7 +35,6 @@
       background:#f3f0ff;color:#2b2452;border:0;border-radius:10px;padding:8px 14px;font-weight:800;cursor:pointer;
       box-shadow:0 6px 14px rgba(124,58,237,.12);
     }
-
     /* Modal elegir diseño (global) */
     .opt-modal{position:fixed;inset:0;display:none;z-index:99999;}
     .opt-modal.show{display:flex;align-items:center;justify-content:center;}
@@ -50,11 +47,15 @@
     .opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
     .opt-btn{
       border:1px solid #ece7ff;border-radius:12px;background:#fff;cursor:pointer;
-      min-height:96px;padding:10px;font-weight:700;user-select:none;
+      min-height:96px;padding:10px 12px;font-weight:700;user-select:none;text-align:left;
       transition:transform .1s ease, box-shadow .1s ease, border-color .1s ease;
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
     }
     .opt-btn:hover{transform:translateY(-2px);box-shadow:0 12px 20px rgba(30,27,75,.12)}
     .opt-btn.selected{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(124,58,237,.20) inset}
+    .opt-btn[disabled]{opacity:.55;cursor:not-allowed}
+    .opt-qty{font-size:.85rem;padding:4px 8px;border-radius:999px;background:#f3f0ff;color:#2b2452;border:1px solid #e9e5ff;font-weight:800;white-space:nowrap}
+    .opt-qty.zero{background:#ffe8e8;color:#7a1c1c;border-color:#ffd0d0}
   </style>
 </head>
 <body>
@@ -167,90 +168,42 @@
   </div>
 
   <script>
-  /* Catálogo con opciones añadidas */
+  /* ===== Catálogo base ===== */
   let productos = [
     { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
-
     { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
-
-    { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg", desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos.",
-      opciones:[{t:"Rosa"},{t:"Lila"},{t:"Celeste"},{t:"Verde"}] },
-
-    { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg", desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m.",
-      opciones:[{t:"Amarillo"},{t:"Rosa"},{t:"Verde"},{t:"Morado"}] },
-
-    { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg", desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos.",
-      opciones:[{t:"Pastel 1"},{t:"Pastel 2"},{t:"Pastel 3"},{t:"Pastel 4"}] },
-
-    { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg", desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura.",
-      opciones:[{t:"Rosa"},{t:"Blanco"},{t:"Amarillo"},{t:"Celeste"}] },
-
-    { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg", desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura.",
-      opciones:[{t:"Lila"},{t:"Rosa"},{t:"Lavanda"}] },
-
-    { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg", desc:"Estuche Kuromi con compartimentos y cierre resistente.",
-      opciones:[{t:"Cinnamoroll"},{t:"My Melody"},{t:"Kuromi"},{t:"Pompompurin"}] },
-
-    { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg", desc:"Estuche My Melody con elásticos y bolsillo interno.",
-      opciones:[{t:"My Melody"},{t:"Cinnamoroll"},{t:"Pompompurin"},{t:"Hello Kitty"},{t:"Gudetama"},{t:"Keroppi"}] },
-
+    { id:"calc01", categoria:"Calculadoras", nombre:"Calculadora compacta pastel", precio:6990, img:"assets/img/calculadora-pastel.jpg", desc:"Calculadora compacta con teclas suaves y diseño pastel; pantalla de 12 dígitos.", opciones:[{t:"Rosa"},{t:"Lila"},{t:"Celeste"},{t:"Verde"}] },
+    { id:"washi02", categoria:"Cintas / Washi", nombre:"Washi tape ilustrada “Vida diaria”", precio:3490, img:"assets/img/washi-vida-diaria.jpg", desc:"Washi ilustrada temática de vida diaria; ideal para diarios y scrap, 15 mm x 5 m.", opciones:[{t:"Amarillo"},{t:"Rosa"},{t:"Verde"},{t:"Morado"}] },
+    { id:"washi03", categoria:"Cintas / Washi", nombre:"Set de cintas washi – tonos pastel", precio:3990, img:"assets/img/washi-set-pastel.jpg", desc:"Set de cintas washi en tonos pastel; adhesivo suave sin residuos.", opciones:[{t:"Pastel 1"},{t:"Pastel 2"},{t:"Pastel 3"},{t:"Pastel 4"}] },
+    { id:"cut01", categoria:"Corte", nombre:"Cúter mini “Paw” (patas de gato)", precio:2990, img:"assets/img/cutter-paw.jpg", desc:"Cúter mini con tapa en forma de pata; hoja retráctil segura.", opciones:[{t:"Rosa"},{t:"Blanco"},{t:"Amarillo"},{t:"Celeste"}] },
+    { id:"cua03", categoria:"Cuadernos & Libretas", nombre:"Cuaderno ilustrado A5 – Pinturas", precio:4990, img:"assets/img/cuaderno-pinturas.jpg", desc:"Cuaderno A5 con ilustraciones; 80 hojas lisas, papel 90 g, tapa dura.", opciones:[{t:"Lila"},{t:"Rosa"},{t:"Lavanda"}] },
+    { id:"est01", categoria:"Estuches", nombre:"Estuche Sanrio (set 4) ", precio:8990, img:"assets/img/estuche-kuromi.jpg", desc:"Estuche Kuromi con compartimentos y cierre resistente.", opciones:[{t:"Cinnamoroll"},{t:"My Melody"},{t:"Kuromi"},{t:"Pompompurin"}] },
+    { id:"est02", categoria:"Estuches", nombre:"Estuche Sanrio(set 6)", precio:8990, img:"assets/img/estuche-my-melody.jpg", desc:"Estuche My Melody con elásticos y bolsillo interno.", opciones:[{t:"My Melody"},{t:"Cinnamoroll"},{t:"Pompompurin"},{t:"Hello Kitty"},{t:"Gudetama"},{t:"Keroppi"}] },
     { id:"fab01", categoria:"Lápices de grafito", nombre:"Set lápices grafito Faber-Castell", precio:18990, img:"assets/img/faber-castell-set.jpg", desc:"Set de lápices de grafito Faber-Castell (HB–2B); incluye borrador y sacapuntas." },
-
     { id:"gom02", categoria:"Borradores", nombre:"Borrador eléctrico recargable", precio:11990, img:"assets/img/goma-electrica.jpg", desc:"Borrador eléctrico recargable por USB." },
-
-    { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg", desc:"Pack de 3 gomas degradé libres de látex.",
-      opciones:[{t:"Verde/Azul"},{t:"Rosa/Celeste"},{t:"Mix pastel"}] },
-
+    { id:"gom01", categoria:"Borradores", nombre:"Borradores degradé (pack 3)", precio:1990, img:"assets/img/gomas-de-colores.jpg", desc:"Pack de 3 gomas degradé libres de látex.", opciones:[{t:"Verde/Azul"},{t:"Rosa/Celeste"},{t:"Mix pastel"}] },
     { id:"lap10", categoria:"Lápices de colores", nombre:"Set lápices de colores – 10 unidades", precio:3990, img:"assets/img/lapices-10.jpg", desc:"Set de 10 lápices de color de mina suave." },
-
     { id:"lap25", categoria:"Lápices de colores", nombre:"Set lápices de colores – 25 unidades", precio:7990, img:"assets/img/lapices-25.jpg", desc:"Set de 25 lápices de color; minas resistentes y mezclables." },
-
     { id:"lap30", categoria:"Lápices de colores", nombre:"Set lápices de colores – 30 unidades", precio:20000, img:"assets/img/lapices-30.jpg", desc:"Set de 30 lápices de color; incluye tonos piel y pasteles." },
-
     { id:"pinc01", categoria:"Pinceles / Acuarela", nombre:"Pinceles para acuarela (pack)", precio:8990, img:"assets/img/pinceles-acuarelas.jpg", desc:"Pack de pinceles para acuarela." },
-
-    { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg", desc:"Notas adhesivas oficiales Sanrio.",
-      opciones:[{t:"Cinnamoroll"},{t:"Pompompurin"}] },
-
-    { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg", desc:"Notas adhesivas con 3 diseños.",
-      opciones:[{t:"Kuromi"},{t:"My Melody"}] },
-
-    { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg", desc:"Notas adhesivas de colores suaves.",
-      opciones:[{t:"Pochacco"},{t:"Hello Kitty"}] },
-
-    { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg", desc:"Sacapuntas con depósito y borrador integrado.",
-      opciones:[{t:"Celeste"},{t:"Rosa"},{t:"Lila"},{t:"Verde"}] },
-
+    { id:"post01", categoria:"Notas adhesivas", nombre:"Notas adhesivas Cinnamoroll / Pompompurin", precio:2990, img:"assets/img/postit-cinnamoroll-pompompurin.jpg", desc:"Notas adhesivas oficiales Sanrio.", opciones:[{t:"Cinnamoroll"},{t:"Pompompurin"}] },
+    { id:"post02", categoria:"Notas adhesivas", nombre:"Notas adhesivas Kuromi / My Melody", precio:2990, img:"assets/img/postit-kuromi-mymelody.jpg", desc:"Notas adhesivas con 3 diseños.", opciones:[{t:"Kuromi"},{t:"My Melody"}] },
+    { id:"post03", categoria:"Notas adhesivas", nombre:"Notas adhesivas Pochacco / Hello Kitty", precio:2990, img:"assets/img/postit-pochacco-hellokitty.jpg", desc:"Notas adhesivas de colores suaves.", opciones:[{t:"Pochacco"},{t:"Hello Kitty"}] },
+    { id:"saca01", categoria:"Sacapuntas", nombre:"Sacapuntas + borrador 2 en 1", precio:3490, img:"assets/img/sacapuntas-borrador.jpg", desc:"Sacapuntas con depósito y borrador integrado.", opciones:[{t:"Celeste"},{t:"Rosa"},{t:"Lila"},{t:"Verde"}] },
     { id:"bol01", categoria:"Bolígrafos", nombre:"Bolígrafos Sakura gel (pack)", precio:9990, img:"assets/img/sakura-boligrafos.jpg", desc:"Bolígrafos Sakura de tinta gel pigmentada." },
-
     { id:"set02", categoria:"Sets", nombre:"Set papelería “Gato Azul”", precio:10990, img:"assets/img/set-gato-azul.jpg", desc:"Set temático gato azul." },
-
     { id:"set01", categoria:"Sets", nombre:"Set papelería “Gato Rosado”", precio:10990, img:"assets/img/set-gato-rosado.jpg", desc:"Set temático gato rosado." },
-
     { id:"washi60", categoria:"Cintas / Washi", nombre:"Set 60 washi tapes", precio:16990, img:"assets/img/set60-cintas.jpg", desc:"Mega set de 60 washi tapes." },
-
-    { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg", desc:"Pack de clips decorativos tipo botón.",
-      opciones:[{t:"Lila"},{t:"Menta"},{t:"Celeste"}] },
-
-    { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg", desc:"Tijeras con funda, filo inoxidable.",
-      opciones:[{t:"Lila"},{t:"Rosa"},{t:"Celeste"}] },
-
-    { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg", desc:"Washi tape de flores estilo vintage.",
-      opciones:[{t:"Morado"},{t:"Rosa"},{t:"Dorado"}] },
-
-    /* --- NUEVOS PRODUCTOS DIGITALES / PLANNERS --- */
+    { id:"clip01", categoria:"Clips / Accesorios", nombre:"Clips decorativos “Click” (pack)", precio:2990, img:"assets/img/set-de-click.jpg", desc:"Pack de clips decorativos tipo botón.", opciones:[{t:"Lila"},{t:"Menta"},{t:"Celeste"}] },
+    { id:"tij01", categoria:"Tijeras", nombre:"Tijeras My Melody", precio:6990, img:"assets/img/tijeras-my-melody.jpg", desc:"Tijeras con funda, filo inoxidable.", opciones:[{t:"Lila"},{t:"Rosa"},{t:"Celeste"}] },
+    { id:"washi04", categoria:"Cintas / Washi", nombre:"Washi tape de flores vintage", precio:3490, img:"assets/img/washi-tape-flores.jpg", desc:"Washi tape de flores estilo vintage.", opciones:[{t:"Morado"},{t:"Rosa"},{t:"Dorado"}] },
     { id:"todo-hk", categoria:"Planners / To-Do", nombre:"To do list — Hello Kitty", precio:1990, img:"assets/img/to-do-list-hello-kitty.jpg", desc:"To do list temático Hello Kitty, ideal para notas rápidas y organización diaria." },
-
     { id:"todo-kuromi", categoria:"Planners / To-Do", nombre:"To do list — Kuromi", precio:1990, img:"assets/img/to-do-list-kuromi.jpg", desc:"To do list con diseño de Kuromi, papel suave para tu día a día." },
-
     { id:"todo-sailor", categoria:"Planners / To-Do", nombre:"To do list — Sailor Moon", precio:1990, img:"assets/img/to-do-list-sailor-moon.jpg", desc:"To do list ilustrado Sailor Moon, compacto y práctico." },
-
     { id:"plan-hk", categoria:"Planners / To-Do", nombre:"Planner semanal — Hello Kitty", precio:2990, img:"assets/img/planner-semanal-hello-kitty.jpg", desc:"Planner semanal Hello Kitty con columnas para cada día y diseño kawaii." },
-
     { id:"plan-kuromi", categoria:"Planners / To-Do", nombre:"Planner semanal — Kuromi", precio:2990, img:"assets/img/planner-kuromi.jpg", desc:"Planner semanal Kuromi en tonos lilas, organiza tu semana con estilo." },
-
     { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal de Sailor Moon, perfecto para fans y organización diaria." }
-  ];  
+  ];
 
   /* 🔁 Merge con lo que se guardó desde el admin (localStorage) */
   (function(){
@@ -263,18 +216,100 @@
       const mapa = new Map(productos.map(p => [p.id, p]));
       loadCustom().forEach(p => {
         const cp = { ...p };
-        // si desde admin quedó con '../', lo convertimos a ruta del sitio
-        if (typeof cp.img === 'string' && cp.img.startsWith('../')) {
-          cp.img = cp.img.slice(3);
-        }
-        mapa.set(cp.id, cp); // lo del admin pisa por id
+        if (typeof cp.img === 'string' && cp.img.startsWith('../')) cp.img = cp.img.slice(3);
+        mapa.set(cp.id, cp);
       });
       productos = Array.from(mapa.values());
     }
   })();
 
-  /* ====================== RESTO DE TU JS ====================== */
+  /* =====================  STOCK UNIFICADO (ADMIN + Espejo)  ===================== */
+  const CATALOG_KEY = 'nf_catalog_custom_v1';   // espejo catálogo (ya existente)
+  const STOCK_KEY   = 'nf_stock_v1';            // stock oficial del ADMIN
 
+  const deepClone = o => JSON.parse(JSON.stringify(o||{}));
+  const isObj = v => v && typeof v === 'object' && !Array.isArray(v);
+
+  // Storage helpers
+  function loadCustomArr(){ try{ return JSON.parse(localStorage.getItem(CATALOG_KEY)||'[]'); }catch{ return []; } }
+  function saveCustomArr(arr){ localStorage.setItem(CATALOG_KEY, JSON.stringify(arr)); }
+  function loadStockObj(){ try{ return JSON.parse(localStorage.getItem(STOCK_KEY)||'{}'); }catch{ return {}; } }
+  function saveStockObj(o){ localStorage.setItem(STOCK_KEY, JSON.stringify(o)); }
+
+  // Lee stock unificado (prioriza ADMIN; si no, espejo). Si optName se pasa, devuelve stock de esa opción.
+  function getUnifiedStockFor(id, optName){
+    const admin = loadStockObj();
+    if (id in admin) {
+      const v = admin[id];
+      if (optName) {
+        if (isObj(v) && v[optName] != null) return Number(v[optName])||0;
+        return null; // admin no controla esa opción
+      }
+      if (isObj(v)) return Object.values(v).reduce((a,b)=>a+(Number(b)||0),0);
+      return (typeof v === 'number') ? v : null;
+    }
+    // Fallback al espejo del catálogo
+    const p = loadCustomArr().find(x=>x.id===id);
+    if(!p) return null;
+    if (optName) {
+      const o = (p.opciones||[]).find(x=>x.t===optName);
+      if(o){
+        if(typeof o.s === 'number') return o.s;
+        if(typeof o.stock === 'number') return o.stock;
+      }
+      return null;
+    }
+    if (typeof p.stock === 'number') return p.stock;
+    return null;
+  }
+
+  // Descuenta/repone: si ADMIN controla ese id => escribe en nf_stock_v1; si no, usa espejo
+  function persistStockChange(id, opt, delta){
+    const admin = loadStockObj();
+    if (id in admin) {
+      const v = admin[id];
+      if (opt) {
+        if (!isObj(v)) admin[id] = {};
+        admin[id][opt] = Math.max(0, Number((admin[id][opt]||0)) + delta);
+      } else {
+        if (isObj(v)) {
+          // Si el admin guardó por opción, y piden total, distribuimos en "total"
+          const total = Object.values(v).reduce((a,b)=>a+(Number(b)||0),0);
+          admin[id] = Math.max(0, Number(total) + delta);
+        } else {
+          admin[id] = Math.max(0, Number(v||0) + delta);
+        }
+      }
+      saveStockObj(admin);
+      return;
+    }
+    // Espejo (catálogo) si el admin no define ese ID
+    const arr = loadCustomArr();
+    let p = arr.find(x=>x.id===id);
+    if(!p){
+      const base = deepClone(productos.find(z=>z.id===id)) || { id };
+      p = { id, ...base };
+      arr.push(p);
+    }
+    if(opt){
+      if(!Array.isArray(p.opciones)) p.opciones = [];
+      let oo = p.opciones.find(o=>o.t===opt);
+      if(!oo){ oo = { t: opt, s: 0 }; p.opciones.push(oo); }
+      oo.s = Math.max(0, Number(oo.s||0) + delta);
+    } else {
+      p.stock = Math.max(0, Number(p.stock||0) + delta);
+    }
+    saveCustomArr(arr);
+  }
+
+  // Refresco en vivo si cambian stocks en otra pestaña (admin o tienda)
+  window.addEventListener('storage', (e)=>{
+    if(e.key === CATALOG_KEY || e.key === STOCK_KEY){
+      try{ render(); }catch{}
+    }
+  });
+
+  /* ====================== RENDER / FILTROS ====================== */
   const $ = s => document.querySelector(s);
   const grid = $('#productos-grid');
   const chipsWrap = $('#chips');
@@ -333,20 +368,34 @@
     list.forEach(p=> grid.appendChild(renderCard(p)));
   }
 
-  /* Carrito */
+  /* ====================== CARRITO ====================== */
   const CART_KEY='nf_cart';
   const loadCart=()=>{ try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return[]} };
   const saveCart=c=>{ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartCount(); };
-  function addToCart(id, qty=1, opt=""){
-    const c=loadCart();
-    const it=c.find(i=>i.id===id && (i.opt||"")===opt);
-    if(it) it.qty+=qty; else c.push({id,qty,opt});
-    saveCart(c);
-    alert('Producto añadido al carrito' + (opt?` (${opt})`:'')); // simple feedback
-  }
-  function updateCartCount(){ const el=document.getElementById('contador'); if(el) el.textContent = loadCart().reduce((a,b)=>a+b.qty,0); }
 
-  /* Buscador del header */
+  function updateCartCount(){
+    const el=document.getElementById('contador');
+    if(el) el.textContent = loadCart().reduce((a,b)=>a+(b.qty||0),0);
+  }
+
+  // Añadir con control de stock y descuento persistente (ADMIN si existe, si no espejo)
+  function addToCart(id, qty=1, opt=""){
+    qty = Math.max(1, qty|0);
+    const disp = getUnifiedStockFor(id, opt||""); // null => sin control
+    if(disp!==null && disp < qty){
+      alert('No hay stock suficiente para esa cantidad.');
+      return;
+    }
+    if(disp!==null) persistStockChange(id, opt||null, -qty);
+
+    const cart=loadCart();
+    const it=cart.find(i=>i.id===id && (i.opt||"")===opt);
+    if(it) it.qty += qty; else cart.push({id, qty, opt});
+    saveCart(cart);
+    alert('Producto añadido al carrito' + (opt?` (${opt})`:''));
+  }
+
+  /* ====================== BUSCADOR HEADER ====================== */
   const headerForm = document.querySelector('.busqueda form');
   const headerInput = document.querySelector('.busqueda input[name="buscar"]');
   if(headerForm){ headerForm.addEventListener('submit', e=>{ e.preventDefault(); }); }
@@ -360,39 +409,52 @@
   }
   const initQ = new URLSearchParams(location.search).get('buscar');
   if(initQ && headerInput){ headerInput.value = initQ; state.q = initQ; }
-  ordenSel.addEventListener('change', ()=>{ state.orden = ordenSel.value; render(); });
+  document.getElementById('orden').addEventListener('change', ()=>{ state.orden = orden.value; render(); });
 
-  /* Modal – elegir diseño desde tarjeta */
+  /* ====================== MODAL OPCIONES ====================== */
   let selectedOpt = "", pendingAddFromCardId = null;
+
   function openOptModal(prodId){
     const p = productos.find(x=>x.id===prodId);
     if(!p || !p.opciones) return;
+
     const gridEl = document.getElementById('optGrid');
     gridEl.innerHTML = '';
     selectedOpt = '';
+
     p.opciones.forEach(o=>{
+      const qty = getUnifiedStockFor(prodId, o.t); // null => sin control
       const btn = document.createElement('button');
-      btn.type='button'; btn.className='opt-btn'; btn.textContent=o.t;
+      btn.type='button'; btn.className='opt-btn';
+      const qtyHtml = (qty===null) ? '' : `<span class="opt-qty ${qty===0?'zero':''}">${qty===0?'Agotado':(qty+' disp.')}</span>`;
+      btn.innerHTML = `<span>${o.t}</span>${qtyHtml}`;
+
+      if(qty===0) btn.disabled = true;
+
       btn.onclick=()=>{
+        if(btn.disabled) return;
         selectedOpt=o.t;
         gridEl.querySelectorAll('.opt-btn').forEach(el=>el.classList.remove('selected'));
         btn.classList.add('selected');
+
         if(pendingAddFromCardId){
-          addToCart(pendingAddFromCardId,1,selectedOpt);
-          pendingAddFromCardId=null;
+          addToCart(pendingAddFromCardId, 1, selectedOpt);
+          pendingAddFromCardId = null;
+          closeOptModal();
         }
-        closeOptModal();
       };
       gridEl.appendChild(btn);
     });
+
     document.getElementById('optModal').classList.add('show');
   }
   function closeOptModal(){ document.getElementById('optModal').classList.remove('show'); }
+
   function onCardElegir(prodId){ pendingAddFromCardId = prodId; openOptModal(prodId); }
   function onCardAdd(prodId){
     const p = productos.find(x=>x.id===prodId);
     if(p && p.opciones){ onCardElegir(prodId); return; }
-    addToCart(prodId,1,'');
+    addToCart(prodId, 1, '');
   }
 
   /* Menu desplegable */
@@ -404,7 +466,6 @@
           dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
       });
 
-      // Se cierra el menú si se hace click fuera
       window.addEventListener("click", function (e) {
           if (!e.target.matches(".btn-acceder")) {
               if (dropdown.style.display === "block") {
@@ -414,13 +475,7 @@
       });
   });
 
-  /* (Tu helper que no usa carrito directo) */
-  function actualizarContador() {
-      const contador = document.getElementById("contador");
-      const total = productos.reduce((acc, p) => acc + (p.cantidad||0), 0);
-      contador.textContent = total;
-  }
-
+  /* Init */
   updateCartCount();
   render();
   </script>

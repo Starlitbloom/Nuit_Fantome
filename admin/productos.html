@@ -10,16 +10,8 @@
 
   <style>
     :root{
-      --bg:#0f0321;
-      --card:#111025;
-      --ink:#e9e6ff;
-      --muted:#bdb9d8;
-      --line:#2b2550;
-      --primary:#7c3aed;
-      --primary-2:#a78bfa;
-      --success:#22c55e;
-      --warning:#f59e0b;
-      --danger:#ef4444;
+      --bg:#0f0321; --card:#111025; --ink:#e9e6ff; --muted:#bdb9d8; --line:#2b2550;
+      --primary:#7c3aed; --primary-2:#a78bfa; --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
@@ -103,6 +95,11 @@
     .modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
 
     .preview{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#130f2b}
+
+    /* Bloque stock por opción */
+    .opt-stock{background:#130f2b;border:1px dashed var(--line);border-radius:12px;padding:10px}
+    .opt-row{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:center;margin-top:6px}
+    .mut{color:#9c96bf;font-size:12px}
   </style>
 </head>
 <body>
@@ -185,13 +182,14 @@
               <th>Nombre</th>
               <th>Categoría</th>
               <th>Precio</th>
+              <th>Stock</th>
               <th>Etiquetas</th>
               <th>Estado</th>
-              <th style="width:210px">Acciones</th>
+              <th style="width:240px">Acciones</th>
             </tr>
           </thead>
           <tbody id="tbody">
-            <tr><td colspan="7" class="empty">Cargando productos…</td></tr>
+            <tr><td colspan="8" class="empty">Cargando productos…</td></tr>
           </tbody>
         </table>
       </section>
@@ -210,7 +208,6 @@
             <div class="help">No se permiten nombres repetidos.</div>
           </div>
 
-          <!-- CATEGORÍA con SELECT (para concordar con tienda) -->
           <div>
             <label>Categoría</label>
             <select class="input" id="catNuevo" name="categoria" required>
@@ -223,8 +220,13 @@
             <input class="input" name="precio" type="number" min="0" step="10" required placeholder="Ej: 4990">
           </div>
 
-          <div class="section-title">Imagen</div><div class="divider"></div>
+          <div>
+            <label>Stock total (opcional)</label>
+            <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Ej: 15">
+            <div class="help">Si llenas “stock por opción”, este valor será ignorado.</div>
+          </div>
 
+          <div class="section-title">Imagen</div><div class="divider"></div>
           <div>
             <label>Imagen</label>
             <input class="input" name="img" placeholder="../assets/img/mi-imagen.jpg">
@@ -237,20 +239,23 @@
           </div>
 
           <div class="section-title">Variantes</div><div class="divider"></div>
+          <div>
+            <label>Opciones (una por línea)</label>
+            <textarea class="input" name="opciones" id="opcionesNuevo" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+            <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
+          </div>
+          <div style="grid-column:1/-1" id="wrapStockOptsNuevo" class="opt-stock" hidden>
+            <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
+            <div id="stockOptsNuevo"></div>
+          </div>
 
           <div>
             <label>Unidades por set</label>
             <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
             <div class="help">Si el producto viene en set (p. ej., 4 colores).</div>
           </div>
-          <div>
-            <label>Opciones (una por línea)</label>
-            <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
-            <div class="help">Se mostrarán para elegir en la tienda (color/variante).</div>
-          </div>
 
           <div class="section-title">Metadatos</div><div class="divider"></div>
-
           <div>
             <label>Etiquetas (coma separadas)</label>
             <input class="input" name="tags" placeholder="pastel, journaling, kawaii">
@@ -293,7 +298,6 @@
             <div class="help">Debe ser único.</div>
           </div>
 
-          <!-- CATEGORÍA con SELECT -->
           <div>
             <label>Categoría</label>
             <select class="input" id="catEditar" name="categoria" required>
@@ -304,6 +308,11 @@
           <div>
             <label>Precio (CLP)</label>
             <input class="input" name="precio" type="number" min="0" step="10" required>
+          </div>
+
+          <div>
+            <label>Stock total (opcional)</label>
+            <input class="input" name="stock_total" type="number" min="0" step="1" placeholder="Deja vacío si usas por opción">
           </div>
 
           <div class="section-title">Imagen</div><div class="divider"></div>
@@ -319,13 +328,18 @@
           </div>
 
           <div class="section-title">Variantes</div><div class="divider"></div>
+          <div style="grid-column:1/-1">
+            <label>Opciones (una por línea)</label>
+            <textarea class="input" name="opciones" id="opcionesEditar" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
+          </div>
+          <div style="grid-column:1/-1" id="wrapStockOptsEditar" class="opt-stock" hidden>
+            <div class="mut"><strong>Stock por opción</strong> — Escribe un número por cada opción.</div>
+            <div id="stockOptsEditar"></div>
+          </div>
+
           <div>
             <label>Unidades por set</label>
             <input class="input" name="pack" type="number" min="0" step="1" placeholder="Ej: 4">
-          </div>
-          <div>
-            <label>Opciones (una por línea)</label>
-            <textarea class="input" name="opciones" rows="4" placeholder="Rosado&#10;Verde&#10;Morado&#10;Celeste"></textarea>
           </div>
 
           <div class="section-title">Metadatos</div><div class="divider"></div>
@@ -362,17 +376,85 @@
   </div>
 
   <script>
-    /* ========= PERSISTENCIA PARA LA TIENDA ========= */
-    const STORAGE_KEY = 'nf_catalog_custom_v1';
-    function loadCustom(){
-      try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-      catch{ return []; }
-    }
-    function saveCustom(customArr){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(customArr));
+    /* ========= PERSISTENCIAS (unificadas) ========= */
+    const STORAGE_KEY = 'nf_catalog_custom_v1'; // catálogo override (lo usa la tienda para o.s / p.stock)
+    const STOCK_KEY   = 'nf_stock_v1';         // stock “oficial” del admin (total o por opción)
+
+    const loadCustom = () => { try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch{ return []; } };
+    const saveCustom = arr => localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+
+    const loadStockObj = () => { try{ return JSON.parse(localStorage.getItem(STOCK_KEY) || '{}'); }catch{ return {}; } };
+    const saveStockObj = o => localStorage.setItem(STOCK_KEY, JSON.stringify(o));
+
+    function getStockFromCatalog(id){
+      const arr = loadCustom();
+      const p = arr.find(x=>x.id===id);
+      if(!p) return null;
+      if(typeof p.stock === 'number') return p.stock;
+      if(Array.isArray(p.opciones)){
+        const map = {}; let has=false;
+        p.opciones.forEach(o=>{
+          if(typeof o.s === 'number'){ map[o.t]=o.s; has=true; }
+          else if(typeof o.stock === 'number'){ map[o.t]=o.stock; has=true; }
+        });
+        return has ? map : null;
+      }
+      return null;
     }
 
-    /* ========= CATALOGO REAL COPIADO DE LA TIENDA ========= */
+    const isObj = v => v && typeof v === 'object' && !Array.isArray(v);
+    const sumStock = v => isObj(v) ? Object.values(v).reduce((a,b)=>a+(Number(b)||0),0) : (Number(v)||0);
+    const stockBadgeText = v => (v===null) ? '—' : (isObj(v) ? `${sumStock(v)} (por opción)` : String(v));
+
+    function getUnifiedStock(id){
+      const sAdmin = ( () => { const o=loadStockObj(); return (id in o) ? o[id] : null; } )();
+      if(sAdmin !== null) return sAdmin;     // 1) prioridad stock del admin
+      const sCat = getStockFromCatalog(id);  // 2) caída al espejo que descuenta la tienda
+      return sCat;
+    }
+
+    function setStock(id, val){ // val: number | {opt: number} | '' => sin control
+      // Admin
+      const o = loadStockObj();
+      if(val === '' || val === null || typeof val === 'undefined'){ delete o[id]; }
+      else { o[id] = val; }
+      saveStockObj(o);
+
+      // Espejo (catálogo override)
+      const arr = loadCustom();
+      let p = arr.find(x=>x.id===id);
+      if(!p){ p = { id }; arr.push(p); }
+
+      if(val === '' || val === null || typeof val === 'undefined'){
+        delete p.stock;
+        if(Array.isArray(p.opciones)) p.opciones.forEach(o=>{ delete o.s; delete o.stock; });
+      }else if(isObj(val)){
+        if(!Array.isArray(p.opciones)) p.opciones = [];
+        Object.entries(val).forEach(([name,qty])=>{
+          let oo = p.opciones.find(x=>x.t===name);
+          if(!oo){ oo = {t:name}; p.opciones.push(oo); }
+          oo.s = Math.max(0, Number(qty)||0);
+        });
+        delete p.stock;
+      }else{
+        p.stock = Math.max(0, Number(val)||0);
+        if(Array.isArray(p.opciones)) p.opciones.forEach(o=>{ delete o.s; delete o.stock; });
+      }
+      saveCustom(arr);
+    }
+
+    function deleteStock(id){
+      const o=loadStockObj(); if(id in o){ delete o[id]; saveStockObj(o); }
+      const arr = loadCustom();
+      const p = arr.find(x=>x.id===id);
+      if(p){
+        delete p.stock;
+        if(Array.isArray(p.opciones)) p.opciones.forEach(o=>{ delete o.s; delete o.stock; });
+        saveCustom(arr);
+      }
+    }
+
+    /* ========= CATALOGO BASE ========= */
     const productosFuente = [
       { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif",
         desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
@@ -457,7 +539,7 @@
         desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." }
     ];
 
-    /* ===== NORMALIZACIÓN Y MERGE CON LOCALSTORAGE ===== */
+    /* ===== NORMALIZACIÓN Y MERGE ===== */
     const ban = new Set(['set','de','del','la','el','los','las','—','-','y','para','con']);
     const genTags = p => {
       const base = (p.nombre + ' ' + p.categoria).toLowerCase()
@@ -469,7 +551,6 @@
     const baseIds = new Set(productosFuente.map(p=>p.id));
     const customRaw = loadCustom();
 
-    // Normaliza un producto (rutas + tags + activo)
     const norm = p => ({
       ...p,
       img: p.img?.startsWith('../') ? p.img : ('../' + p.img),
@@ -477,14 +558,12 @@
       activo: p.activo ?? true
     });
 
-    // Merge: base + custom (custom sobreescribe por id)
     const mapa = new Map(productosFuente.map(p=>[p.id, norm(p)]));
     customRaw.forEach(p => mapa.set(p.id, norm(p)));
     const productos = Array.from(mapa.values());
 
     /* ===== UTILIDADES ===== */
     const $  = s => document.querySelector(s);
-    const $$ = s => document.querySelectorAll(s);
     const toCLP = n => n.toLocaleString('es-CL',{style:'currency',currency:'CLP'});
 
     /* === Helpers de imagen === */
@@ -539,7 +618,7 @@
 
       if(view==='mostrar'){ render(); }
       if(view==='editar' && extra){ cargarEdicion(extra); }
-      if(view==='nuevo'){ $('#formNuevo').reset(); $('#imgNuevoData').value=''; $('#prevNuevo').src=''; }
+      if(view==='nuevo'){ $('#formNuevo').reset(); $('#imgNuevoData').value=''; $('#prevNuevo').src=''; regenerateStockInputs('Nuevo'); }
       if(location.hash.replace('#','')!==view) location.hash = '#' + view + (extra?(':'+extra):'');
     }
     function syncFromHash(){
@@ -591,11 +670,13 @@
       }
 
       if(!list.length){
-        tbody.innerHTML = `<tr><td colspan="7" class="empty">No hay resultados con esos filtros.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="empty">No hay resultados con esos filtros.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(p=>`
+      tbody.innerHTML = list.map(p=>{
+        const stk = getUnifiedStock(p.id); /* <- unificado */
+        return `
         <tr>
           <td><img class="thumb" src="${p.img}" alt=""></td>
           <td>
@@ -606,6 +687,7 @@
           </td>
           <td>${p.categoria}</td>
           <td>${toCLP(p.precio)}</td>
+          <td>${stockBadgeText(stk)}</td>
           <td>${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</td>
           <td>${p.activo ? `<span class="badge b-ok">Activo</span>` : `<span class="badge b-off">Oculto</span>`}</td>
           <td class="actions-col">
@@ -613,23 +695,21 @@
             <a class="btn-ghost sm" href="#editar:${p.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
             <button class="btn-danger sm" onclick="eliminar('${p.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
           </td>
-        </tr>
-      `).join('');
+        </tr>`;
+      }).join('');
     }
 
     const state = { q:'', cat:'todas', orden:'recientes' };
     qInput?.addEventListener('input', ()=>{ state.q=qInput.value; render(); });
     catSel?.addEventListener('change', ()=>{ state.cat=catSel.value; render(); });
     ordSel?.addEventListener('change', ()=>{ state.orden=ordSel.value; render(); });
-    $('#clear')?.addEventListener('click', ()=>{
+    document.getElementById('clear')?.addEventListener('click', ()=>{
       qInput.value=''; catSel.value='todas'; ordSel.value='recientes';
       state.q=''; state.cat='todas'; state.orden='recientes'; render();
     });
 
     function guardarEnLocalStorage(){
-      // Guardamos SOLO los productos que no pertenecen al catálogo base o que sobreescriben uno base
       const custom = productos.filter(p => !baseIds.has(p.id) || customRaw.some(c=>c.id===p.id));
-      // Limpieza mínima: quitamos thumbs normalizadas (../) para la tienda si quieres, pero así funciona
       saveCustom(custom);
     }
 
@@ -638,10 +718,10 @@
       const i = productos.findIndex(p=>p.id===id);
       if(i>-1){
         productos.splice(i,1);
-        // Si también existía en custom, lo quitamos del custom guardado
         const idxc = customRaw.findIndex(c=>c.id===id);
         if(idxc>-1){ customRaw.splice(idxc,1); }
         guardarEnLocalStorage();
+        deleteStock(id); // limpia en ambos lados
         render();
       }
     }
@@ -649,12 +729,17 @@
     /* ======= MODAL VER ======= */
     const modal = $('#modalVer');
     const modalContent = $('#contenidoModal');
-    $('#cerrarModal').addEventListener('click', ()=> modal.classList.remove('open'));
+    document.getElementById('cerrarModal').addEventListener('click', ()=> modal.classList.remove('open'));
     modal.addEventListener('click', e=>{ if(e.target===modal) modal.classList.remove('open'); });
 
     function ver(id){
       const p = productos.find(x=>x.id===id);
       if(!p) return;
+      const stk = getUnifiedStock(p.id); /* <- unificado */
+      const stkHtml = (stk===null) ? '— (sin control)'
+                       : (isObj(stk) ? `<ul style="margin:6px 0 0;padding-left:18px">${Object.entries(stk).map(([k,v])=>`<li>${k}: ${v}</li>`).join('')}</ul>`
+                                     : String(stk));
+
       modalContent.innerHTML = `
         <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
           <img src="${p.img}" alt="" style="width:160px;height:160px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
@@ -662,6 +747,8 @@
             <h3 style="margin:.2rem 0">${p.nombre}</h3>
             <div style="color:#bdb9d8;margin-bottom:6px">ID: ${p.id}</div>
             <div><strong>${toCLP(p.precio)}</strong> · <span class="tag">${p.categoria}</span></div>
+            <div style="margin-top:6px"><strong>Stock:</strong> ${isObj(stk) ? '' : stkHtml}</div>
+            ${isObj(stk) ? stkHtml : ''}
             ${p.pack ? `<div style="margin-top:6px"><span class="pill">Set x${p.pack}</span></div>` : ``}
             ${Array.isArray(p.opciones)&&p.opciones.length ? `
               <div style="margin-top:6px">${p.opciones.map(o=>`<span class="pill">${o.t}</span>`).join('')}</div>
@@ -673,15 +760,61 @@
             </div>
             <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
               <a class="btn-ghost" href="#editar:${p.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-              <button class="btn-danger" onclick="eliminar('${p.id}')" ><i class="fa-regular fa-trash-can"></i> Eliminar</button>
+              <button class="btn-danger" onclick="eliminar('${p.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
             </div>
           </div>
         </div>`;
       modal.classList.add('open');
     }
 
+    /* ======= GENERADOR INPUTS STOCK POR OPCIÓN ======= */
+    function parseOpts(text){
+      return text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    }
+    function regenerateStockInputs(ctx){ // ctx: 'Nuevo' | 'Editar'
+      const ta = document.getElementById('opciones'+ctx);
+      const wrap = document.getElementById('wrapStockOpts'+ctx);
+      const cont = document.getElementById('stockOpts'+ctx);
+      if(!ta || !wrap || !cont) return;
+
+      const lines = parseOpts(ta.value);
+      const prevValues = {};
+      cont.querySelectorAll('input[data-opt]').forEach(inp=>{
+        prevValues[inp.dataset.opt] = inp.value;
+      });
+
+      cont.innerHTML = '';
+      if(!lines.length){ wrap.hidden = true; return; }
+      wrap.hidden = false;
+
+      lines.forEach((name,i)=>{
+        const row = document.createElement('div'); row.className='opt-row';
+        row.innerHTML = `
+          <input class="input" value="${name}" disabled>
+          <input class="input" type="number" min="0" step="1" placeholder="0" data-opt="${name}">
+        `;
+        const inp = row.querySelector('input[type="number"]');
+        if(prevValues[name] !== undefined){ inp.value = prevValues[name]; }
+        cont.appendChild(row);
+      });
+    }
+    document.getElementById('opcionesNuevo')?.addEventListener('input', ()=>regenerateStockInputs('Nuevo'));
+    document.getElementById('opcionesEditar')?.addEventListener('input', ()=>regenerateStockInputs('Editar'));
+
+    function readStockPerOption(containerId){
+      const cont = document.getElementById(containerId);
+      if(!cont) return null;
+      const pairs = Array.from(cont.querySelectorAll('input[type="number"][data-opt]'))
+        .map(inp => [inp.dataset.opt, inp.value.trim()])
+        .filter(([,v]) => v !== '');
+      if(!pairs.length) return null;
+      const obj = {};
+      pairs.forEach(([k,v]) => obj[k] = Math.max(0, Number(v)||0));
+      return obj;
+    }
+
     /* ======= NUEVO ======= */
-    $('#formNuevo')?.addEventListener('submit', e=>{
+    document.getElementById('formNuevo')?.addEventListener('submit', e=>{
       e.preventDefault();
       const form = e.target;
       const fd = new FormData(form);
@@ -695,76 +828,77 @@
       const tagsRaw = (fd.get('tags')||'').toString().trim();
       const pack = Number(fd.get('pack')||0);
       const opcionesRaw = (fd.get('opciones')||'').toString();
-      const opciones = opcionesRaw
-        ? opcionesRaw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(t=>({t}))
-        : [];
+      const opciones = parseOpts(opcionesRaw).map(t=>({t}));
 
       form.querySelector('[name="nombre"]').classList.remove('err');
-      if(nombreExiste(nombre)){
-        alert('Ya existe un producto con ese nombre. Cambia el nombre.');
-        form.querySelector('[name="nombre"]').classList.add('err');
-        form.querySelector('[name="nombre"]').focus();
-        return;
-      }
+      if(nombreExiste(nombre)){ alert('Ya existe un producto con ese nombre.'); form.querySelector('[name="nombre"]').classList.add('err'); form.querySelector('[name="nombre"]').focus(); return; }
 
       const imgSubida = document.getElementById('imgNuevoData')?.value || '';
-      if(imgSubida){
-        img = imgSubida;
-      }else{
+      if(imgSubida){ img = imgSubida; }
+      else{
         if(!img) img = '../assets/img/placeholder.jpg';
-        if(!img.startsWith('../') && !img.startsWith('http') && !img.startsWith('data:')){
-          img = '../' + img;
-        }
+        if(!img.startsWith('../') && !img.startsWith('http') && !img.startsWith('data:')){ img = '../' + img; }
       }
 
       const id = crearIdUnico(nombre);
       const tags = tagsRaw ? tagsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,3) : null;
 
-      const nuevo = { id, nombre, categoria, precio, img, desc, activo, pack: pack||undefined, opciones: opciones.length?opciones:undefined, tags: tags ?? genTags({nombre, categoria}) };
+      const nuevo = { id, nombre, categoria, precio, img, desc, activo,
+        pack: pack||undefined, opciones: opciones.length?opciones:undefined, tags: tags ?? genTags({nombre, categoria}) };
 
       productos.unshift(nuevo);
-      // también en la lista "custom" que persistimos
       customRaw.unshift(nuevo);
       guardarEnLocalStorage();
+
+      // STOCK: por opción tiene prioridad sobre total
+      const perOpt = readStockPerOption('stockOptsNuevo');
+      const totalRaw = (fd.get('stock_total')||'').toString().trim();
+      if(perOpt){ setStock(id, perOpt); }
+      else if(totalRaw!==''){ setStock(id, Math.max(0, Number(totalRaw)||0)); }
+      else { setStock(id, ''); } // sin control
 
       alert('Producto creado: ' + nombre + '\nID: ' + id);
       location.hash = '#mostrar';
       render();
 
-      document.getElementById('imgNuevoData').value='';
-      document.getElementById('prevNuevo').src='';
-      document.getElementById('fileNuevo').value='';
+      document.getElementById('imgNuevoData').value=''; document.getElementById('prevNuevo').src=''; document.getElementById('fileNuevo').value='';
+      regenerateStockInputs('Nuevo');
     });
 
     /* ======= EDITAR ======= */
     function cargarEdicion(id){
       const p = productos.find(x=>x.id===id);
-      const f = $('#formEditar');
+      const f = document.getElementById('formEditar');
       if(!p || !f) return;
 
-      poblarSelectCategorias($('#catEditar'));
+      poblarSelectCategorias(document.getElementById('catEditar'));
 
-      f.id.value = p.id;
-      f.idShown.value = p.id;
-      f.nombre.value = p.nombre;
-      f.categoria.value = p.categoria;
-      f.precio.value = p.precio;
-      f.img.value = p.img.startsWith('../') || p.img.startsWith('http') || p.img.startsWith('data:')
-                    ? (p.img.startsWith('../') ? p.img.slice(3) : (p.img.startsWith('http') ? p.img : ''))
-                    : p.img;
-      f.tags.value = (p.tags||[]).join(', ');
-      f.activo.checked = !!p.activo;
-      f.desc.value = p.desc || '';
+      f.id.value = p.id; f.idShown.value = p.id;
+      f.nombre.value = p.nombre; f.categoria.value = p.categoria; f.precio.value = p.precio;
+      f.img.value = p.img.startsWith('../') || p.img.startsWith('http') || p.img.startsWith('data:') ? (p.img.startsWith('../') ? p.img.slice(3) : (p.img.startsWith('http') ? p.img : '')) : p.img;
+      f.tags.value = (p.tags||[]).join(', '); f.activo.checked = !!p.activo; f.desc.value = p.desc || '';
       f.pack.value = p.pack || '';
       f.opciones.value = (Array.isArray(p.opciones)?p.opciones:[]).map(o=>o.t).join('\n');
 
-      const prev = document.getElementById('prevEditar');
-      if(prev) prev.src = p.img;
-      document.getElementById('imgEditarData').value = '';
-      document.getElementById('fileEditar').value = '';
+      const st = getUnifiedStock(p.id); /* <- unificado */
+      if(isObj(st)){
+        regenerateStockInputs('Editar'); // genera inputs
+        const cont = document.getElementById('stockOptsEditar');
+        Object.entries(st).forEach(([k,v])=>{
+          const inp = cont.querySelector(`input[type="number"][data-opt="${CSS.escape(k)}"]`);
+          if(inp) inp.value = v;
+        });
+        f.stock_total.value = '';
+      } else {
+        regenerateStockInputs('Editar'); // genera según opciones actuales (vacíos)
+        f.stock_total.value = (st===null ? '' : st);
+      }
+
+      const prev = document.getElementById('prevEditar'); if(prev) prev.src = p.img;
+      document.getElementById('imgEditarData').value = ''; document.getElementById('fileEditar').value = '';
     }
 
-    $('#formEditar')?.addEventListener('submit', e=>{
+    document.getElementById('formEditar')?.addEventListener('submit', e=>{
       e.preventDefault();
       const f = e.target;
       const fd = new FormData(f);
@@ -774,12 +908,7 @@
 
       const nuevoNombre = (fd.get('nombre')||'').toString().trim();
       f.querySelector('[name="nombre"]').classList.remove('err');
-      if(nombreExiste(nuevoNombre, id)){
-        alert('Ya existe otro producto con ese nombre.');
-        f.querySelector('[name="nombre"]').classList.add('err');
-        f.querySelector('[name="nombre"]').focus();
-        return;
-      }
+      if(nombreExiste(nuevoNombre, id)){ alert('Ya existe otro producto con ese nombre.'); f.querySelector('[name="nombre"]').classList.add('err'); f.querySelector('[name="nombre"]').focus(); return; }
 
       p.nombre = nuevoNombre;
       p.categoria = (fd.get('categoria')||'').toString().trim();
@@ -787,12 +916,9 @@
 
       let imgCampo = (fd.get('img')||'').toString().trim();
       const imgSubidaEdit = document.getElementById('imgEditarData')?.value || '';
-      if(imgSubidaEdit){
-        p.img = imgSubidaEdit;
-      }else if(imgCampo){
-        if(!imgCampo.startsWith('../') && !imgCampo.startsWith('http') && !imgCampo.startsWith('data:')){
-          imgCampo = '../' + imgCampo;
-        }
+      if(imgSubidaEdit){ p.img = imgSubidaEdit; }
+      else if(imgCampo){
+        if(!imgCampo.startsWith('../') && !imgCampo.startsWith('http') && !imgCampo.startsWith('data:')){ imgCampo = '../' + imgCampo; }
         p.img = imgCampo;
       }
 
@@ -805,21 +931,38 @@
       p.pack = pack || undefined;
 
       const opcionesRaw = (fd.get('opciones')||'').toString();
-      const opciones = opcionesRaw
-        ? opcionesRaw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(t=>({t}))
-        : [];
+      const opciones = parseOpts(opcionesRaw).map(t=>({t}));
       p.opciones = opciones.length ? opciones : undefined;
 
-      // refleja también en customRaw (si el producto es base, creamos override; si ya es custom, actualizamos)
-      const iCustom = customRaw.findIndex(x=>x.id===id);
-      if(iCustom>-1){ customRaw[iCustom] = p; }
-      else { customRaw.push(p); } // override de un base
+      const perOpt = readStockPerOption('stockOptsEditar');
+      const totalRaw = (fd.get('stock_total')||'').toString().trim();
+      if(perOpt){ setStock(id, perOpt); }
+      else if(totalRaw!==''){ setStock(id, Math.max(0, Number(totalRaw)||0)); }
+      else { setStock(id, ''); } // sin control
 
+      const iCustom = customRaw.findIndex(x=>x.id===id);
+      if(iCustom>-1){ customRaw[iCustom] = p; } else { customRaw.push(p); }
       guardarEnLocalStorage();
 
       alert('Cambios guardados');
       location.hash = '#mostrar';
       render();
+    });
+
+    /* ==== Refresco en vivo cuando cambian stocks desde la tienda u otra pestaña ==== */
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'nf_catalog_custom_v1' || e.key === 'nf_stock_v1') {
+        try { render(); } catch {}
+        try {
+          const h = (location.hash || '#mostrar').slice(1);
+          const [view, param] = h.split(':');
+          if (view === 'editar' && param) { cargarEdicion(param); }
+        } catch {}
+        try {
+          const modal = document.getElementById('modalVer');
+          if (modal?.classList.contains('open')) modal.classList.remove('open');
+        } catch {}
+      }
     });
 
     /* ======= INICIO ======= */
