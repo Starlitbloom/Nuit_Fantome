@@ -137,14 +137,41 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!valid) return;
 
             // Guardar usuario en localStorage
-            let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-            if (usuarios.some(u => u.email === email)) {
+            let usuarios = JSON.parse(localStorage.getItem("nf_users_v1")) || [];
+            if (usuarios.some(u => u.email.toLowerCase() === email.toLowerCase())) {
                 emailError.textContent = "Este correo ya está registrado.";
                 return;
             }
+            if (usuarios.some(u => u.rut === rut)) {
+                rutError.textContent = "Este RUT ya está registrado.";
+                return;
+            }
+            if (usuarios.some(u => u.telefono === telefono)) {
+                telefonoError.textContent = "Este teléfono ya está registrado.";
+                return;
+            }
 
-            usuarios.push({ rut, nombre: nombreInput.value.trim(), apellido: apellidoInput.value.trim(), email, telefono, cumpleanos: cumpleanosInput.value, region: selRegion.value, comuna: selComuna.value, direccion: direccionInput.value.trim(), password });
-            localStorage.setItem("usuarios", JSON.stringify(usuarios));
+            const nuevoUsuario = {
+              id: 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8),
+              rut,
+              nombre: nombreInput.value.trim(),
+              apellido: apellidoInput.value.trim(),
+              email,
+              telefono,
+              birthday: cumpleanosInput.value,
+              region: selRegion.value,
+              comuna: selComuna.value,
+              direccion: direccionInput.value.trim(),
+              password,
+              rol: "Cliente",       // por defecto
+              activo: true,
+              desc: '',
+              img: '../assets/img/avatar-placeholder.png',
+              createdAt: Date.now()
+            };
+
+            usuarios.unshift(nuevoUsuario);
+            localStorage.setItem("nf_users_v1", JSON.stringify(usuarios));
 
             alert("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.");
             form.reset();

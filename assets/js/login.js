@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!valid) return;
 
     // Obtener usuarios desde localStorage
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuarios = JSON.parse(localStorage.getItem("nf_users_v1")) || [];
+
 
     // Buscar usuario
     const usuario = usuarios.find(u => u.email === email);

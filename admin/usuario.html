@@ -1,253 +1,421 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Admin — Usuarios</title>
 <link rel="icon" href="../assets/img/logo.png" type="image/png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
 
 <style>
-  :root{
-    --bg:#0f0321; --card:#111025; --ink:#e9e6ff; --muted:#bdb9d8;
-    --line:#2b2550; --primary:#7c3aed; --primary-2:#a78bfa;
-    --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
+:root{
+      --bg:#0f0321;
+      --card:#111025;
+      --ink:#e9e6ff;
+      --muted:#bdb9d8;
+      --line:#2b2550;
+      --primary:#7c3aed;
+      --primary-2:#a78bfa;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+    }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Merriweather',serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;}
+
+  /* Layout */
+  .wrapper{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{
+    width:220px;background:var(--card);display:flex;flex-direction:column;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
-  a{color:inherit;text-decoration:none}
+  .sidebar h2{color:var(--primary);text-align:center;padding:20px 0;font-size:22px;}
+  .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+  .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+  .sidebar ul li i{width:20px;text-align:center;}
+
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
 
   /* Topbar */
-  .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
-  .brand{display:flex;gap:10px;align-items:center}
-  .brand img{height:28px}
-  .brand span{font-weight:800;letter-spacing:.4px}
-  .top .right a{padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-left:8px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:30px;font-weight: 700;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+/* sidebar */
+.sidebar{
+  width:240px;
+  background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
+        var(--card);
+  color:var(--ink);display:flex;flex-direction:column;position:relative;
+}
+.sidebar .logo{text-align:center;padding:20px 0}
+.sidebar .logo img{width:220px;height:auto}
+.sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
+.sidebar ul li{padding:14px 20px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:0.3s;}
+.sidebar ul li:hover,.sidebar ul li.active{background:var(--primary-2);color:#fff}
+.sidebar ul li i{width:20px;text-align:center}
 
-  .container{width:min(1200px,94%);margin:20px auto}
-  .bc{color:var(--muted);font-size:14px}
-  .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
-  .title h1{margin:.2rem 0 0;font-size:clamp(22px,2.5vw,28px)}
-  .title .tools{display:flex;gap:8px;flex-wrap:wrap}
-  .btn{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;border:0;border-radius:10px;
-    padding:10px 14px;font-weight:800;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
-  .btn-ghost{background:#1a1633;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:800;display:inline-flex;gap:8px;align-items:center}
-  .btn.sm{padding:6px 10px;border-radius:8px;font-weight:700}
-  .btn[disabled], .btn-ghost[disabled]{opacity:.6;pointer-events:none}
-  .tab-active{box-shadow:0 0 0 2px rgba(167,139,250,.35) inset}
+/* Estrellitas flotantes */
+  .spark{
+    position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(#fff,rgba(255,255,255,.1));
+    filter:drop-shadow(0 0 10px #fff);
+    animation:float 8s linear infinite;
+}
+  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+  .spark.s2{left:82%; top:22%;}
+  .spark.s3{left:18%; top:70%; animation-duration:9s;}
+  .spark.s4{left:72%; top:68%; animation-duration:10s;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 
-  /* Accesos rápidos */
-  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
-  @media (max-width:860px){.actions{grid-template-columns:1fr}}
-  .qcard{background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;
-    display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
-  .qicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;font-size:18px}
+/* Main */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:20px;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+  .topbar .right .user{display:flex;align-items:center;gap:10px;}
+  .topbar .right .user img{width:35px;height:35px;border-radius:50%;object-fit:cover;}
 
-  /* Table */
-  .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}
-  .input, select, textarea{background:#130f2b;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px}
-  .input::placeholder{color:#8f89b6}
-  .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
-  th{position:sticky;top:0;background:#151237}
-  tr:hover td{background:#120f2c}
-  .badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid}
-  .b-ok{border-color:#064e3b;color:#34d399;background:rgba(52,211,153,.1)}
-  .b-off{border-color:#92400e;color:#fbbf24;background:rgba(251,191,36,.08)}
+/* Container */
+  .container{padding:20px;}
 
-  /* Form */
-  .form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  @media (max-width:860px){.grid2{grid-template-columns:1fr}}
-  label{font-size:14px;color:#d7d2ff}
-  .help{color:#9c96bf;font-size:12px;margin-top:4px}
-  .section-title{grid-column:1/-1;margin:6px 0 2px;font-size:15px;color:#c9c3ee;font-weight:700}
-  .divider{grid-column:1/-1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:6px 0}
+/* title + tools */
+.bc{color:var(--muted);font-size:14px}
+    .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
+    .title h1{margin:.2rem 0 0;font-size:clamp(22px,2.5vw,28px)}
+    .title .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;border:0;border-radius:10px;
+      padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(124,58,237,.28);text-decoration:none;display:inline-flex;gap:8px;align-items:center
+    }
+    .btn-ghost{background:#1a1633;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
+    .btn.sm{padding:6px 10px;border-radius:8px;font-weight:700}
+    .btn[disabled], .btn-ghost[disabled]{opacity:.6;pointer-events:none}
+    .tab-active{box-shadow:0 0 0 2px rgba(167,139,250,.35) inset}
 
-  /* Modal */
-  .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.45);padding:16px}
-  .modal.open{display:grid}
-  .modal .box{width:min(720px,96vw);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+/* cards quick access */
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+@media(max-width:860px){.actions{grid-template-columns:1fr}}
+.qcard{background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.qicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff}
+.view { display:none; }
+.view.active { display:block; }
 
-  .view{display:none}
-  .view.active{display:block}
+/* filters & table */
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}
+.input,select,textarea{background:#130f2b;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px}
+.input::placeholder{color:#8f89b6}
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+th{position:sticky;top:0;background:#151237}
+tr:hover td{background:#120f2c}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid}
+.b-ok{border-color:#064e3b;color:#34d399;background:rgba(52,211,153,.08)}
+.b-off{border-color:#92400e;color:#fbbf24;background:rgba(251,191,36,.06)}
+.actions-col{display:flex;gap:8px;flex-wrap:wrap}
+.btn-danger{background:#2b0e14;border:1px solid #4b1017;color:#ffb4b4;padding:8px 10px;border-radius:8px}
+
+/* form */
+.form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+label{display:block;color:#d7d2ff;margin-bottom:6px;font-size:14px}
+.help{color:#9c96bf;font-size:12px;margin-top:6px}
+.section-title{grid-column:1/-1;margin:6px 0 2px;font-size:15px;color:#c9c3ee;font-weight:700}
+.divider{grid-column:1/-1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:6px 0}
+.preview{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#130f2b}
+
+/* modal */
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.45);padding:16px}
+.modal.open{display:grid}
+.modal .box{width:min(720px,96vw);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+
+/* small helpers */
+.empty{color:#bfbad9;padding:16px}
+.err{border-color:var(--danger);box-shadow:0 0 0 1px rgba(239,68,68,.12) inset}
+.tag{display:inline-block;margin:.1rem .25rem 0 0;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:#cfcbe6;background:#1a1633}
 </style>
 </head>
 <body>
-
-<div class="top">
-  <div class="brand">
-    <img src="../assets/img/logo.png" alt="Logo">
-    <span>Panel admin</span>
-  </div>
-  <div class="right">
-    <a href="../index.html">Ver sitio</a>
-    <a href="./index.html">Inicio admin</a>
-  </div>
-</div>
-
-<div class="container">
-  <div class="bc">Inicio / <strong>Usuarios</strong></div>
-
-  <div class="title">
-    <h1>Gestión de usuarios</h1>
-    <div class="tools">
-      <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-user-plus"></i> Nuevo usuario</a>
-      <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
-      <a class="btn-ghost" href="#editar" id="btnTopEditar" style="display:none"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+<div class="wrapper">
+  <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="../assets/img/logo.png" alt="Logo Empresa">
+      </div>
+      <h2>Admin</h2>
+      <ul>
+        <li><a href="./index.html"><i class="fa fa-chart-line"></i>Dashboard</a></li>
+        <li class="active"><a href="./productos.html"><i class="fa fa-box"></i>Productos</a></li>
+        <li><a href="./pedidos.html"><i class="fa fa-shopping-cart"></i>Pedidos</a></li>
+        <li><a href="./usuario.html"><i class="fa fa-users"></i>Usuarios</a></li>
+        <li><a href="./ajustes.html"><i class="fa fa-cog"></i>Ajustes</a></li>
+        <li><a href="../index.html" target="_blank"><i class="fa fa-globe"></i>Ver sitio</a></li>
+      </ul>
+      <!-- Estrellitas -->
+      <div class="spark s1"></div>
+      <div class="spark s2"></div>
+      <div class="spark s3"></div>
+      <div class="spark s4"></div>
     </div>
-  </div>
 
-  <!-- Accesos rápidos -->
-  <section class="actions">
-    <article class="qcard">
-      <div class="qicon"><i class="fa-solid fa-user-plus"></i></div>
-      <div>
-        <h3>Nuevo usuario</h3>
-        <p>Agregar un usuario con nombre, email y rol.</p>
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="left">
+        <h1 id="tituloBienvenida">Bienvenido!</h1>
       </div>
-      <a class="btn sm" href="#nuevo">Ir</a>
-    </article>
-
-    <article class="qcard">
-      <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
-      <div>
-        <h3>Editar usuario</h3>
-        <p>Modificar datos o rol de usuario existente.</p>
+      <div class="right">
+        <i class="fa fa-bell"></i>
       </div>
-      <a class="btn sm" href="#editar" onclick="event.preventDefault(); alert('Usa la acción Editar desde la fila del usuario.')">Ir</a>
-    </article>
-
-    <article class="qcard">
-      <div class="qicon"><i class="fa-regular fa-eye"></i></div>
-      <div>
-        <h3>Mostrar usuarios</h3>
-        <p>Lista con filtros y acciones rápidas.</p>
-      </div>
-      <a class="btn sm" href="#mostrar">Ir</a>
-    </article>
-  </section>
-
-  <!-- VISTA MOSTRAR -->
-  <section class="view active" id="vistaMostrar">
-    <section class="filters">
-      <input id="q" class="input" type="search" placeholder="Buscar por nombre, email o rol…">
-      <select id="rol" class="input">
-        <option value="todos">Todos los roles</option>
-        <option value="admin">Admin</option>
-        <option value="usuario">Usuario</option>
-      </select>
-      <button class="btn-ghost" id="clear">Limpiar</button>
-    </section>
-
-    <section class="table-wrap">
-      <table id="tabla">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th style="width:180px">Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr><td colspan="6" class="empty">Cargando usuarios…</td></tr>
-        </tbody>
-      </table>
-    </section>
-  </section>
-
-  <!-- VISTA NUEVO -->
-  <section class="view" id="vistaNuevo">
-    <div class="form">
-      <h2 style="margin-top:0">Nuevo usuario</h2>
-      <form id="formNuevo" class="grid2" autocomplete="off">
-        <div class="section-title">Datos básicos</div><div class="divider"></div>
-        <div>
-          <label>Nombre</label>
-          <input class="input" name="nombre" required placeholder="Ej: Juan Pérez">
+    </div>
+    <div class="container">
+      <div class="title">
+        <h1>Gestión de usuarios</h1>
+        <div class="tools">
+          <a class="btn" href="#nuevo" id="btnTopNuevo"><i class="fa-solid fa-user-plus"></i> Nuevo usuario</a>
+          <a class="btn-ghost" href="#mostrar" id="btnTopMostrar"><i class="fa-regular fa-eye"></i> Mostrar</a>
+          <a class="btn-ghost" href="#editar" id="btnTopEditar"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
         </div>
+      </div>
 
-        <div>
-          <label>Email</label>
-          <input class="input" name="email" type="email" required placeholder="ejemplo@email.com">
-        </div>
+      <!-- Accesos rápidos -->
+      <section class="actions">
+        <article class="qcard">
+            <div class="qicon"><i class="fa-solid fa-plus"></i></div>
+            <div>
+              <h3>Nuevo usuario</h3>
+              <p>Crea un usuario con datos completos.</p>
+            </div>
+            <a class="btn sm" href="#nuevo" data-view="vistaNuevo">Ir</a>
+        </article>
 
-        <div>
-          <label>Rol</label>
-          <select class="input" name="rol" required>
-            <option value="">Selecciona un rol</option>
-            <option value="admin">Admin</option>
-            <option value="usuario">Usuario</option>
+        <article class="qcard">
+            <div class="qicon"><i class="fa-regular fa-pen-to-square"></i></div>
+            <div>
+              <h3>Editar usuario</h3>
+              <p>Editar datos existentes.</p>
+            </div>
+            <a class="btn sm" href="#editar" data-view="vistaEditar">Ir</a>
+        </article>
+
+        <article class="qcard">
+            <div class="qicon"><i class="fa-regular fa-eye"></i></div>
+            <div>
+              <h3>Mostrar usuarios</h3>
+              <p>Ver, filtrar y administrar usuarios.</p>
+            </div>
+            <a class="btn sm" href="#mostrar" data-view="vistaMostrar">Ir</a>
+        </article>
+      </section>
+
+      <!-- VISTA MOSTRAR -->
+      <section class="view active" id="vistaMostrar">
+        <section class="filters">
+          <input id="q" class="input" placeholder="Buscar por RUT, nombre, apellido o correo…">
+          <select id="rolFilter" class="input">
+            <option value="">Todos los roles</option>
           </select>
-        </div>
-
-        <div class="section-title">Estado</div><div class="divider"></div>
-
-        <div>
-          <label>Activo</label><br>
-          <label><input type="checkbox" name="activo" checked> Usuario activo</label>
-        </div>
-        <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
-          <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- VISTA EDITAR -->
-  <section class="view" id="vistaEditar">
-    <div class="form">
-      <h2 style="margin-top:0">Editar usuario</h2>
-      <form id="formEditar" class="grid2" autocomplete="off">
-        <input type="hidden" name="id">
-
-        <div class="section-title">Datos</div><div class="divider"></div>
-        <div>
-          <label>ID</label>
-          <input class="input" name="idShown" disabled>
-          <div class="help">Se rellena al tocar “Editar” en el listado.</div>
-        </div>
-
-        <div class="section-title">Datos</div><div class="divider"></div>
-        <div>
-          <label>Nombre</label>
-          <input class="input" name="nombre" required>
-        </div>
-
-        <div>
-          <label>Email</label>
-          <input class="input" name="email" type="email" required>
-        </div>
-
-        <div>
-          <label>Rol</label>
-          <select class="input" name="rol" required>
-            <option value="admin">Admin</option>
-            <option value="usuario">Usuario</option>
+          <select id="orden" class="input" style="max-width:200px;">
+            <option value="recientes">Orden: Recientes</option>
+            <option value="az">Nombre A → Z</option>
+            <option value="za">Nombre Z → A</option>
+            <option value="rut-asc">RUT ↑</option>
+            <option value="rut-desc">RUT ↓</option>
           </select>
-        </div>
+          <button class="btn-ghost" id="clear">Limpiar</button>
+        </section>
 
-        <div>
-          <label>Activo</label><br>
-          <label><input type="checkbox" name="activo"> Usuario activo</label>
-        </div>
-        <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
-          <a class="btn-ghost" href="#mostrar"><i class="fa-regular fa-eye"></i> Volver al listado</a>
-        </div>
-      </form>
-    </div>
-  </section>
+        <section class="table-wrap" aria-live="polite">
+          <table id="tabla">
+            <thead>
+              <tr>
+                <th>RUT</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th style="width:210px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="7" class="empty">Cargando usuarios…</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
 
-</div>
+      <!-- VISTA NUEVO -->
+      <section class="view" id="vistaNuevo">
+        <div class="form">
+          <h2 style="margin-top:0">Nuevo usuario</h2>
+          <form id="formNuevo" class="grid2" autocomplete="off">
+            <div class="section-title">Identificación</div><div class="divider"></div>
+
+            <div><label>RUT</label><input class="input" name="rut" required placeholder="Ej: 12345678-K"></div>
+            <div><label>Correo</label><input class="input" name="email" type="email" required placeholder="ejemplo@dominio.cl"></div>
+
+            <div class="section-title">Datos personales</div><div class="divider"></div>
+
+            <div><label>Nombre</label><input class="input" name="nombre" required></div>
+            <div><label>Apellido</label><input class="input" name="apellido" required></div>
+
+            <div><label>Teléfono</label><input class="input" name="telefono" placeholder="56912345678"></div>
+            <div><label>Cumpleaños</label><input class="input" name="birthday" type="date"></div>
+
+            <div class="section-title">Dirección</div><div class="divider"></div>
+
+            <div>
+              <label>Región</label>
+              <select class="input" name="region" id="regionNuevo">
+                <option value="">Selecciona una región</option>
+              </select>
+            </div>
+            <div>
+              <label>Comuna</label>
+              <select class="input" name="comuna" id="comunaNuevo">
+                <option value="">Selecciona una comuna</option>
+              </select>
+            </div>
+
+            <div style="grid-column:1/-1"><label>Dirección</label><input class="input" name="direccion" placeholder="Calle, número, depto..."></div>
+
+            <div class="section-title">Seguridad</div><div class="divider"></div>
+
+            <div><label>Contraseña</label><input class="input" name="password" type="password" required placeholder="4-10 caracteres"></div>
+            <div><label>Confirmar contraseña</label><input class="input" name="confirmPassword" type="password" required></div>
+
+            <div class="section-title">Rol & estado</div><div class="divider"></div>
+
+            <div>
+              <label>Rol</label>
+              <select class="input" name="rol" id="rolNuevo" required>
+                <option value="">Selecciona un rol</option>
+                <option>Administrador</option>
+                <option>Vendedor</option>
+                <option>Cliente</option>
+              </select>
+            </div>
+            <div>
+              <label>Activo</label><br>
+              <label><input type="checkbox" name="activo" checked> Usuario activo</label>
+            </div>
+
+            <div class="section-title">Imagen & descripción</div><div class="divider"></div>
+
+            <div>
+              <label>Imagen (URL o sube archivo)</label>
+              <input class="input" name="img" placeholder="../assets/img/avatar.png">
+              <div class="help">Pega una ruta o sube una imagen (tendrá prioridad).</div>
+              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <input type="file" id="fileNuevo" accept="image/*" class="btn-ghost" style="padding:8px">
+                <img id="prevNuevo" class="preview" alt="">
+              </div>
+              <input type="hidden" id="imgNuevoData">
+            </div>
+
+            <div style="grid-column:1/-1"><label>Descripción / notas</label><textarea class="input" name="desc" rows="3" placeholder="Notas internas"></textarea></div>
+
+            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Crear usuario</button>
+              <a class="btn-ghost" href="#mostrar">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- VISTA EDITAR -->
+      <section class="view" id="vistaEditar">
+        <div class="form">
+          <h2 style="margin-top:0">Editar usuario</h2>
+          <form id="formEditar" class="grid2" autocomplete="off">
+            <input type="hidden" name="id">
+            <div class="section-title">Identificación</div><div class="divider"></div>
+
+            <div><label>RUT</label><input class="input" name="rut" required></div>
+            <div><label>Correo</label><input class="input" name="email" type="email" required></div>
+
+            <div class="section-title">Datos personales</div><div class="divider"></div>
+
+            <div><label>Nombre</label><input class="input" name="nombre" required></div>
+            <div><label>Apellido</label><input class="input" name="apellido" required></div>
+
+            <div><label>Teléfono</label><input class="input" name="telefono"></div>
+            <div><label>Cumpleaños</label><input class="input" name="birthday" type="date"></div>
+
+            <div class="section-title">Dirección</div><div class="divider"></div>
+
+            <div>
+              <label>Región</label>
+              <select class="input" name="region" id="regionEditar">
+                <option value="">Selecciona una región</option>
+              </select>
+            </div>
+            <div>
+              <label>Comuna</label>
+              <select class="input" name="comuna" id="comunaEditar">
+                <option value="">Selecciona una comuna</option>
+              </select>
+            </div>
+
+            <div style="grid-column:1/-1"><label>Dirección</label><input class="input" name="direccion"></div>
+
+            <div class="section-title">Seguridad</div><div class="divider"></div>
+
+            <div><label>Contraseña (dejar vacío para mantener)</label><input class="input" name="password" type="password" placeholder="4-10 caracteres"></div>
+            <div><label>Confirmar contraseña</label><input class="input" name="confirmPassword" type="password" placeholder="Confirmar si cambias"></div>
+
+            <div class="section-title">Rol & estado</div><div class="divider"></div>
+
+            <div>
+              <label>Rol</label>
+              <select class="input" name="rol" id="rolEditar" required>
+                <option value="">Selecciona un rol</option>
+                <option>Administrador</option>
+                <option>Vendedor</option>
+                <option>Cliente</option>
+              </select>
+            </div>
+            <div>
+              <label>Activo</label><br>
+              <label><input type="checkbox" name="activo"> Usuario activo</label>
+            </div>
+
+            <div class="section-title">Imagen & descripción</div><div class="divider"></div>
+
+            <div>
+              <label>Imagen (URL o sube archivo)</label>
+              <input class="input" name="img" placeholder="../assets/img/avatar.png">
+              <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <input type="file" id="fileEditar" accept="image/*" class="btn-ghost" style="padding:8px">
+                <img id="prevEditar" class="preview" alt="">
+              </div>
+              <input type="hidden" id="imgEditarData">
+            </div>
+
+            <div style="grid-column:1/-1"><label>Descripción / notas</label><textarea class="input" name="desc" rows="3"></textarea></div>
+
+            <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar cambios</button>
+              <a class="btn-ghost" href="#mostrar">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div> <!-- container -->
+  </div> <!-- main -->
+</div> <!-- wrapper -->
 
 <!-- Modal ver usuario -->
 <div class="modal" id="modalVer" aria-hidden="true">
@@ -261,260 +429,240 @@
 </div>
 
 <script>
-/* ========== Administración de usuarios (limpia y autónoma) ========== */
+/* ===================== Administración de USUARIOS ===================== */
 
-// Helpers DOM
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
+/* ---------- almacenamiento ---------- */
+const STORAGE_KEY = 'nf_users_v1';
+function loadCustomUsers() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } }
+function saveCustomUsers(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
-// LocalStorage key
-const STORAGE_KEY = 'admin_users_v1';
-
-// Datos iniciales por defecto
-const defaultUsers = [
-  { id: 'u1', nombre: 'María López', email: 'maria@example.com', rol: 'usuario', activo: true },
-  { id: 'u2', nombre: 'Carlos Díaz', email: 'carlos@example.com', rol: 'usuario', activo: true },
-  { id: 'u3', nombre: 'Rocío Pérez', email: 'rocio@example.com', rol: 'admin', activo: true },
-  { id: 'u4', nombre: 'Admin Demo', email: 'admin@example.com', rol: 'admin', activo: true }
+/* ---------- usuarios base ---------- */
+const baseUsersFuente = [
+  { id: 'u_admin', rut: '11111111-1', nombre:'Admin', apellido:'Sistema', email:'admin@tienda.cl', rol:'Administrador', telefono:'', birthday:'1985-01-01', region:'Región Metropolitana', comuna:'Santiago', direccion:'Oficina Central', img:'../assets/img/avatar-admin.png', activo:true, desc:'Administrador principal', createdAt: Date.now() - 1000*60*60*24*30 },
+  { id: 'u_vend',  rut: '22222222-2', nombre:'Lucía', apellido:'Vargas', email:'lucia@tienda.cl', rol:'Vendedor', telefono:'56912340001', birthday:'1992-06-15', region:'Región Metropolitana', comuna:'Providencia', direccion:'Av. Providencia 100', img:'../assets/img/avatar1.png', activo:true, desc:'Encargada de ventas', createdAt: Date.now() - 1000*60*60*24*10 },
+  { id: 'u_cli01', rut: '33333333-3', nombre:'Sofía', apellido:'Rojas', email:'sofia@gmail.com', rol:'Cliente', telefono:'56911223344', birthday:'1998-03-22', region:'Región de Valparaíso', comuna:'Viña del Mar', direccion:'Calle 123', img:'../assets/img/avatar2.png', activo:true, desc:'Cliente frecuente', createdAt: Date.now() - 1000*60*60*24*2 },
 ];
 
-function loadUsers(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return [...defaultUsers];
-    const parsed = JSON.parse(raw);
-    if(!Array.isArray(parsed)) return [...defaultUsers];
-    return parsed;
-  }catch(e){ return [...defaultUsers]; }
+/* ---------- merge base + custom ---------- */
+const baseIds = new Set(baseUsersFuente.map(u=>u.id));
+const customRaw = loadCustomUsers();
+const mapaUsuarios = new Map(baseUsersFuente.map(u=>[u.id, {...u}]));
+customRaw.forEach(u=>mapaUsuarios.set(u.id, {...u}));
+let usuarios = Array.from(mapaUsuarios.values());
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const crearId = ()=> 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+const normalize = s => (s||'').toString().trim().toLowerCase();
+function emailExiste(email, exceptId=null){ const e=normalize(email); return usuarios.some(u=>normalize(u.email)===e && u.id!==exceptId); }
+function rutExiste(rut, exceptId=null){ const r=normalize(rut); return usuarios.some(u=>normalize(u.rut)===r && u.id!==exceptId); }
+
+/* ---------- imagen uploader ---------- */
+async function leerArchivoComoDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const fr = new FileReader();
+    fr.onload = ()=> resolve(fr.result);
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
 }
-function saveUsers(arr){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+function prepararUploader(idFile, idPreview, idHidden){
+  const file = $(idFile), img = $(idPreview), hid = $(idHidden);
+  if(!file || !img || !hid) return;
+  file.addEventListener('change', async ()=>{
+    const f = file.files?.[0];
+    if(!f) return;
+    if(!f.type.startsWith('image/')){ alert('El archivo debe ser una imagen'); return; }
+    if(f.size > 3*1024*1024){ alert('Imagen muy pesada (>3MB)'); return; }
+    hid.value = await leerArchivoComoDataURL(f);
+    img.src = hid.value;
+  });
 }
 
-let users = loadUsers();
+/* ---------- regiones y comunas ---------- */
+const regiones = {
+  'Arica y Parinacota':['Arica','Camarones','Putre','General Lagos'],
+        'Región Tarapacá':['Iquique','Alto Hospicio','Pozo Almonte','Camiña','Colchane','Huara','Pica'],
+        'Región Antofagasta':['Antofagasta','Mejillones','Sierra Gorda','Taltal','Calama','Ollagüe','San Pedro de Atacama','Tocopilla','María Elena'],
+        'Región Atacama':['Copiapó','Caldera','Tierra Amarilla','Chañaral','Diego de Almagro','Vallenar','Freirina','Huasco','Alto del Carmen'],
+        'Región Coquimbo':['La Serena','Coquimbo','Andacollo','La Higuera','Paihuano','Vicuña','Illapel','Canela','Los Vilos','Salamanca','Ovalle','Combarbalá','Monte Patria','Punitaqui','Río Hurtado'],
+        'Región Valparaíso':['Valparaíso','Viña del Mar','Concón','Quintero','Puchuncaví','Quillota','La Calera','Hijuelas','La Cruz','Nogales','San Antonio','Cartagena','El Tabo','El Quisco','Algarrobo','Santo Domingo','San Felipe','Llaillay','Catemu','Panquehue','Putaendo','Santa María','Los Andes','Calle Larga','Rinconada','San Esteban','Petorca','Cabildo','La Ligua','Papudo','Zapallar','Isla de Pascua'],
+        'Región Metropolitana de Santiago':['Santiago','Cerrillos','Cerro Navia','Conchalí','El Bosque','Estación Central','Huechuraba','Independencia','La Cisterna','La Florida','La Granja','La Pintana','La Reina','Las Condes','Lo Barnechea','Lo Espejo','Lo Prado','Macul','Maipú','Ñuñoa','Pedro Aguirre Cerda','Peñalolén','Providencia','Pudahuel','Quilicura','Quinta Normal','Recoleta','Renca','San Joaquín','San Miguel','San Ramón','Vitacura','Puente Alto','Pirque','San José de Maipo','San Bernardo','Buin','Calera de Tango','Paine','Melipilla','Alhué','Curacaví','María Pinto','San Pedro','Talagante','El Monte','Isla de Maipo','Padre Hurtado','Peñaflor','Colina','Lampa','Tiltil'],
+        'Región O’Higgins':['Rancagua','Machalí','Graneros','Codegua','Mostazal','Requínoa','Rengo','Malloa','Quinta de Tilcoco','San Vicente','Pichidegua','Peumo','Las Cabras','Coltauco','Doñihue','Coinco','Olivar','Pichilemu','La Estrella','Marchihue','Navidad','Litueche','San Fernando','Chimbarongo','Nancagua','Placilla','Santa Cruz','Lolol','Pumanque','Peralillo'],
+        'Región Maule':['Talca','Curepto','Empedrado','Maule','Pencahue','Pelarco','Río Claro','San Clemente','San Rafael','Constitución','Curicó','Hualañé','Licantén','Vichuquén','Rauco','Romeral','Sagrada Familia','Teno','Molina','Linares','Colbún','Longaví','Parral','Retiro','San Javier','Villa Alegre','Yerbas Buenas','Cauquenes','Chanco','Pelluhue'],
+        'Región Ñuble':['Chillán','Chillán Viejo','Bulnes','Cobquecura','Coelemu','Coihueco','El Carmen','Ninhue','Ñiquén','Pemuco','Pinto','Portezuelo','Quillón','Quirihue','Ránquil','San Carlos','San Fabián','San Ignacio','San Nicolás','Trehuaco','Yungay'],
+        'Región Biobío':['Concepción','Talcahuano','Hualpén','Chiguayante','San Pedro de la Paz','Penco','Tomé','Hualqui','Florida','Santa Juana','Arauco','Cañete','Contulmo','Curanilahue','Lebu','Los Álamos','Tirúa','Coronel','Lota','Los Ángeles','Mulchén','Nacimiento','Negrete','Quilaco','Santa Bárbara','Alto Biobío','Antuco','Cabrero','Laja','San Rosendo','Tucapel','Yumbel'],
+        'Región La Araucanía':['Temuco','Padre Las Casas','Cunco','Curarrehue','Freire','Gorbea','Lautaro','Loncoche','Melipeuco','Nueva Imperial','Perquenco','Pitrufquén','Pucón','Saavedra','Teodoro Schmidt','Toltén','Vilcún','Villarrica','Cholchol','Carahue','Galvarino','Angol','Collipulli','Curacautín','Ercilla','Lonquimay','Los Sauces','Lumaco','Purén','Renaico','Traiguén','Victoria'],
+        'Región Los Ríos':['Valdivia','Corral','Lanco','Los Lagos','Máfil','Mariquina','Paillaco','Panguipulli','La Unión','Futrono','Lago Ranco','Río Bueno'],
+        'Región Los Lagos':['Puerto Montt','Puerto Varas','Llanquihue','Frutillar','Fresia','Los Muermos','Maullín','Calbuco','Osorno','San Pablo','Purranque','Río Negro','Puyehue','San Juan de la Costa','Puerto Octay','Castro','Ancud','Quellón','Dalcahue','Chonchi','Queilén','Puqueldón','Quinchao','Curaco de Vélez','Chaitén','Futaleufú','Hualaihué','Palena'],
+        'Región Aysén':['Coyhaique','Aysén','Cisnes','Guaitecas','Chile Chico','Río Ibáñez','Cochrane',"O'Higgins",'Tortel','Lago Verde'],
+        'Región Magallanes y Antártica':['Punta Arenas','Río Verde','Laguna Blanca','San Gregorio','Puerto Natales','Torres del Paine','Porvenir','Primavera','Timaukel','Cabo de Hornos','Antártica']
+};
+function poblarRegiones(sel){ if(!sel) return; sel.innerHTML='<option value="">Selecciona una región</option>'+Object.keys(regiones).map(r=>`<option value="${r}">${r}</option>`).join(''); }
+function poblarComunas(selR, selC){ if(!selR || !selC) return; const list = regiones[selR.value]||[]; selC.innerHTML='<option value="">Selecciona una comuna</option>'+list.map(c=>`<option value="${c}">${c}</option>`).join(''); }
 
-/* ====== Utilidades ====== */
-function crearIdUnico(){
-  return 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+/* ---------- vista y hash routing ---------- */
+const views = { mostrar: $('#vistaMostrar'), nuevo: $('#vistaNuevo'), editar: $('#vistaEditar') };
+const topBtns = { mostrar: $('#btnTopMostrar'), nuevo: $('#btnTopNuevo'), editar: $('#btnTopEditar') };
+function go(view, extra){
+  Object.values(views).forEach(v=>v.classList.remove('active'));
+  (views[view]||views.mostrar).classList.add('active');
+  Object.values(topBtns).forEach(b=>b.classList.remove('tab-active'));
+  (topBtns[view]||topBtns.mostrar)?.classList.add('tab-active');
+  if(view==='mostrar'){ render(); }
+  if(view==='editar' && extra){ cargarEdicion(extra); }
+  if(view==='nuevo'){ $('#formNuevo')?.reset(); $('#imgNuevoData').value=''; $('#prevNuevo').src=''; }
+  const desired = view + (extra?(':'+extra):'');
+  if(location.hash.replace('#','') !== desired) location.hash = '#' + desired;
 }
-function emailExiste(email, exceptId = null){
-  const e = (email||'').toString().trim().toLowerCase();
-  return users.some(u => u.email.toLowerCase() === e && u.id !== exceptId);
-}
+function syncFromHash(){ const [v,p]= (location.hash||'#mostrar').slice(1).split(':'); go(v||'mostrar', p); }
+window.addEventListener('hashchange', syncFromHash);
 
-/* ====== RENDER TABLA ====== */
-const tbody = $('#tbody');
-const qInput = $('#q');
-const rolSel = $('#rol');
-const clearBtn = $('#clear');
+/* ---------- estado y filtros ---------- */
+const qInput = $('#q'), rolFilter = $('#rolFilter'), ordenSel = $('#orden'), tbody = $('#tbody');
+let state={q:'', rol:'', orden:'recientes'};
+function rolesUnicos(){ return Array.from(new Set(usuarios.map(u=>u.rol).filter(Boolean))).sort(); }
+function poblarFiltroRoles(){ if(!rolFilter) return; rolFilter.innerHTML='<option value="">Todos los roles</option>'+rolesUnicos().map(r=>`<option value="${r}">${r}</option>`).join(''); }
 
-const state = { q:'', rol:'todos' };
-
+/* ---------- render tabla ---------- */
 function render(){
-  state.q = qInput?.value || '';
-  state.rol = rolSel?.value || 'todos';
+  poblarFiltroRoles();
+  poblarRegiones($('#regionNuevo')); poblarRegiones($('#regionEditar'));
+  poblarComunas($('#regionNuevo'), $('#comunaNuevo'));
+  poblarComunas($('#regionEditar'), $('#comunaEditar'));
 
-  const q = state.q.trim().toLowerCase();
-
-  let list = users.filter(u => {
-    const okRol = state.rol === 'todos' || u.rol === state.rol;
-    const okQ = !q || u.nombre.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.rol.toLowerCase().includes(q);
+  const q = (state.q||'').trim().toLowerCase();
+  const rol = state.rol||'';
+  let list = usuarios.filter(u=>{
+    const okRol = !rol || u.rol===rol;
+    const okQ = !q || ( (u.rut||'').toLowerCase().includes(q) || (u.nombre||'').toLowerCase().includes(q) || (u.apellido||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q) );
     return okRol && okQ;
   });
 
-  if(!list.length){
-    tbody.innerHTML = `<tr><td colspan="6" class="empty">No hay usuarios que coincidan.</td></tr>`;
-    return;
+  switch(state.orden){
+    case 'az': list.sort((a,b)=>a.nombre.localeCompare(b.nombre)); break;
+    case 'za': list.sort((a,b)=>b.nombre.localeCompare(a.nombre)); break;
+    case 'rut-asc': list.sort((a,b)=>String(a.rut||'').localeCompare(String(b.rut||''))); break;
+    case 'rut-desc': list.sort((a,b)=>String(b.rut||'').localeCompare(String(a.rut||''))); break;
+    default: list.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
   }
 
-  tbody.innerHTML = list.map(u => `
+  if(!list.length){ tbody.innerHTML=`<tr><td colspan="7" class="empty">No hay usuarios con esos filtros.</td></tr>`; return; }
+
+  tbody.innerHTML = list.map(u=>`
     <tr>
-      <td><small style="color:#bdb9d8">${u.id}</small></td>
-      <td><strong>${escapeHtml(u.nombre)}</strong></td>
-      <td>${escapeHtml(u.email)}</td>
-      <td>${u.rol}</td>
-      <td>${u.activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-off">Inactivo</span>'}</td>
-      <td class="actions-col" style="display:flex;gap:8px;align-items:center">
-        <button class="btn-ghost sm" onclick="verUsuario('${u.id}')"><i class="fa-regular fa-eye"></i> Ver</button>
-        <button class="btn-ghost sm" onclick="location.hash = '#editar:${u.id}'"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
+      <td>${escapeHtml(u.rut||'')}</td>
+      <td>${escapeHtml(u.nombre||'')}</td>
+      <td>${escapeHtml(u.apellido||'')}</td>
+      <td>${escapeHtml(u.email||'')}</td>
+      <td>${escapeHtml(u.rol||'')}</td>
+      <td>${u.activo?'<span class="badge b-ok">Activo</span>':'<span class="badge b-off">Inactivo</span>'}</td>
+      <td class="actions-col">
+        <button class="btn-ghost sm" onclick="ver('${u.id}')"><i class="fa-regular fa-eye"></i> Ver</button>
+        <a class="btn-ghost sm" href="#editar:${u.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
         <button class="btn-danger sm" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
       </td>
     </tr>
   `).join('');
 }
 
-// pequeño helper para evitar inyección cuando se insertan nombres/emails
-function escapeHtml(s){
-  if(!s) return '';
-  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+/* escape simple */
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-/* ====== CRUD usuarios ====== */
+/* ---------- persistencia ---------- */
+function guardarEnLocalStorage(){ const custom = usuarios.filter(u=>!baseIds.has(u.id) || customRaw.some(c=>c.id===u.id)); saveCustomUsers(custom); }
+
+/* ---------- CRUD ---------- */
 function agregarUsuario(data){
-  const id = crearIdUnico();
-  const user = { id, nombre: data.nombre, email: data.email, rol: data.rol, activo: !!data.activo };
-  users.unshift(user);
-  saveUsers(users);
-  render();
-  return user;
-}
+  if(!data.rut||!data.email||!data.nombre||!data.apellido||!data.rol){ alert('Completa los campos requeridos.'); return false; }
+  if(rutExiste(data.rut)){ alert('Ese RUT ya está registrado.'); return false; }
+  if(emailExiste(data.email)){ alert('Ese email ya está en uso.'); return false; }
+  if(!data.password){ alert('Contraseña requerida.'); return false; }
+  if(data.password.length<4||data.password.length>10){ alert('La contraseña debe tener entre 4 y 10 caracteres.'); return false; }
+  if(data.password!==data.confirmPassword){ alert('Las contraseñas no coinciden.'); return false; }
 
-function actualizarUsuario(id, data){
-  const idx = users.findIndex(u => u.id === id);
-  if(idx === -1) return false;
-  users[idx] = { ...users[idx], nombre: data.nombre, email: data.email, rol: data.rol, activo: !!data.activo };
-  saveUsers(users);
-  render();
+  const id=crearId();
+  const user={ id, rut:data.rut.trim(), nombre:data.nombre.trim(), apellido:data.apellido.trim(), email:data.email.trim().toLowerCase(), rol:data.rol, telefono:data.telefono||'', birthday:data.birthday||'', region:data.region||'', comuna:data.comuna||'', direccion:data.direccion||'', img:data.imgData||normalizeImgField(data.img||''), activo:!!data.activo, desc:data.desc||'', password:data.password, createdAt:Date.now() };
+  usuarios.unshift(user); customRaw.unshift(user); guardarEnLocalStorage(); render();
   return true;
 }
-
-function eliminarUsuario(id){
-  if(!confirm('¿Eliminar este usuario?')) return;
-  const idx = users.findIndex(u => u.id === id);
-  if(idx > -1){
-    users.splice(idx,1);
-    saveUsers(users);
-    render();
-  }
+function actualizarUsuario(id,data){
+  const idx = usuarios.findIndex(u=>u.id===id); if(idx===-1){ alert('Usuario no encontrado'); return false; }
+  if(!data.rut||!data.email||!data.nombre||!data.apellido||!data.rol){ alert('Completa los campos requeridos.'); return false; }
+  if(rutExiste(data.rut,id)){ alert('Ese RUT ya está en uso por otro usuario.'); return false; }
+  if(emailExiste(data.email,id)){ alert('Ese email ya está en uso por otro usuario.'); return false; }
+  if(data.password){ if(data.password.length<4||data.password.length>10){ alert('La contraseña debe tener entre 4 y 10 caracteres'); return false; } if(data.password!==data.confirmPassword){ alert('Las contraseñas no coinciden.'); return false; } }
+  const u=usuarios[idx]; u.rut=data.rut.trim(); u.email=data.email.trim().toLowerCase(); u.nombre=data.nombre.trim(); u.apellido=data.apellido.trim();
+  if(data.password) u.password=data.password; u.telefono=data.telefono||''; u.birthday=data.birthday||''; u.region=data.region||''; u.comuna=data.comuna||''; u.direccion=data.direccion||''; u.rol=data.rol; u.activo=!!data.activo; u.desc=data.desc||''; if(data.imgData) u.img=data.imgData; else if(data.img) u.img=normalizeImgField(data.img);
+  const iCustom=customRaw.findIndex(x=>x.id===id); if(iCustom>-1) customRaw[iCustom]={...u}; else customRaw.push({...u});
+  guardarEnLocalStorage(); render(); return true;
 }
+function eliminarUsuario(id){ if(!confirm('¿Eliminar este usuario?')) return; const idx=usuarios.findIndex(u=>u.id===id); if(idx>-1){ usuarios.splice(idx,1); const iCustom=customRaw.findIndex(x=>x.id===id); if(iCustom>-1) customRaw.splice(iCustom,1); guardarEnLocalStorage(); render(); } }
+function normalizeImgField(val){ val=(val||'').toString().trim(); if(!val) return '../assets/img/avatar-placeholder.png'; if(val.startsWith('http')||val.startsWith('data:')||val.startsWith('../')) return val; return '../'+val; }
 
-/* ====== Modal ver ====== */
-const modal = $('#modalVer');
-const modalContent = $('#contenidoModal');
-$('#cerrarModal').addEventListener('click', ()=> modal.classList.remove('open'));
-modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('open'); });
-
-window.verUsuario = function(id){
-  const u = users.find(x => x.id === id);
-  if(!u) return;
-  modalContent.innerHTML = `
-    <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
-      <div style="min-width:160px">
-        <div style="width:160px;height:160px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:#130f2b">
-          <i class="fa fa-user" style="font-size:48px;color:var(--muted)"></i>
-        </div>
-      </div>
-      <div style="flex:1">
-        <h3 style="margin:.2rem 0">${escapeHtml(u.nombre)}</h3>
-        <div style="color:#bdb9d8;margin-bottom:6px">ID: ${u.id}</div>
-        <div><strong>${escapeHtml(u.email)}</strong> · <span class="tag">${u.rol}</span></div>
-        <div style="margin-top:8px">${u.activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-off">Inactivo</span>'}</div>
-        <p style="margin-top:12px;color:var(--muted)">Detalle: usuario creado en el panel.</p>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn-ghost" onclick="location.hash = '#editar:${u.id}'"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
-          <button class="btn-danger" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
-        </div>
+/* ---------- modal ver ---------- */
+const modal = $('#modalVer'), modalContent = $('#contenidoModal');
+$('#cerrarModal')?.addEventListener('click',()=>modal.classList.remove('open'));
+modal?.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open');});
+function ver(id){
+  const u=usuarios.find(x=>x.id===id); if(!u) return;
+  modalContent.innerHTML=`<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
+    <img src="${escapeHtml(u.img||'../assets/img/avatar-placeholder.png')}" alt="" style="width:140px;height:140px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
+    <div style="flex:1">
+      <h3 style="margin:.2rem 0">${escapeHtml(u.nombre)} ${escapeHtml(u.apellido)}</h3>
+      <div style="color:#bdb9d8;margin-bottom:6px">RUT: ${escapeHtml(u.rut)} · ID: ${u.id}</div>
+      <div style="margin:6px 0"><strong>${escapeHtml(u.email)}</strong> · <span class="tag">${escapeHtml(u.rol)}</span></div>
+      <p style="margin:8px 0 0">${escapeHtml(u.desc||'')}</p>
+      <div style="margin-top:10px">Tel: ${escapeHtml(u.telefono||'-')} · ${escapeHtml(u.region||'')} / ${escapeHtml(u.comuna||'')}</div>
+      <div style="margin-top:10px">${u.activo?'<span class="badge b-ok">Activo</span>':'<span class="badge b-off">Inactivo</span>'}</div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn-ghost" href="#editar:${u.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+        <button class="btn-danger" onclick="eliminarUsuario('${u.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button>
       </div>
     </div>
-  `;
+  </div>`;
   modal.classList.add('open');
-};
-
-/* ====== Formularios ====== */
-$('#formNuevo')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const nombre = (fd.get('nombre')||'').toString().trim();
-  const email = (fd.get('email')||'').toString().trim().toLowerCase();
-  const rol = (fd.get('rol')||'').toString();
-  const activo = !!fd.get('activo');
-
-  if(!nombre || !email || !rol){
-    alert('Completa los campos requeridos.');
-    return;
-  }
-  if(emailExiste(email)){
-    alert('Ese email ya está en uso.');
-    return;
-  }
-
-  agregarUsuario({ nombre, email, rol, activo });
-  // reset y volver al listado
-  e.target.reset();
-  location.hash = '#mostrar';
-});
-
-$('#formEditar')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const id = fd.get('id');
-  const nombre = (fd.get('nombre')||'').toString().trim();
-  const email = (fd.get('email')||'').toString().trim().toLowerCase();
-  const rol = (fd.get('rol')||'').toString();
-  const activo = !!fd.get('activo');
-
-  if(!id || !nombre || !email || !rol){
-    alert('Completa los campos requeridos.');
-    return;
-  }
-  if(emailExiste(email, id)){
-    alert('Ese email ya está en uso por otro usuario.');
-    return;
-  }
-
-  actualizarUsuario(id, { nombre, email, rol, activo });
-  location.hash = '#mostrar';
-});
-
-/* ====== Hash routing (vistas) ====== */
-const views = { mostrar: $('#vistaMostrar'), nuevo: $('#vistaNuevo'), editar: $('#vistaEditar') };
-const topBtns = { mostrar: $('#btnTopMostrar'), nuevo: $('#btnTopNuevo'), editar: $('#btnTopEditar') };
-
-function go(view, extra){
-  Object.values(views).forEach(v => v && v.classList.remove('active'));
-  const target = views[view] || views.mostrar;
-  target.classList.add('active');
-
-  Object.values(topBtns).forEach(b => b && b.classList.remove('tab-active'));
-  (topBtns[view] || topBtns.mostrar)?.classList.add('tab-active');
-
-  if(view === 'mostrar') {
-    render();
-  } else if(view === 'nuevo') {
-    $('#formNuevo')?.reset();
-  } else if(view === 'editar' && extra) {
-    cargarEdicion(extra);
-  }
-
-  // sincronizar hash (si no coincide)
-  const desiredHash = view + (extra?(':'+extra):'');
-  if(location.hash.replace('#','') !== desiredHash){
-    location.hash = '#' + desiredHash;
-  }
 }
 
-function syncFromHash(){
-  const h = (location.hash || '#mostrar').slice(1);
-  const [view, param] = h.split(':');
-  go(view || 'mostrar', param);
-}
-window.addEventListener('hashchange', syncFromHash);
-
-/* Cargar datos en formulario editar */
+/* ---------- formularios ---------- */
+$('#formNuevo')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target);
+  const data={ rut:fd.get('rut')||'', email:fd.get('email')||'', nombre:fd.get('nombre')||'', apellido:fd.get('apellido')||'', telefono:fd.get('telefono')||'', birthday:fd.get('birthday')||'', region:fd.get('region')||'', comuna:fd.get('comuna')||'', direccion:fd.get('direccion')||'', password:fd.get('password')||'', confirmPassword:fd.get('confirmPassword')||'', rol:fd.get('rol')||'', activo:!!fd.get('activo'), desc:fd.get('desc')||'', img:fd.get('img')||'', imgData:$('#imgNuevoData')?.value||'' };
+  if(agregarUsuario(data)){ alert('Usuario creado correctamente'); e.target.reset(); $('#prevNuevo').src=''; location.hash='#mostrar'; }
+});
+$('#formEditar')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target); const id=fd.get('id');
+  const data={ rut:fd.get('rut')||'', email:fd.get('email')||'', nombre:fd.get('nombre')||'', apellido:fd.get('apellido')||'', telefono:fd.get('telefono')||'', birthday:fd.get('birthday')||'', region:fd.get('region')||'', comuna:fd.get('comuna')||'', direccion:fd.get('direccion')||'', password:fd.get('password')||'', confirmPassword:fd.get('confirmPassword')||'', rol:fd.get('rol')||'', activo:!!fd.get('activo'), desc:fd.get('desc')||'', img:fd.get('img')||'', imgData:$('#imgEditarData')?.value||'' };
+  if(actualizarUsuario(id,data)){ alert('Usuario actualizado'); location.hash='#mostrar'; }
+});
 function cargarEdicion(id){
-  const u = users.find(x => x.id === id);
-  const f = $('#formEditar');
-  if(!u || !f) return;
-  f.id.value = u.id;
-  f.idShown.value = u.id;
-  f.nombre.value = u.nombre;
-  f.email.value = u.email;
-  f.rol.value = u.rol;
-  f.activo.checked = !!u.activo;
+  const u=usuarios.find(x=>x.id===id); const f=$('#formEditar'); if(!u||!f) return;
+  f.id.value=u.id; f.rut.value=u.rut||''; f.email.value=u.email||''; f.nombre.value=u.nombre||''; f.apellido.value=u.apellido||''; f.telefono.value=u.telefono||''; f.birthday.value=u.birthday||''; f.region.value=u.region||''; poblarComunas($('#regionEditar'),$('#comunaEditar')); f.comuna.value=u.comuna||''; f.direccion.value=u.direccion||''; f.rol.value=u.rol||''; f.activo.checked=!!u.activo; f.desc.value=u.desc||''; $('#prevEditar').src=u.img||'../assets/img/avatar-placeholder.png'; $('#imgEditarData').value=''; $('#fileEditar').value='';
 }
 
-/* ====== Listeners filtros y botones ====== */
-qInput?.addEventListener('input', render);
-rolSel?.addEventListener('change', render);
-clearBtn?.addEventListener('click', () => {
-  qInput.value = '';
-  rolSel.value = 'todos';
-  render();
-});
+/* ---------- listeners filtros y botones ---------- */
+qInput?.addEventListener('input',()=>{ state.q=qInput.value; render(); });
+rolFilter?.addEventListener('change',()=>{ state.rol=rolFilter.value; render(); });
+ordenSel?.addEventListener('change',()=>{ state.orden=ordenSel.value; render(); });
+$('#clear')?.addEventListener('click',()=>{ qInput.value=''; rolFilter.value=''; ordenSel.value='recientes'; state={q:'',rol:'',orden:'recientes'}; render(); });
 
-// Inicializa
-render();
-syncFromHash();
+/* ---------- subir imagen y region->comuna ---------- */
+prepararUploader('fileNuevo','prevNuevo','imgNuevoData');
+prepararUploader('fileEditar','prevEditar','imgEditarData');
+$('#regionNuevo')?.addEventListener('change',()=>poblarComunas($('#regionNuevo'),$('#comunaNuevo')));
+$('#regionEditar')?.addEventListener('change',()=>poblarComunas($('#regionEditar'),$('#comunaEditar')));
+
+/* ---------- top buttons ---------- */
+$('#btnTopMostrar')?.addEventListener('click',e=>{ e.preventDefault(); go('mostrar'); });
+$('#btnTopNuevo')?.addEventListener('click',e=>{ e.preventDefault(); go('nuevo'); });
+$('#btnTopEditar')?.addEventListener('click',e=>{ e.preventDefault(); go('editar'); });
+
+/* ---------- inicial ---------- */
+poblarRegiones($('#regionNuevo')); poblarRegiones($('#regionEditar')); render(); syncFromHash();
+
 
 </script>
 </body>
