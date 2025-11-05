@@ -445,6 +445,7 @@ html, body {
 }
 
 .contact-card {
+  flex: 1 1 300px;
   /*padding: 20px;*/
   border-radius: 15px;
   /*min-width: 230px;*/

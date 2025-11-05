@@ -581,7 +581,7 @@ html, body {
          1px -1px 0 white,
         -1px  1px 0 white,
          1px  1px 0 white; /* borde blanco */
-    transform: translateY(-40px); /* lo sube un poco */
+    transform: translateY(-10px); /* lo sube un poco */
 }
 
 .newsletter h2 {
@@ -648,6 +648,19 @@ html, body {
 
 .newsletter-form button:hover {
     background-color: rgb(131, 95, 29);
+}
+
+.newsletter-mensaje {
+  color: rgb(94, 25, 163);
+  text-align: center;
+  height: 15px;
+  margin-top: 5px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.newsletter-mensaje.visible {
+  opacity: 1;
 }
 
 /* --- Sección Envios */
@@ -826,46 +839,5 @@ html, body {
     transform: scale(1.2);
 }
 
-/* --- Footer */
-.footer-final {
-    background-color: rgb(22, 1, 43); /* morado oscuro */
-    padding: 10px 90px;
-    min-height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    margin-left: -650px; /* elimina margen lateral */
-}
 
-.footer-contenido {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    justify-content: space-between; /* texto izquierda, pagos derecha */
-    align-items: center;
-}
-
-.footer-texto {
-    font-size: 16px;
-    flex: 0 0 auto;
-    text-align: left;
-    flex-grow: 1; /* ocupa todo el espacio disponible */
-}
-
-.footer-pagos {
-    display: flex;
-    gap: 20px; /* más espacio entre iconos */
-    flex: 0 0 auto; 
-    flex-shrink: 0; /* no se encojan */
-    margin-left: 1090px;
-}
-
-.footer-pagos img {
-    height: 50px; /* tamaño pequeño */
-    margin-left: 15px;
-    border: 1px solid #ccc; /* borde gris */
-    border-radius: 5px;
-    padding: 3px;
-}
 
