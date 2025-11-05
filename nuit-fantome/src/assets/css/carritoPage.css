@@ -1,0 +1,125 @@
+/* === Tema pastel Nuit Fantôme — Carrito === */
+:root{
+  --ink:#3a2a63;
+  --muted:#6b5aa6;
+  --violet:#7c3aed;
+  --violet-200:#a78bfa;
+  --bg:#faf8ff;
+  --panel:#ffffff;
+  --line:#eee9ff;
+}
+body{background: rgb(22, 1, 43);}
+.cart{width: min(1000px, 95%); margin: 24px auto 28px;}
+
+.cart h2{
+  margin:0 0 16px;
+  color:var(--ink);
+  font-weight:900;
+  font-size:clamp(1.6rem,1.1rem + 1.4vw,2.2rem);
+  letter-spacing:.2px;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 14px 10px 12px;border-radius:14px;
+  background:
+    radial-gradient(14px 14px at 16px 16px, rgba(167,139,250,.18) 30%, transparent 31%) 0 0/32px 32px,
+    linear-gradient(180deg,#efe8ff 0%, #e6f0ff 100%);
+  box-shadow:0 8px 20px rgba(27,26,58,.08);
+}
+.cart h2::before{content:"✨"; font-size:1.1em}
+
+/* Fila carrito: Producto | Cantidad | Precio | Subtotal */
+.row{
+  display:grid;grid-template-columns: 1fr 110px 120px 110px;
+  gap:14px;align-items:center;padding:14px 10px;margin-bottom:10px;
+  border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  box-shadow:0 6px 14px rgba(30,27,75,.06);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.row:hover{ transform:translateY(-3px); box-shadow:0 10px 22px rgba(30,27,75,.1) }
+.muted{color:var(--muted); font-size:.92rem;}
+
+.prod{display:flex; align-items:center; gap:12px;}
+.thumb{
+  width:70px; height:70px; object-fit:cover; border-radius:12px;
+  border:1px solid var(--line); background:#fff;
+  box-shadow:0 3px 8px rgba(30,27,75,.08);
+}
+.prod a{color:var(--ink); text-decoration:none}
+.prod a:hover{text-decoration:underline}
+
+.qty input{
+  width:86px; padding:8px 10px; text-align:center;
+  border:1px solid var(--line); border-radius:10px; background:#fff;
+  box-shadow:inset 0 1px 0 #f1edff;
+}
+.empty{padding:20px; text-align:center; color:#777}
+
+.checkout{
+  display:grid; grid-template-columns: 1fr 1fr 280px;
+  gap:18px; margin-top:18px; align-items:start;
+}
+.panel{
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:14px; padding:16px 14px;
+  box-shadow:0 8px 20px rgba(30,27,75,.06);
+}
+.panel h3{margin:0 0 10px; color:var(--ink)}
+.panel label{display:block; font-weight:700; color:var(--ink); margin:10px 0 6px;}
+
+select, .input, textarea{
+  width:100%; padding:10px; border-radius:10px;
+  border:1px solid var(--line); background:#fff; color:var(--ink);
+}
+select:focus, .input:focus, textarea:focus{
+  outline:none; box-shadow:0 0 0 3px rgba(124,58,237,.16);
+  border-color:#d9ccff;
+}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media (max-width:700px){.form-grid{grid-template-columns:1fr}}
+
+.free-banner{
+  background:#e8f5e9; border:1px solid #c8e6c9; color:#1b5e20;
+  padding:8px 10px; border-radius:10px; margin-top:10px; font-weight:700;
+  box-shadow:0 4px 10px rgba(25,135,84,.08);
+}
+
+.pay-list{list-style:none; padding:0; margin:0;}
+.pay-list li{margin:8px 0;}
+.pay-info{ margin:6px 0 0 26px; line-height:1.45; }
+.pay-info.box{
+  background:#fbf9ff; border:1px solid var(--line);
+  border-radius:10px; padding:12px; color:var(--muted);
+}
+.kv{display:grid;grid-template-columns:120px 1fr;column-gap:10px;row-gap:6px;align-items:center;}
+.kv dt{margin:0;font-weight:700;color:var(--ink);}
+.kv dd{margin:0;}
+.pay-info a{ color:#7c3aed; text-decoration:none; }
+.pay-info a:hover{ text-decoration:underline; }
+
+.eta{
+  background:#f6f5ff; border:1px solid var(--line);
+  border-radius:10px; padding:10px; margin-top:10px; font-size:.95rem; color:var(--ink);
+}
+.eta small{color:#777}
+
+.sum-row{display:flex; justify-content:space-between; margin:6px 0; color:var(--ink)}
+.sum-row.total{
+  font-weight:900; border-top:1px solid var(--line);
+  padding-top:10px; margin-top:8px; color:var(--ink)
+}
+
+.btn{
+  background:linear-gradient(90deg, var(--violet) 0%, var(--violet-200) 100%);
+  color:#fff; border:0; border-radius:12px; padding:10px 14px;
+  font-weight:800; cursor:pointer; box-shadow:0 8px 18px rgba(124,58,237,.25);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover{ transform:translateY(-1px); box-shadow:0 10px 22px rgba(124,58,237,.32) }
+.btn:active{ transform:translateY(0) }
+.checkout .btn{width:100%; margin-top:10px;}
+
+.hidden{display:none;}
+@media (max-width: 900px){
+  .checkout{grid-template-columns: 1fr;}
+  .row{ grid-template-columns: 1fr 90px 90px 100px; }
+}
