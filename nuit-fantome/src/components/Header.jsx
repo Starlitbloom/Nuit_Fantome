@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../assets/css/style.css";
+import { NavLink } from "react-router-dom";
 
 function Header() {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
+
+  // Cerrar el menú si se hace clic fuera
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".dropdown")) {
+        setMenuAbierto(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
     <>
       {/* Barra superior */}
@@ -38,10 +56,14 @@ function Header() {
 
           <div className="usuario-carrito">
             <div className="dropdown">
-              <button className="btn-acceder">ACCEDER</button>
-              <div className="dropdown-content">
-                <a href="/login">Iniciar Sesión</a>
-                <a href="/register">Registrarse</a>
+              <button className="btn-acceder" onClick={toggleMenu}>
+                ACCEDER
+              </button>
+
+              {/* Menú desplegable controlado por estado */}
+              <div className={`dropdown-content ${menuAbierto ? "visible" : ""}`}>
+                <NavLink to="/login">Iniciar Sesión</NavLink>
+                <NavLink to="/register">Registrarse</NavLink>
               </div>
             </div>
 
@@ -54,13 +76,14 @@ function Header() {
           </div>
         </div>
 
+        {/* --- Menú principal --- */}
         <nav className="barra-tareas">
           <ul>
-            <li><a href="/" className="active">INICIO</a></li>
-            <li><a href="/productos">PRODUCTOS</a></li>
-            <li><a href="/nosotros">NOSOTROS</a></li>
-            <li><a href="/blogs">BLOGS</a></li>
-            <li><a href="/contacto">CONTACTO</a></li>
+            <li><NavLink to="/" end>INICIO</NavLink></li>
+            <li><NavLink to="/productos">PRODUCTOS</NavLink></li>
+            <li><NavLink to="/nosotros">NOSOTROS</NavLink></li>
+            <li><NavLink to="/blogs">BLOGS</NavLink></li>
+            <li><NavLink to="/contacto">CONTACTO</NavLink></li>
           </ul>
         </nav>
       </header>

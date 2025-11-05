@@ -194,6 +194,15 @@ html, body {
     background-color: #eee;
 }
 
+/* Mostrar dropdown al pasar el mouse */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown-content.visible {
+  display: block;
+  opacity: 1;
+}
+
 /* --- Carrito */
 .carrito {
     position: relative;

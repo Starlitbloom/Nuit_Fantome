@@ -82,48 +82,6 @@ function LoginPage() {
             </div>
           </div>
         </section>
-
-        {/* Sección final */}
-        <section className="final-final">
-          <img
-            src="/assets/img/fondo_footer.png"
-            alt="Fondo final"
-            className="final-bg"
-          />
-
-          <div className="final-contenido">
-            <div className="final-logo">
-              <img src="/assets/img/logo.png" alt="Logo Nuit Fantome" />
-            </div>
-
-            <div className="final-texto">
-              <p>
-                Te ayudamos a planificar para lograrlo todo con nuestra
-                papelería física y digital. Sabías que si tu escritorio tiene
-                colores y te gusta, la motivación y la productividad llega por
-                sí sola?
-              </p>
-            </div>
-
-            <div className="final-redes">
-              <div className="siguenos">Síguenos</div>
-              <div className="iconos-redes">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer">
-                  <img
-                    src="/assets/img/logo_instagram.png"
-                    alt="Instagram"
-                  />
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noreferrer">
-                  <img src="/assets/img/logo_facebook.png" alt="Facebook" />
-                </a>
-                <a href="mailto:contacto@nuitfantome.com">
-                  <img src="/assets/img/logo_gmail.png" alt="Email" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Footer */}

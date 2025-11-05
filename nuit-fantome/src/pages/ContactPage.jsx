@@ -2,6 +2,8 @@ import React from "react";
 import "../assets/css/style2.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ContactForm from "../components/ContactForm";
+
 
 function ContactPage() {
   return (
@@ -47,25 +49,7 @@ function ContactPage() {
               Si necesitas ayuda con pedidos, cambios o consultas generales, escríbenos aquí.
             </p>
 
-            <form id="contactForm" className="contact-form" noValidate>
-              <label className="label-strong" htmlFor="asunto">Asunto</label>
-              <div className="field">
-                <select id="asunto">
-                  <option value="">Selecciona una opción</option>
-                  <option value="estado">Estado de mi pedido</option>
-                  <option value="cambio">Quiero hacer un cambio</option>
-                  <option value="devolucion">Quiero devolver mi compra</option>
-                  <option value="cancelar">Quiero cancelar mi compra</option>
-                  <option value="experiencia">Experiencia en tienda</option>
-                </select>
-              </div>
-
-              <div id="dynamicArea"></div>
-
-              <div className="form-actions">
-                <button type="submit" className="btn-enviar">Enviar</button>
-              </div>
-            </form>
+            <ContactForm />
           </div>
         </section>
 
