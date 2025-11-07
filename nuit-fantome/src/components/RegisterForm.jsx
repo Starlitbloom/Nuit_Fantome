@@ -96,8 +96,17 @@ export default function RegisterForm() {
 
   return (
     <>
-      {/* ✅ Toast centrado */}
-      {mensaje && <div className="toast toast-success">{mensaje}</div>}
+        {/* ✅ Toast visible en pantalla */}
+        {mensaje && (
+            <div
+                className={`toast ${
+                    mensaje.includes("éxito") ? "toast-success" : "toast-error"
+                }`}
+            >
+                {mensaje}
+            </div>
+        )}
+
 
       <form id="registerForm" onSubmit={handleSubmit} noValidate>
         {[

@@ -451,41 +451,43 @@ html, body {
 .newsletter-mensaje.visible {
   opacity: 1;
 }
-/* ✅ Toast centrado */
+/* 🩵 Toast centrado en pantalla */
 .toast {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.9);
   background-color: #fff;
-  color: #333;
-  padding: 16px 26px;
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  font-size: 16px;
+  color: #000000;
+  padding: 18px 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  font-size: 17px;
   font-family: "Merriweather", sans-serif;
   z-index: 9999;
   opacity: 0;
   animation: fadePop 3s ease forwards;
   text-align: center;
+  max-width: 90%;
 }
 
-/* Estilo de éxito */
+/* 💜 Estilo de éxito */
 .toast-success {
   border-left: 6px solid #4caf50;
 }
 
-/* Animación */
+/* ❌ Estilo de error */
+.toast-error {
+  border-left: 6px solid #e53935;
+}
+
+/* ✨ Animación */
 @keyframes fadePop {
   0% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.9);
   }
-  15% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  85% {
+  10%, 85% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
@@ -494,7 +496,6 @@ html, body {
     transform: translate(-50%, -50%) scale(0.9);
   }
 }
-
 
 /* --- Sección Final */
 .final-final {

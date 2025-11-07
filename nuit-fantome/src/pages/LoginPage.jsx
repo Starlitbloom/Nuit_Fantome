@@ -2,6 +2,7 @@ import React from "react";
 import "../assets/css/style3.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import LoginForm from "../components/LoginForm";
 
 function LoginPage() {
   return (
@@ -38,33 +39,7 @@ function LoginPage() {
                 <p className="login-subtitle">INGRESA A</p>
                 <h2 className="login-title">Nuit Fantome</h2>
 
-                <form id="login-form" noValidate>
-                  <div className="input-container">
-                    <i className="bi bi-envelope-at-fill"></i>
-                    <input type="text" id="email" placeholder="Correo" />
-                    <span className="error-message" id="email-error"></span>
-                  </div>
-
-                  <div className="input-container">
-                    <i className="bi bi-lock-fill"></i>
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="Contraseña"
-                    />
-                    <span className="error-message" id="password-error"></span>
-                  </div>
-
-                  <div className="remember">
-                    <input type="checkbox" id="recuerdame" />
-                    <label htmlFor="recuerdame">Recuérdame</label>
-                  </div>
-
-                  <button id="btn-login" type="submit" className="btn-login">
-                    Iniciar Sesión
-                  </button>
-                  <p className="forgot-password">¿Olvidaste la contraseña?</p>
-                </form>
+                <LoginForm />
               </div>
             </div>
 
