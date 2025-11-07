@@ -67,10 +67,16 @@ export default function LoginForm() {
     // Guardar usuario actual en localStorage
     localStorage.setItem("usuarioActual", JSON.stringify(usuario));
 
-    // Mensaje de éxito y redirección
+    // Mensaje de éxito
     setMensaje("✅ ¡Inicio de sesión exitoso! Serás redirigido 💫");
+
+    // Redirigir según el rol del usuario
     setTimeout(() => {
-      navigate("/");
+      if (usuario.rol === "admin") {
+        navigate("/admin/dashboard"); // 🔹 Vista administrador
+      } else {
+        navigate("/"); // 🔹 Vista tienda
+      }
     }, 1500);
   };
 
