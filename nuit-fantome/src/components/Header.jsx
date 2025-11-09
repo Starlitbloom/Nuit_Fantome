@@ -81,6 +81,7 @@ function Header() {
           <ul>
             <li><NavLink to="/" end>INICIO</NavLink></li>
             <li><NavLink to="/productos">PRODUCTOS</NavLink></li>
+            <li><NavLink to="/categorias">CATEGORÍAS</NavLink></li>
             <li><NavLink to="/nosotros">NOSOTROS</NavLink></li>
             <li><NavLink to="/blogs">BLOGS</NavLink></li>
             <li><NavLink to="/contacto">CONTACTO</NavLink></li>

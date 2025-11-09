@@ -89,7 +89,7 @@ let productosBase = [
     img:"/assets/img/planner-semanal-hello-kitty.jpg",
     desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." },
   { id:"plan-kuromi", categoria:"Papelería digital", nombre:"Planner semanal — Kuromi", precio:2990,
-    img:"/assets/img/planner-semanal-kuromi.jpg",
+    img:"/assets/img/planner-kuromi.jpg",
     desc:"Planner semanal imprimible (A4/Letter) con espacio para todos los días y notas." },
   { id:"plan-sailor", categoria:"Papelería digital", nombre:"Planner semanal — Sailor Moon", precio:2990,
     img:"/assets/img/planner-semanal-sailor-moon.jpg",

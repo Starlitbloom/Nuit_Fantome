@@ -296,6 +296,7 @@ export default function BlogsPage() {
           <ul>
             <li><a href="/">INICIO</a></li>
             <li><a href="/productos">PRODUCTOS</a></li>
+            <li><a href="/categorias">CATEGORÍAS</a></li>
             <li><a href="/nosotros">NOSOTROS</a></li>
             <li><a className="active" href="/blogs">BLOGS</a></li>
             <li><a href="/contacto">CONTACTO</a></li>
