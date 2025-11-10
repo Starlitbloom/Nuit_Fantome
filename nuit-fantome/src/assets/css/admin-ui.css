@@ -1,0 +1,353 @@
+/* =========================================================
+   ADMIN – Productos & Pedidos (tema pastel suave)
+   Importa SOLO en esas dos páginas.
+   ========================================================= */
+
+/* Paleta */
+:root{
+  --a-bg: #f7f5ff;          /* fondo suave */
+  --a-panel: #ffffff;       /* panel claro */
+  --a-border: #e6e1ff;      /* bordes lilas */
+  --a-ink: #221b40;         /* texto principal */
+  --a-muted: #6b6490;       /* texto secundario */
+  --a-primary: #8b5cf6;     /* lila */
+  --a-primary-2: #a78bfa;   /* lila claro */
+  --a-rose: #f472b6;        /* rosa */
+  --a-mint: #34d399;        /* menta */
+  --a-amber: #f59e0b;       /* ámbar */
+  --a-red: #ef4444;         /* rojo */
+
+  --a-shadow: 0 12px 30px rgba(139,92,246,.15);
+}
+
+/* Fondo de la página admin (solo cuando hay .card oscura típica de admin) */
+.container:has(.card.bg-dark.text-light){
+  background:
+    radial-gradient(900px 500px at 10% -10%, rgba(167,139,250,.25), transparent 60%),
+    radial-gradient(900px 600px at 90% 0%, rgba(244,114,182,.18), transparent 55%),
+    var(--a-bg);
+  padding-bottom: 40px;
+}
+
+/* Panel principal que usas en ambas páginas */
+.card.bg-dark.text-light {
+  background: linear-gradient(180deg, #ffffff, #fbfaff);
+  color: var(--a-ink) !important;
+  border: 1px solid var(--a-border) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--a-shadow);
+}
+
+/* Títulos y subtítulos */
+.card.bg-dark.text-light h2,
+.card.bg-dark.text-light h3,
+.card.bg-dark.text-light h5,
+.card.bg-dark.text-light h6{
+  color: var(--a-ink);
+  letter-spacing: .2px;
+}
+.card.bg-dark.text-light hr{
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--a-border), transparent);
+  margin: 14px 0;
+}
+
+/* ========================= Tabs (estilo base) ========================= */
+.nav.nav-tabs{
+  border: 0 !important;
+  gap: 10px;
+}
+.nav.nav-tabs .nav-item .nav-link{
+  border: 1px solid var(--a-border) !important;
+  color: var(--a-ink);
+  background: #fff;
+  border-radius: 999px !important;
+  padding: 10px 14px;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(0,0,0,.03);
+  transition: all .18s ease;
+}
+.nav.nav-tabs .nav-item .nav-link:hover{
+  transform: translateY(-1px);
+  border-color: var(--a-primary) !important;
+}
+.nav.nav-tabs .nav-item .nav-link.active{
+  color: #fff;
+  border-color: transparent !important;
+  background: linear-gradient(90deg, var(--a-primary), var(--a-primary-2));
+  box-shadow: 0 8px 22px rgba(139,92,246,.25);
+}
+
+/* ===== Tabs en FILA (activa agregando .tabs-inline al UL de tabs) ===== */
+.nav.nav-tabs.tabs-inline{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+}
+.nav.nav-tabs.tabs-inline .nav-item{ list-style: none; }
+@media (max-width: 640px){
+  .nav.nav-tabs.tabs-inline{ gap: 8px; }
+  .nav.nav-tabs.tabs-inline .nav-link{ padding: 8px 12px; }
+}
+
+/* ========================= Tabla ======================== */
+.table.table-dark{
+  color: var(--a-ink) !important;
+  background: transparent;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* “chips” por fila */
+}
+.table.table-dark thead th{
+  background: #f1edff !important;
+  color: var(--a-muted) !important;
+  border: 1px solid var(--a-border) !important;
+  border-bottom: 1px solid var(--a-border) !important;
+  padding: 10px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.table.table-dark tbody tr{ background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.05); }
+.table.table-dark tbody td{
+  border-top: 1px solid var(--a-border) !important;
+  border-bottom: 1px solid var(--a-border) !important;
+  padding: 12px;
+}
+.table.table-dark tbody tr:hover{
+  transform: translateY(-2px);
+  transition: transform .12s ease;
+}
+.table.table-dark thead th:first-child,
+.table.table-dark tbody td:first-child{
+  border-left: 1px solid var(--a-border) !important;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.table.table-dark thead th:last-child,
+.table.table-dark tbody td:last-child{
+  border-right: 1px solid var(--a-border) !important;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* ======================= Formularios ==================== */
+.form-control,
+.form-select,
+input.form-control,
+select.form-select{
+  background: #fff !important;
+  border: 1px solid var(--a-border) !important;
+  color: var(--a-ink) !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+.form-control:focus,
+.form-select:focus{
+  border-color: var(--a-primary) !important;
+  box-shadow: 0 0 0 4px rgba(139,92,246,.15) !important;
+}
+
+/* ======================== Botones ======================= */
+.btn{
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  border: 0 !important;
+  padding: 9px 14px !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,.07);
+}
+.btn.btn-primary{
+  background: linear-gradient(90deg, var(--a-primary), var(--a-primary-2)) !important;
+  color: #fff !important;
+}
+.btn.btn-primary:hover{ filter: brightness(1.05); }
+
+.btn.btn-warning{
+  background: linear-gradient(90deg, #fb7185, #f472b6) !important; /* rojo→rosa */
+  color: #fff !important;
+}
+.btn.btn-danger{
+  background: linear-gradient(90deg, #ef4444, #f59e0b) !important; /* rojo→ámbar */
+  color: #fff !important;
+}
+
+/* Botones dentro de la columna Acciones más “compactos” */
+.table .btn.btn-sm{ padding: 6px 10px !important; border-radius: 10px !important; }
+
+/* ======================== Badges ======================== */
+.badge,
+.pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+}
+.badge.ok{   background: rgba(52,211,153,.12); color: #065f46; border-color: #a7f3d0; }
+.badge.warn{ background: rgba(245,158,11,.12); color: #7c3a00; border-color: #fde68a; }
+.badge.danger{background: rgba(239,68,68,.12); color: #7f1d1d; border-color: #fecaca; }
+
+/* =================== Toolbar (filtros) ================== */
+.toolbar{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: #fff;
+  border: 1px dashed var(--a-border);
+  padding: 10px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.04);
+}
+
+/* ======================= Utilitarios ==================== */
+.mt-3.p-3.rounded-3{ border-radius: 18px !important; }
+.text-secondary{ color: var(--a-muted) !important; }
+
+/* ==== Espaciados para tabs y filtros ==== */
+.nav.nav-tabs,
+.nav.nav-tabs.tabs-inline{
+  margin-top: 10px;      /* separa de la topbar */
+  margin-bottom: 18px;   /* separa de la tabla/panel */
+}
+
+/* Si usas la toolbar de filtros (Pedidos) */
+.toolbar{ margin: 6px 0 18px; }
+
+/* Cuando hay tabs y debajo viene la toolbar, deja un respiro extra */
+.nav.nav-tabs.tabs-inline + .toolbar{ margin-top: 10px; }
+
+/* En móviles, reduce un poco */
+@media (max-width: 640px){
+  .nav.nav-tabs,
+  .nav.nav-tabs.tabs-inline{ margin-bottom: 14px; }
+  .toolbar{ margin: 6px 0 14px; }
+}
+
+/* =========================================================
+   Modal pastel usable + Variantes con scroll
+   ========================================================= */
+.modal .modal-dialog { max-width: 900px; }
+
+.modal .modal-content{
+  background: linear-gradient(180deg,#ffffff,#fbfaff);
+  border: 1px solid var(--a-border);
+  border-radius: 18px;
+  color: var(--a-ink);
+  box-shadow: var(--a-shadow);
+}
+
+.modal .modal-header{
+  background: linear-gradient(90deg, var(--a-primary), var(--a-primary-2));
+  color: #fff;
+  border: none;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.modal .modal-title{ font-weight: 800; letter-spacing:.2px; }
+.modal .btn-close.btn-close-white{ filter: invert(1) grayscale(100%); opacity: .9; }
+
+/* Cuerpo scrolleable para que no tape el footer del modal */
+.modal .modal-body{
+  max-height: 70vh;
+  overflow: auto;
+  padding: 18px;
+}
+
+/* Inputs del modal */
+.modal .form-label{ color: var(--a-ink); font-weight: 700; }
+.modal .form-control,
+.modal .form-select{
+  background:#fff; border:1px solid var(--a-border);
+  color: var(--a-ink); border-radius:12px; padding:10px 12px;
+}
+
+/* Encabezado de la sección Variantes */
+.variants-head{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  margin: 10px 0 8px;
+}
+
+/* Contenedor scrolleable de la tabla de variantes */
+.variants-scroll{
+  max-height: 38vh;
+  overflow:auto;
+  border:1px dashed var(--a-border);
+  border-radius:14px;
+  background:#fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.04);
+}
+
+/* Tabla de variantes */
+.variants-scroll .table{ margin:0; background:transparent; border-spacing:0; }
+.variants-scroll thead th{
+  position: sticky; top: 0; z-index: 1;
+  background:#f1edff !important; color: var(--a-muted) !important;
+  border-bottom: 1px solid var(--a-border) !important;
+}
+.variants-scroll tbody tr{ background:#fff; }
+
+/* Botones del modal coherentes con el tema */
+.modal .btn.btn-primary{
+  background: linear-gradient(90deg, var(--a-primary), var(--a-primary-2)) !important;
+  color:#fff !important;
+}
+.modal .btn.btn-outline-secondary{
+  border:1px solid var(--a-border) !important;
+  color: var(--a-ink) !important;
+  background:#fff !important;
+}
+.modal .btn.btn-danger{
+  background: linear-gradient(90deg, #ef4444, #f59e0b) !important;
+  color:#fff !important;
+}
+
+/* =========================================================
+   Overlay & responsive (fix pantalla partida)
+   ========================================================= */
+.modal.d-block{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(60% 80% at 50% 20%, rgba(167,139,250,.18), transparent) ,
+              rgba(0,0,0,.45);
+  backdrop-filter: blur(2px);            /* <- blur suave */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;                         /* respira en bordes */
+  overflow-y: auto;                      /* scroll si el modal es alto */
+  z-index: 2000;                         /* sobre sidebar/topbar */
+}
+
+/* El contenedor del modal se ajusta al viewport */
+.modal .modal-dialog{
+  margin: auto;
+  width: min(900px, 96vw);
+  transform: none;
+}
+
+/* El contenido aprovecha la altura sin aplastar el footer */
+.modal .modal-content{
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.modal .modal-body{ flex: 1; }
+
+/* En móviles: más compacto */
+@media (max-width: 768px){
+  .modal .modal-dialog{ width: 95vw; }
+  .modal .modal-body{ max-height: 65vh; }
+}

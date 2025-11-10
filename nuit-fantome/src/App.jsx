@@ -18,34 +18,34 @@ import BoletaPage from "./pages/BoletaPage";
 import PagoPage from "./pages/PagoPage";
 
 import NosotrosPage from "./pages/NosotrosPage";
+import PedidosPage from "./pages/admin/PedidosPage";
+import AdminProductosPage from "./pages/admin/AdminProductosPage";
 
-// 404 simple
-const NotFound = () => <div style={{padding:24}}>Página no encontrada</div>;
+// Página 404 simple
+const NotFound = () => (
+  <div style={{ padding: 24, textAlign: "center", color: "#3a2a63" }}>
+    <h2>Página no encontrada</h2>
+    <p>La ruta que intentas acceder no existe.</p>
+  </div>
+);
 
 function App() {
   return (
-<<<<<<< Updated upstream
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/contacto" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/registro" element={<RegisterPage />} />
-
-        {/* Rutas del panel admin */}
-        <Route path="/admin/dashboard" element={<DashboardPage />} />
-      </Routes>
-    </Router>
-=======
     <Routes>
       {/* Públicas */}
       <Route path="/" element={<HomePage />} />
       <Route path="/contacto" element={<ContactPage />} />
       <Route path="/nosotros" element={<NosotrosPage />} />
 
-      {/* Auth */}
+      {/* Autenticación */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Panel de administración */}
+      <Route path="/admin/dashboard" element={<DashboardPage />} />
+      <Route path="/admin/pedidos" element={<PedidosPage />} />
+      <Route path="/admin/productos" element={<AdminProductosPage/>} />
+      
 
       {/* Tienda */}
       <Route path="/productos" element={<ProductosPage />} />
@@ -57,16 +57,16 @@ function App() {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/checkoutPage" element={<Navigate to="/checkout" replace />} />
 
-      {/* Boleta (con y sin id) */}
+      {/* Boleta (con y sin ID) */}
       <Route path="/boleta" element={<BoletaPage />} />
       <Route path="/boleta/:id" element={<BoletaPage />} />
 
+      {/* Pago */}
       <Route path="/pago" element={<PagoPage />} />
 
-      {/* 404 */}
+      {/* Página 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
->>>>>>> Stashed changes
   );
 }
 

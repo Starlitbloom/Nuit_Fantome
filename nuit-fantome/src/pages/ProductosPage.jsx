@@ -2,9 +2,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-/* =======================
-   Catálogo base (igual al HTML)
-   ======================= */
+/* ==============
+   Catálogo base 
+   ============== */
 let productosBase = [
   { id:"org01", categoria:"Organizadores", nombre:"Organizador de escritorio blanco", precio:12990, img:"assets/img/organizador.jpg.avif", desc:"Organizador metálico con cajón y compartimentos; ideal para notas, lápices y clips." },
   { id:"washi01", categoria:"Cintas / Washi", nombre:"Set 5 washi tape – colores mixtos", precio:3990, img:"assets/img/washi-mix5.jpg", desc:"Pack de 5 cintas washi de colores mixtos; papel de arroz, reposicionables, 15 mm x 5 m c/u." },
@@ -50,24 +50,55 @@ let productosBase = [
   { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal Sailor Moon." }
 ];
 
-/* ========= Merge con catálogo guardado en Admin ========= */
-const CATALOG_KEY = "nf_catalog_custom_v1";
-const deepClone = (o) => JSON.parse(JSON.stringify(o || {}));
-const loadCustomArr = () => { try { return JSON.parse(localStorage.getItem(CATALOG_KEY) || "[]"); } catch { return []; } };
-const saveCustomArr = (arr) => { localStorage.setItem(CATALOG_KEY, JSON.stringify(arr)); };
-function mergeCatalog() {
+/* ========= Override con datos del Admin =========
+   Clave usada por tu AdminProductosPage.jsx: "nf_productos"
+   ================================================= */
+const ADMIN_PRODUCTS_KEY = "nf_productos";
+
+// Mapeo auxiliar de idCategoria -> nombre (derivado del catálogo base)
+const uniqueCats = Array.from(new Set(productosBase.map(p => p.categoria)));
+const CAT_ID_TO_NAME = {};
+uniqueCats.forEach((name, i) => { CAT_ID_TO_NAME[i + 1] = name; });
+
+const loadAdminArr = () => {
+  try { return JSON.parse(localStorage.getItem(ADMIN_PRODUCTS_KEY) || "[]"); }
+  catch { return []; }
+};
+
+// Convierte un ítem del admin a la forma usada por la tienda
+function normalizeFromAdmin(ap) {
+  // Intentar recuperar nombre de categoría desde idCategoria
+  let categoria =
+    ap.categoria ||
+    CAT_ID_TO_NAME[ap.idCategoria] ||
+    (ap.idCategoria ? `Categoría #${ap.idCategoria}` : (productosBase.find(b => b.id === ap.id)?.categoria || "Otros"));
+
+  return {
+    id: ap.id,
+    nombre: ap.nombre,
+    precio: Number(ap.precio || 0),
+    img: ap.img || (productosBase.find(b => b.id === ap.id)?.img) || "assets/img/placeholder.jpg",
+    desc: ap.desc || (productosBase.find(b => b.id === ap.id)?.desc) || "",
+    categoria,
+    stock: typeof ap.stock === "number" ? ap.stock : (productosBase.find(b => b.id === ap.id)?.stock ?? undefined),
+    opciones: Array.isArray(ap.opciones) ? ap.opciones : (productosBase.find(b => b.id === ap.id)?.opciones || [])
+  };
+}
+
+// Funde catálogo base con lo que haya en admin (admin sobre-escribe)
+function buildMergedCatalog() {
   const baseMap = new Map(productosBase.map(p => [p.id, p]));
-  loadCustomArr().forEach(p => {
-    const cp = { ...p };
-    if (typeof cp.img === "string" && cp.img.startsWith("../")) { cp.img = cp.img.replace(/^\.\.\//, ""); }
-    baseMap.set(cp.id, cp);
+  const admin = loadAdminArr();
+  admin.forEach(ap => {
+    const norm = normalizeFromAdmin(ap);
+    baseMap.set(norm.id, { ...baseMap.get(norm.id), ...norm });
   });
   return Array.from(baseMap.values());
 }
 
-/* ========= Stock compartido ========= */
+/* ========= Stock compartido (lee/escribe en nf_productos) ========= */
 function getUnifiedStockFor(id, optName) {
-  const p = loadCustomArr().find(x => x.id === id);
+  const p = loadAdminArr().find(x => x.id === id);
   if (!p) return null;
   if (optName) {
     const o = (p.opciones || []).find(x => x.t === optName);
@@ -80,12 +111,19 @@ function getUnifiedStockFor(id, optName) {
   if (typeof p.stock === "number") return p.stock;
   return null;
 }
+
+function saveAdminArr(arr) {
+  localStorage.setItem(ADMIN_PRODUCTS_KEY, JSON.stringify(arr));
+  // notificar a listeners (vista productos, etc.)
+  window.dispatchEvent(new CustomEvent("nf:productos:update"));
+}
+
 function persistStockChange(id, opt, delta) {
-  const arr = loadCustomArr();
+  const arr = loadAdminArr();
   let p = arr.find(x => x.id === id);
   if (!p) {
-    const base = deepClone(productosBase.find(z => z.id === id)) || { id };
-    p = { id, ...base };
+    const base = productosBase.find(z => z.id === id) || { id };
+    p = { ...base, id, idCategoria: p?.idCategoria ?? undefined };
     arr.push(p);
   }
   if (opt) {
@@ -96,7 +134,7 @@ function persistStockChange(id, opt, delta) {
   } else {
     p.stock = Math.max(0, Number(p.stock || 0) + delta);
   }
-  saveCustomArr(arr);
+  saveAdminArr(arr);
 }
 
 /* ========= Carrito ========= */
@@ -113,7 +151,23 @@ const saveCart = (c) => {
    Página de Productos
    ======================= */
 export default function ProductosPage() {
-  const productos = useMemo(() => mergeCatalog(), []);
+  const [productos, setProductos] = useState(() => buildMergedCatalog());
+
+  // recarga cuando el admin guarda o cuando cambia localStorage en otra pestaña
+  useEffect(() => {
+    const reload = () => setProductos(buildMergedCatalog());
+    window.addEventListener("nf:productos:update", reload);
+    window.addEventListener("storage", (e) => {
+      if (e.key === ADMIN_PRODUCTS_KEY) reload();
+      if (e.key === CART_KEY) saveCart(loadCart());
+    });
+    // init contador
+    saveCart(loadCart());
+    return () => {
+      window.removeEventListener("nf:productos:update", reload);
+      window.removeEventListener("storage", reload);
+    };
+  }, []);
 
   const [filtro, setFiltro] = useState("");
   const [priceMin, setPriceMin] = useState(1000);
@@ -131,6 +185,7 @@ export default function ProductosPage() {
     saveCart(loadCart());
   }, [productos]);
 
+  // Dropdown header
   useEffect(() => {
     const btn = document.querySelector(".btn-acceder");
     const dd = document.querySelector(".dropdown-content");
@@ -228,8 +283,8 @@ export default function ProductosPage() {
             radial-gradient(60% 120% at 10% -20%, rgba(167,139,250,.20) 0%, rgba(167,139,250,0) 70%),
             radial-gradient(50% 100% at 100% 0%, rgba(124,58,237,.18) 0%, rgba(124,58,237,0) 70%);
         }
-        .filters-spacer{ height:20px; }                 /* separa del borde blanco */
-        .filters-bar{width:min(1100px,95%); margin:48px auto 18px; display:grid; /* margen TOP aumentado */
+        .filters-spacer{ height:20px; }
+        .filters-bar{width:min(1100px,95%); margin:48px auto 18px; display:grid;
           grid-template-columns: 1fr 140px 140px 120px; gap:10px;}
         .filters-bar .field{display:flex; flex-direction:column; gap:6px;}
         .filters-bar label{color:#fff; opacity:.9; font-weight:700; font-size:.9rem;}
@@ -246,9 +301,7 @@ export default function ProductosPage() {
       `}</style>
 
       <section className="page-hero products-hero">
-        {/* separador para que no quede pegado al borde blanco */}
         <div className="filters-spacer" />
-
         <div className="filters-bar">
           <div className="field">
             <label>Categoría</label>
@@ -285,12 +338,7 @@ export default function ProductosPage() {
           <div className="field" style={{alignSelf:"end"}}>
             <button
               className="btn-clear"
-              onClick={()=>{
-                setFiltro("");
-                setCatSel("Todos");
-                setPriceMin(1000);
-                setPriceMax("");
-              }}
+              onClick={()=>{ setFiltro(""); setCatSel("Todos"); setPriceMin(1000); setPriceMax(""); }}
             >
               Limpiar filtros
             </button>
