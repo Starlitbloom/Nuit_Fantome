@@ -7,6 +7,7 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/admin/DashboardPage";
+import UsuarioPage from "./pages/admin/UsuarioPage";
 
 import ProductosPage from "./pages/ProductosPage";
 import ProductoDetallePage from "./pages/ProductoDetallePage";
@@ -66,6 +67,10 @@ function App() {
 
       {/* Página 404 */}
       <Route path="*" element={<NotFound />} />
+
+      {/* Rutas del panel admin */}
+      <Route path="/admin/dashboard" element={<DashboardPage />} />
+      <Route path="/admin/usuarios" element={<UsuarioPage />} />
     </Routes>
   );
 }

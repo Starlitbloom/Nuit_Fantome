@@ -1,0 +1,197 @@
+:root{
+      --bg:#0f0321;
+      --card:#111025;
+      --ink:#e9e6ff;
+      --muted:#bdb9d8;
+      --line:#2b2550;
+      --primary:#7c3aed;
+      --primary-2:#a78bfa;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+    }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Merriweather',serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;}
+
+  /* Layout */
+  .wrapper{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{
+    width:220px;background:var(--card);display:flex;flex-direction:column;
+  }
+  .sidebar h2{color:var(--primary);text-align:center;padding:20px 0;font-size:22px;}
+  .sidebar ul li{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.3s;}
+  .sidebar ul li:hover, .sidebar ul li.active{background:var(--primary-2);color:#fff;}
+  .sidebar ul li i{width:20px;text-align:center;}
+
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+
+  /* Topbar */
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:30px;font-weight: 700;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+/* sidebar */
+.sidebar{
+  width:240px;
+  background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)),
+        var(--card);
+  color:var(--ink);display:flex;flex-direction:column;position:relative;
+}
+.sidebar .logo{text-align:center;padding:20px 0}
+.sidebar .logo img{width:220px;height:auto}
+.sidebar h2{color:var(--primary);text-align:center;margin-bottom:15px;font-size:22px;}
+.sidebar ul li{padding:14px 20px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:0.3s;}
+.sidebar ul li:hover,.sidebar ul li.active{background:var(--primary-2);color:#fff}
+.sidebar ul li i{width:20px;text-align:center}
+
+/* Estrellitas flotantes */
+  .spark{
+    position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(#fff,rgba(255,255,255,.1));
+    filter:drop-shadow(0 0 10px #fff);
+    animation:float 8s linear infinite;
+}
+  .spark.s1{left:8%; top:28%; animation-duration:7.5s;}
+  .spark.s2{left:82%; top:22%;}
+  .spark.s3{left:18%; top:70%; animation-duration:9s;}
+  .spark.s4{left:72%; top:68%; animation-duration:10s;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+/* Main */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);}
+  .topbar .left h1{font-size:20px;}
+  .topbar .right{display:flex;align-items:center;gap:15px;}
+  .topbar .right i{cursor:pointer;font-size:18px;}
+  .topbar .right .user{display:flex;align-items:center;gap:10px;}
+  .topbar .right .user img{width:35px;height:35px;border-radius:50%;object-fit:cover;}
+
+/* Container */
+  .container{width:min(1200px,94%);margin:20px auto}
+
+/* title + tools */
+.bc{color:var(--muted);font-size:14px}
+    .title{display:flex;align-items:end;justify-content:space-between;gap:10px}
+    .title h1{margin:.2rem 0 0;font-size:clamp(22px,2.5vw,28px)}
+    .title .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff;border:0;border-radius:10px;
+      padding:12px 20px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(112, 91, 148, 0.28);text-decoration:none;display:inline-flex;gap:8px;align-items:center
+    }
+    .btn-ghost{background:#1a1633;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px 20px;font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
+    .btn.sm{padding:6px 10px;border-radius:8px;font-weight:700}
+    .btn-ghost.sm{padding:6px 10px;border-radius:8px;font-weight:700}
+    .btn[disabled], .btn-ghost[disabled]{opacity:.6;pointer-events:none}
+    .tab-active{box-shadow:0 0 0 2px rgba(167,139,250,.35) inset}
+
+/* cards quick access */
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+@media(max-width:860px){.actions{grid-template-columns:1fr}}
+.qcard{background:linear-gradient(180deg,#151234,#120e28);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.qicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff}
+.view { display:none; }
+.view.active { display:block; }
+
+/* filters & table */
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:-40px 0 14px}
+.input,select,textarea{
+    background:#130f2b;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px
+}
+.input::placeholder{color:#8f89b6}
+    .input.err{border-color:var(--danger); box-shadow:0 0 0 1px var(--danger) inset}
+    textarea{resize:vertical}
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+    th{position:sticky;top:0;background:#151237}
+    tr:hover td{background:#120f2c}
+    .thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid var(--line)}
+    .badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid}
+    .b-ok{border-color:#064e3b;color:#34d399;background:rgba(52,211,153,.1)}
+    .b-off{border-color:#92400e;color:#fbbf24;background:rgba(251,191,36,.08)}
+    .tag{display:inline-block;margin:.1rem .25rem 0 0;padding:2px 8px;border:1px solid var(--line);
+      border-radius:999px;font-size:12px;color:#cfcbe6;background:#1a1633}
+    .pill{display:inline-block;margin:.15rem .25rem 0 0;padding:3px 8px;border:1px solid var(--line);
+      border-radius:999px;font-size:12px;color:#d7d2ff;background:#1a1633}
+    .actions-col{display:flex;gap:4px;flex-wrap:wrap; align-items: center;}
+    .btn-danger{background:#2b0e14;border:1px solid #4b1017;color:#ffb4b4}
+    .empty{color:#bfbad9;padding:16px}
+
+    .view{display:none}
+    .view.active{display:block}
+/* form */
+.form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap: 14px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+label{color:#ffffff;font-size:14px}
+.help{color:#9c96bf;font-size:12px;margin-top:4px}
+.section-title{grid-column:1/-1;margin:6px 0 2px;font-size:15px;color:#c9c3ee;font-weight:700}
+.divider{grid-column:1/-1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:6px 0}
+.preview{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#130f2b}
+
+/* modal */
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.45);padding:16px}
+.modal.open{display:grid}
+.modal .box{width:min(720px,96vw);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.modal .close{background:#1a1633;border:1px solid var(--line);color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+/* Añade este selector si quieres que el título del modal sea explícitamente blanco */
+.modal header h3 {
+  color: #fff; /* Blanco puro */
+}
+/* small helpers */
+.empty{color:#bfbad9;padding:16px}
+.err{border-color:var(--danger);box-shadow:0 0 0 1px rgba(239,68,68,.12) inset}
+.tag{display:inline-block;margin:.1rem .25rem 0 0;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:#cfcbe6;background:#1a1633}
+/* Nuevo estilo para el botón 'Eliminar' de la tabla */
+.btn-text-danger{
+    /* Apariencia de texto/enlace */
+    background: transparent; /* Quita el fondo */
+    border: none; /* Quita el borde */
+    
+    /* Color y texto */
+    color: var(--danger); /* Usa tu variable de peligro (rojo) */
+    font-weight: 700;
+    font-size: 14px; /* O el tamaño que uses en tus celdas */
+    
+    /* Espaciado */
+    padding: 2px 4px; /* Relleno mínimo para que se vea compacto */
+    margin-top: 4px; /* Añade un pequeño margen arriba para separarlo de 'Ver' y 'Editar' */
+    
+    /* Flexbox y cursor */
+    cursor: pointer;
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+/* Estilo hover (opcional) */
+.btn-text-danger:hover {
+    color: #ff8888; /* Un rojo más claro al pasar el ratón */
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+}
+/* Estilo para el botón Eliminar DENTRO del Modal */
+.btn-text-danger-modal {
+    background: transparent;
+    border: 1px solid transparent; /* Inicialmente transparente */
+    color: var(--danger);
+    font-size: 16px; /* Para que sea más grande que el de la tabla */
+    font-weight: 700;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.2s, border-color 0.2s;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-text-danger-modal:hover {
+    background: var(--danger); /* Fondo rojo al pasar el ratón */
+    border-color: var(--danger);
+    color: #fff; /* Texto blanco al pasar el ratón */
+}
