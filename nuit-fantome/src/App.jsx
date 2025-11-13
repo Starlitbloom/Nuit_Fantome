@@ -2,6 +2,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import BlogsPage from "./pages/BlogsPage";
 import HomePage from "./pages/HomePage";
 import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
@@ -37,6 +38,8 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/contacto" element={<ContactPage />} />
       <Route path="/nosotros" element={<NosotrosPage />} />
+      <Route path="/blogs" element={<BlogsPage />} />
+
 
       {/* Autenticación */}
       <Route path="/login" element={<LoginPage />} />
