@@ -50,9 +50,7 @@ let productosBase = [
   { id:"plan-sailor", categoria:"Planners / To-Do", nombre:"Planner semanal — Sailor Moon", precio:2990, img:"assets/img/planner-semanal-sailor-moon.jpg", desc:"Planner semanal Sailor Moon." }
 ];
 
-/* ========= Override con datos del Admin =========
-   Clave usada por tu AdminProductosPage.jsx: "nf_productos"
-   ================================================= */
+/* ========= Override con datos del Admin ========= */
 const ADMIN_PRODUCTS_KEY = "nf_productos";
 
 // Mapeo auxiliar de idCategoria -> nombre (derivado del catálogo base)
@@ -67,7 +65,6 @@ const loadAdminArr = () => {
 
 // Convierte un ítem del admin a la forma usada por la tienda
 function normalizeFromAdmin(ap) {
-  // Intentar recuperar nombre de categoría desde idCategoria
   let categoria =
     ap.categoria ||
     CAT_ID_TO_NAME[ap.idCategoria] ||
@@ -80,8 +77,12 @@ function normalizeFromAdmin(ap) {
     img: ap.img || (productosBase.find(b => b.id === ap.id)?.img) || "assets/img/placeholder.jpg",
     desc: ap.desc || (productosBase.find(b => b.id === ap.id)?.desc) || "",
     categoria,
-    stock: typeof ap.stock === "number" ? ap.stock : (productosBase.find(b => b.id === ap.id)?.stock ?? undefined),
-    opciones: Array.isArray(ap.opciones) ? ap.opciones : (productosBase.find(b => b.id === ap.id)?.opciones || [])
+    stock: ap.stock != null
+      ? Number(ap.stock)
+      : (productosBase.find(b => b.id === ap.id)?.stock ?? undefined),
+    opciones: Array.isArray(ap.opciones)
+      ? ap.opciones
+      : (productosBase.find(b => b.id === ap.id)?.opciones || [])
   };
 }
 
@@ -97,43 +98,56 @@ function buildMergedCatalog() {
 }
 
 /* ========= Stock compartido (lee/escribe en nf_productos) ========= */
+/*  FUNCION CLAVE: ahora es tolerante a strings y numbers  */
 function getUnifiedStockFor(id, optName) {
   const p = loadAdminArr().find(x => x.id === id);
   if (!p) return null;
+
+  const toNum = (v) => (v === undefined || v === null || v === "") ? null : Number(v);
+
   if (optName) {
     const o = (p.opciones || []).find(x => x.t === optName);
     if (o) {
-      if (typeof o.s === "number") return o.s;
-      if (typeof o.stock === "number") return o.stock;
+      const s1 = toNum(o.s);
+      if (s1 !== null && !Number.isNaN(s1)) return s1;
+      const s2 = toNum(o.stock);
+      if (s2 !== null && !Number.isNaN(s2)) return s2;
     }
     return null;
   }
-  if (typeof p.stock === "number") return p.stock;
+
+  const g = toNum(p.stock);
+  if (g !== null && !Number.isNaN(g)) return g;
   return null;
 }
 
 function saveAdminArr(arr) {
   localStorage.setItem(ADMIN_PRODUCTS_KEY, JSON.stringify(arr));
-  // notificar a listeners (vista productos, etc.)
   window.dispatchEvent(new CustomEvent("nf:productos:update"));
 }
 
+/* cuando se descuenta stock desde la tienda, asegúrate de guardar números */
 function persistStockChange(id, opt, delta) {
   const arr = loadAdminArr();
   let p = arr.find(x => x.id === id);
   if (!p) {
     const base = productosBase.find(z => z.id === id) || { id };
-    p = { ...base, id, idCategoria: p?.idCategoria ?? undefined };
+    p = { ...base, id };
     arr.push(p);
   }
+
   if (opt) {
     if (!Array.isArray(p.opciones)) p.opciones = [];
     let oo = p.opciones.find(o => o.t === opt);
     if (!oo) { oo = { t: opt, s: 0 }; p.opciones.push(oo); }
-    oo.s = Math.max(0, Number(oo.s || 0) + delta);
+    const current = Number(oo.s ?? oo.stock ?? 0);
+    oo.s = Math.max(0, current + delta);
+    delete oo.stock; // nos quedamos solo con "s"
   } else {
-    p.stock = Math.max(0, Number(p.stock || 0) + delta);
+    const current = Number(p.stock ?? 0);
+    p.stock = Math.max(0, current + delta);
   }
+
   saveAdminArr(arr);
 }
 
@@ -153,19 +167,21 @@ const saveCart = (c) => {
 export default function ProductosPage() {
   const [productos, setProductos] = useState(() => buildMergedCatalog());
 
-  // recarga cuando el admin guarda o cuando cambia localStorage en otra pestaña
   useEffect(() => {
     const reload = () => setProductos(buildMergedCatalog());
-    window.addEventListener("nf:productos:update", reload);
-    window.addEventListener("storage", (e) => {
+    const storageHandler = (e) => {
       if (e.key === ADMIN_PRODUCTS_KEY) reload();
       if (e.key === CART_KEY) saveCart(loadCart());
-    });
-    // init contador
+    };
+
+    window.addEventListener("nf:productos:update", reload);
+    window.addEventListener("storage", storageHandler);
+
     saveCart(loadCart());
+
     return () => {
       window.removeEventListener("nf:productos:update", reload);
-      window.removeEventListener("storage", reload);
+      window.removeEventListener("storage", storageHandler);
     };
   }, []);
 
@@ -173,6 +189,7 @@ export default function ProductosPage() {
   const [priceMin, setPriceMin] = useState(1000);
   const [priceMax, setPriceMax] = useState("");
   const [selecciones, setSelecciones] = useState(() => ({}));
+
   const categoriasUnicas = useMemo(() => {
     return Array.from(new Set(productos.map(p => p.categoria))).sort();
   }, [productos]);
@@ -204,12 +221,15 @@ export default function ProductosPage() {
     const sel = selecciones[p.id] || { qty: 1, opt: "" };
     const optName = sel.opt || "";
     let qty = Math.max(1, sel.qty | 0);
+
     const disp = getUnifiedStockFor(p.id, optName);
     if (disp !== null && disp <= 0) { alert("Sin stock disponible para este producto/opción."); return; }
     if (disp !== null && qty > disp) { alert(`Solo quedan ${disp} unidades disponibles. Ajustamos tu cantidad.`); qty = disp; }
+
     const cart = loadCart();
     const it = cart.find(i => i.id === p.id && (i.opt || "") === optName);
     if (it) it.qty += qty; else cart.push({ id: p.id, qty, opt: optName });
+
     if (disp !== null) persistStockChange(p.id, optName || null, -qty);
     saveCart(cart);
     alert("🛒 Agregado al carrito.");
