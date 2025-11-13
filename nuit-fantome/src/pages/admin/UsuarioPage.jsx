@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "../../assets/css/usuario.css"; // Archivo donde están tus estilos generales
 import { Link, useNavigate } from "react-router-dom";
+import { regiones, comunas } from "../../data/RegionsData.js";
 // Simulación de funciones de datos (asumiendo que UsersData.js existe y funciona)
 import {
   getUsers,
@@ -13,7 +14,7 @@ import {
 // Importar librería XLSX (SheetJS)
 import * as XLSX from "xlsx"; 
 
-const FormularioUsuario = ({ onSubmit, titulo, vista, formData, handleChange, previewUrl, handleFileChange}) => (
+const FormularioUsuario = ({ onSubmit, titulo, vista, formData, handleChange, previewUrl, handleFileChange, errors}) => (
     <div className="container">
       <form className="form" onSubmit={onSubmit} autoComplete="off">
         <h2 style={{marginTop: 0}}>{titulo}</h2>
@@ -59,26 +60,34 @@ const FormularioUsuario = ({ onSubmit, titulo, vista, formData, handleChange, pr
 
           {/* 3. Dirección (SIMPLIFICADA) */}
           <div className="section-title">Dirección</div><div className="divider"></div>
-
-          <div>
-            <label>Región</label>
-            <select className="input" name="region" value={formData.region} onChange={handleChange}>
-              <option value="">Selecciona una región</option>
-              <option value="RM">Región Metropolitana</option>
-              <option value="VII">Maule</option>
-              {/* Añade más regiones según sea necesario */}
-            </select>
-          </div>
+    
+          {/* Región */}
+                <div>
+                    <label>Región</label>
+                    <select className="input" name="region" value={formData.region} onChange={handleChange}>
+                      <option value="">Selecciona tu región</option>
+                      {regiones.map((r) => (
+                        <option key={r.name} value={r.name}>
+                          {r.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="error-message">{errors.region}</span>
+                </div>
           
-          <div>
-            <label>Comuna</label>
-            <select className="input" name="comuna" value={formData.comuna} onChange={handleChange}>
-              <option value="">Selecciona una comuna</option>
-              {/* Lógica simple para poblar comunas */}
-              {formData.region === 'RM' && <option value="SCL">Santiago</option>}
-              {formData.region === 'VII' && <option value="Talca">Talca</option>}
-            </select>
-          </div>
+                  {/* Comuna */}
+                <div>
+                    <label>Comuna</label>
+                    <select className="input" name="comuna" value={formData.comuna} onChange={handleChange}>
+                      <option value="">Selecciona tu comuna</option>
+                      {(comunas[formData.region] || []).map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="error-message">{errors.comuna}</span>
+                  </div>
           
           <div style={{gridColumn:'1/-1'}}>
             <label>Dirección</label>
@@ -174,6 +183,7 @@ export default function UsuarioPage() {
     activo: true,
     rol: "cliente",
   });
+  const [errors, setErrors] = useState({}); // Inicializa un objeto de errores vacío
   // NUEVOS ESTADOS PARA FILTROS Y MODALES
   const [filtros, setFiltros] = useState({
     q: "", // Buscador (qInput)
@@ -789,10 +799,10 @@ export default function UsuarioPage() {
         {/* Vistas Condicionales */}
         {vista === "mostrar" && <MostrarUsuarios />}
         {vista === "nuevo" && (
-          <FormularioUsuario onSubmit={handleAgregar} titulo="Crear nuevo usuario" vista="nuevo" formData={formData} handleChange={handleChange} previewUrl={previewUrl} handleFileChange={handleFileChange}/>
+          <FormularioUsuario onSubmit={handleAgregar} titulo="Crear nuevo usuario" vista="nuevo" formData={formData} handleChange={handleChange} previewUrl={previewUrl} handleFileChange={handleFileChange} errors={errors}/>
         )}
         {vista === "editar" && (
-          <FormularioUsuario onSubmit={handleGuardarEdicion} titulo={`Editar usuario: ${formData.email}`} vista="editar" formData={formData} handleChange={handleChange} previewUrl={previewUrl} handleFileChange={handleFileChange}/>
+          <FormularioUsuario onSubmit={handleGuardarEdicion} titulo={`Editar usuario: ${formData.email}`} vista="editar" formData={formData} handleChange={handleChange} previewUrl={previewUrl} handleFileChange={handleFileChange} errors={errors}/>
         )}
       </main>
 

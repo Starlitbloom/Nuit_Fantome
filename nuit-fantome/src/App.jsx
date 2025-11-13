@@ -22,6 +22,7 @@ import NosotrosPage from "./pages/NosotrosPage";
 import PedidosPage from "./pages/admin/PedidosPage";
 import AdminProductosPage from "./pages/admin/AdminProductosPage";
 
+import HomeLoginPage from "./pages/HomeLoginPage";
 // Página 404 simple
 const NotFound = () => (
   <div style={{ padding: 24, textAlign: "center", color: "#3a2a63" }}>
@@ -71,6 +72,9 @@ function App() {
       {/* Rutas del panel admin */}
       <Route path="/admin/dashboard" element={<DashboardPage />} />
       <Route path="/admin/usuarios" element={<UsuarioPage />} />
+
+      {/* 3. Ruta de Inicio Post-Login - ¡ESTA ES LA CONEXIÓN! */}
+      <Route path="/home" element={<HomeLoginPage />} />
     </Routes>
   );
 }

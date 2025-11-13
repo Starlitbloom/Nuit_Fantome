@@ -75,7 +75,7 @@ export default function LoginForm() {
       if (usuario.rol === "admin") {
         navigate("/admin/dashboard"); // 🔹 Vista administrador
       } else {
-        navigate("/"); // 🔹 Vista tienda
+        navigate("/home"); // 🔹 Vista tienda
       }
     }, 1500);
   };

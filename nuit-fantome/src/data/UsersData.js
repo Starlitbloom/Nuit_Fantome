@@ -15,7 +15,7 @@
         nombre: "Rocio",
         email: "rocio@gmail.com",
         password: "rocio123",
-        rol: "cliente",
+        rol: "admin",
         telefono: "+56 9 8765 4321",
         createdAt: new Date().toISOString(),
       },
