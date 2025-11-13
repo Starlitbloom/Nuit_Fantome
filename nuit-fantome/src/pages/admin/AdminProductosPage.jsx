@@ -1,4 +1,4 @@
-// src/pages/admin/AdminProductosPage.jsx
+// src/pages/admin/AdminProductosPage.jsx 
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -76,6 +76,18 @@ const PRODUCTOS_INICIALES = CATALOGO.map(p => ({
   opciones: p.opciones ?? []
 }));
 
+/* ====== Helper: genera un ID único tipo p001, p002, etc. ====== */
+const generarIdUnico = (lista) => {
+  const usados = new Set(lista.map(p => String(p.id)));
+  let n = 1;
+  let id;
+  do {
+    id = "p" + String(n).padStart(3, "0");
+    n++;
+  } while (usados.has(id));
+  return id;
+};
+
 /* ====================== COMPONENTE ====================== */
 const AdminProductosPage = () => {
   const navigate = useNavigate();
@@ -84,6 +96,9 @@ const AdminProductosPage = () => {
   const [categorias, setCategorias] = useState(CATEGORIAS_INICIALES);
   const [productos, setProductos] = useState(PRODUCTOS_INICIALES);
   const [tab, setTab] = useState("productos"); // productos | reportes | categorias | criticos
+
+  // Para nueva imagen subida en "Agregar producto"
+  const [newImgData, setNewImgData] = useState("");
 
   // --- Modal de edición ---
   const [modalOpen, setModalOpen] = useState(false);
@@ -131,22 +146,44 @@ const AdminProductosPage = () => {
   const catNombre = (idCat) =>
     categorias.find((c) => c.id === idCat)?.nombre ?? "—";
 
+  /* === Manejar archivo de imagen en "Agregar producto" === */
+  const handleNuevaImagen = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setNewImgData("");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setNewImgData(ev.target?.result || "");
+    };
+    reader.readAsDataURL(file);
+  };
+
   // ====== CRUD ======
   const agregarProducto = (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+
+    const idInput = String(form.get("id") || "").trim();
+    const idFinal = idInput || generarIdUnico(productos);
+
+    const rutaTexto = String(form.get("img") || "").trim();
+    const imgFinal = newImgData || rutaTexto;
+
     const nuevo = {
-      id: String(form.get("id") || Date.now()),
+      id: idFinal,
       nombre: String(form.get("nombre")).trim(),
       precio: Number(form.get("precio")),
       stock: Number(form.get("stock")),
       idCategoria: Number(form.get("idCategoria")),
-      img: String(form.get("img") || ""),
+      img: imgFinal,
       desc: String(form.get("desc") || ""),
       opciones: [] // por defecto sin variantes
     };
     if (!nuevo.nombre || isNaN(nuevo.precio) || !nuevo.idCategoria) return;
     setProductos((prev) => [...prev, nuevo]);
+    setNewImgData("");
     e.currentTarget.reset();
   };
 
@@ -327,9 +364,11 @@ const AdminProductosPage = () => {
             {tab === "productos" && (
               <>
                 <h5 className="mb-3">Listado de productos</h5>
-                <table className="table table-dark table-hover">
+                {/* 🔹 Tabla con IMAGEN */}
+                <table className="table table-dark table-hover align-middle">
                   <thead>
                     <tr>
+                      <th>Imagen</th>
                       <th>ID</th>
                       <th>Nombre</th>
                       <th>Categoría</th>
@@ -339,29 +378,60 @@ const AdminProductosPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {productos.map((p) => (
-                      <tr key={p.id}>
-                        <td>{p.id}</td>
-                        <td>{p.nombre}</td>
-                        <td>{catNombre(p.idCategoria)}</td>
-                        <td>${p.precio}</td>
-                        <td>{p.opciones?.length ? "—" : p.stock}</td>
-                        <td className="d-flex gap-2">
-                          <button
-                            className="btn btn-sm btn-warning"
-                            onClick={() => abrirEditar(p)}
-                          >
-                            Editar
-                          </button>
-                          <button
-                            onClick={() => eliminarProducto(p.id)}
-                            className="btn btn-sm btn-danger"
-                          >
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {productos.map((p) => {
+                      const src = p.img
+                        ? (
+                          p.img.startsWith("data:")
+                            ? p.img
+                            : (p.img.startsWith("/") ? p.img : "/" + p.img)
+                        )
+                        : "/assets/img/placeholder.jpg";
+                      return (
+                        <tr key={p.id}>
+                          <td style={{ width: "72px" }}>
+                            <img
+                              src={src}
+                              alt={p.nombre}
+                              style={{
+                                width: "56px",
+                                height: "56px",
+                                objectFit: "cover",
+                                borderRadius: "10px",
+                                border: "1px solid #e6e1ff",
+                                boxShadow: "0 3px 8px rgba(0,0,0,.06)",
+                                background: "#fff",
+                              }}
+                            />
+                          </td>
+                          <td>{p.id}</td>
+                          <td>{p.nombre}</td>
+                          <td>{catNombre(p.idCategoria)}</td>
+                          <td>${p.precio}</td>
+                          <td>
+                            {p.opciones?.length
+                              ? p.opciones.reduce(
+                                  (acc, o) => acc + Number(o.s ?? o.stock ?? 0),
+                                  0
+                                )
+                              : p.stock}
+                          </td>
+                          <td className="d-flex gap-2">
+                            <button
+                              className="btn btn-sm btn-warning"
+                              onClick={() => abrirEditar(p)}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => eliminarProducto(p.id)}
+                              className="btn btn-sm btn-danger"
+                            >
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
 
@@ -388,10 +458,31 @@ const AdminProductosPage = () => {
                       ))}
                     </select>
                   </div>
+
+                  {/* Ruta de imagen (opcional) */}
                   <div className="col-md-6">
-                    <input name="img" className="form-control" placeholder="Ruta imagen (/assets/...)" />
+                    <input
+                      name="img"
+                      className="form-control"
+                      placeholder="Ruta imagen (/assets/...)"
+                    />
                   </div>
+
+                  {/* Subir imagen desde archivo */}
                   <div className="col-md-6">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control"
+                      onChange={handleNuevaImagen}
+                    />
+                    <small className="text-secondary">
+                      Puedes subir una imagen o usar una ruta del proyecto.  
+                      Si subes archivo, la imagen se guardará solo en este navegador.
+                    </small>
+                  </div>
+
+                  <div className="col-md-12">
                     <input name="desc" className="form-control" placeholder="Descripción" />
                   </div>
                   <div className="col-12 d-grid d-md-block">
@@ -536,7 +627,7 @@ const AdminProductosPage = () => {
                         onChange={(e)=>setFormEdit(f=>({...f, stock: e.target.value}))}/>
                     </div>
                     <div className="col-md-4">
-                      <label className="form-label">Imagen (ruta)</label>
+                      <label className="form-label">Imagen (ruta o dataURL)</label>
                       <input className="form-control" value={formEdit.img}
                         onChange={(e)=>setFormEdit(f=>({...f, img: e.target.value}))}/>
                     </div>
